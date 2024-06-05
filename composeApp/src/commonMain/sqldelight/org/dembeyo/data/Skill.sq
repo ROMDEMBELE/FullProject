@@ -1,0 +1,52 @@
+CREATE TABLE AbilityScore (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    full_name TEXT NOT NULL
+);
+
+CREATE TABLE Skill (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    ability_score_index TEXT,
+    FOREIGN KEY (ability_score_index) REFERENCES AbilityScore(id)
+);
+
+-- Select queries
+selectAllAbility:
+SELECT * FROM AbilityScore;
+
+selectAllSkill:
+SELECT * FROM Skill;
+
+selectSkillByAbilityScore:
+SELECT * FROM Skill WHERE ability_score_index = ?;
+
+-- Insert data into AbilityScore
+INSERT INTO AbilityScore (id, name, full_name) VALUES
+('cha', 'CHA', 'Charisma'),
+('con', 'CON', 'Constitution'),
+('dex', 'DEX', 'Dexterity'),
+('int', 'INT', 'Intelligence'),
+('str', 'STR', 'Strength'),
+('wis', 'WIS', 'Wisdom' );
+
+-- Insert data into Skill
+INSERT INTO Skill (id, name, ability_score_index) VALUES
+('deception', 'Deception', 'cha'),
+('intimidation', 'Intimidation', 'cha'),
+('performance', 'Performance', 'cha'),
+('persuasion', 'Persuasion', 'cha'),
+('acrobatics', 'Acrobatics', 'dex'),
+('sleight-of-hand', 'Sleight of Hand', 'dex'),
+('stealth', 'Stealth', 'dex'),
+('arcana', 'Arcana', 'int'),
+('history', 'History', 'int'),
+('investigation', 'Investigation', 'int'),
+('nature', 'Nature', 'int'),
+('religion', 'Religion', 'int'),
+('athletics', 'Athletics', 'str'),
+('animal-handling', 'Animal Handling', 'wis'),
+('insight', 'Insight', 'wis'),
+('medicine', 'Medicine', 'wis'),
+('perception', 'Perception', 'wis'),
+('survival', 'Survival', 'wis');

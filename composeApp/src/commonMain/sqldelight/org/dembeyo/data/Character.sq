@@ -1,0 +1,36 @@
+CREATE TABLE Character (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    age INTEGER NOT NULL,
+    race TEXT NOT NULL,
+    class TEXT NOT NULL,
+    subclass TEXT NOT NULL,
+    level INTEGER NOT NULL,
+    cha INTEGER NOT NULL,
+    con INTEGER NOT NULL,
+    dex INTEGER NOT NULL,
+    int INTEGER NOT NULL,
+    str INTEGER NOT NULL,
+    wis INTEGER NOT NULL,
+    features TEXT NOT NULL
+);
+
+CREATE INDEX character_id ON Character(id);
+
+selectAll:
+SELECT *
+FROM Character;
+
+insert:
+INSERT OR FAIL INTO Character (
+    name, age, race, class, subclass, level, cha, con, dex, int, str, wis, features
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+selectById:
+SELECT *
+FROM Character
+WHERE id = ?;
+
+deleteById:
+DELETE FROM Character
+WHERE id = ?;

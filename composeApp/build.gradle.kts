@@ -1,4 +1,3 @@
-
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -8,7 +7,16 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     id("io.realm.kotlin")
+    alias(libs.plugins.sqlDelight)
     kotlin("plugin.serialization")
+}
+
+sqldelight {
+    databases {
+        create("MySqlDelightDatabase") {
+            packageName = "org.dembeyo.data"
+        }
+    }
 }
 
 kotlin {
@@ -43,10 +51,12 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
+            implementation(libs.android.driver)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
-            implementation("co.touchlab:stately-common:2.0.5")
+            implementation(libs.stately.common)
+            implementation(libs.native.driver)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -65,6 +75,8 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.voyager.navigator)
             implementation(libs.library.base)
+            implementation(libs.runtime)
+            implementation(libs.coroutines.extensions)
             api(libs.logging)
         }
     }
