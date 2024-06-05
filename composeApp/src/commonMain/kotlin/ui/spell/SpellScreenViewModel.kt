@@ -12,26 +12,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import repository.SpellRepository
 
-class SpellScreenViewModel(private val spellRepository: SpellRepository) :
-    ViewModel() {
+class SpellScreenViewModel(private val spellRepository: SpellRepository) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(
-        SpellListUiState(
-            spellsByLevel = mapOf(),
-            filterByLevel = buildMap {
-                Level.entries.subList(0, 10).forEach {
-                    put(it, false)
-                }
-            },
-            filterByMagicSchool = buildMap {
-                MagicSchool.entries.forEach {
-                    put(it, false)
-                }
-            },
-            textField = TextFieldValue()
-        )
-    )
-
+    private val _uiState = MutableStateFlow(SpellListUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -42,36 +25,49 @@ class SpellScreenViewModel(private val spellRepository: SpellRepository) :
 
     suspend fun updateFavorite(spell: Spell) {
         if (!spell.isFavorite) {
-            spellRepository.addSpellToFavorite(spell)
+            spellRepository.addFavorite(spell)
         } else {
-            spellRepository.removeSpellFromFavorite(spell)
-        }
-    }
-
-    fun filterLevel(level: Level, checked: Boolean) {
-        _uiState.update {
-            it.copy(filterByLevel = it.filterByLevel.plus(level to checked))
+            spellRepository.removeFavorite(spell)
         }
         searchSpell()
     }
 
-    fun filterMagicSchool(school: MagicSchool, checked: Boolean) {
+    fun filterByLevel(filter: Level, enable: Boolean) {
         _uiState.update {
-            it.copy(filterByMagicSchool = it.filterByMagicSchool.plus(school to checked))
+            val updatedList = it.filterByLevel.toMutableList().apply {
+                if (enable) add(filter) else remove(filter)
+            }
+            it.copy(filterByLevel = updatedList)
+        }
+        searchSpell()
+    }
+
+    fun filterByMagicSchool(filter: MagicSchool, enable: Boolean) {
+        _uiState.update {
+            val updatedList = it.filterByMagicSchool.toMutableList().apply {
+                if (enable) add(filter) else remove(filter)
+            }
+            it.copy(filterByMagicSchool = updatedList)
+        }
+        searchSpell()
+    }
+
+    fun filterByText(textFieldValue: TextFieldValue) {
+        _uiState.update {
+            it.copy(textField = textFieldValue)
         }
         searchSpell()
     }
 
     private fun searchSpell() {
         viewModelScope.launch {
-            val school = _uiState.value.filterByMagicSchool.filterValues { it }.keys
-            val level = _uiState.value.filterByLevel.filterValues { it }.keys
+            val school = _uiState.value.filterByMagicSchool
+            val level = _uiState.value.filterByLevel
             val text = _uiState.value.textField.text
 
-            val spellsByLevel = spellRepository.searchSpell(level.toList(), school.toList())
-                .sortedBy { spell -> spell.level }
-                .filter { spell -> spell.name.contains(text) }
-                .groupBy { spell -> spell.level }
+            val spellsByLevel =
+                spellRepository.searchSpell(level, school).sortedBy { spell -> spell.level }
+                    .filter { spell -> spell.name.contains(text) }.groupBy { spell -> spell.level }
             _uiState.update { it.copy(spellsByLevel = spellsByLevel) }
         }
     }

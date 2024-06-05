@@ -6,11 +6,11 @@ import domain.MagicSchool
 import domain.Spell
 
 data class SpellListUiState(
-    val spellsByLevel: Map<Level, List<Spell>>,
-    val filterByLevel: Map<Level, Boolean>,
-    val filterByMagicSchool: Map<MagicSchool, Boolean>,
-    var textField: TextFieldValue
+    val spellsByLevel: Map<Level, List<Spell>> = emptyMap(),
+    val filterByLevel: List<Level> = emptyList(),
+    val filterByMagicSchool: List<MagicSchool> = emptyList(),
+    var textField: TextFieldValue = TextFieldValue()
 ) {
     val filterCounter: Int
-        get() = filterByMagicSchool.values.count { it } + filterByLevel.values.count { it }
+        get() = filterByMagicSchool.size + filterByLevel.size
 }

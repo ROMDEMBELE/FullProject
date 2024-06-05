@@ -50,8 +50,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import domain.Level
+import domain.MagicSchool
 import domain.Spell
 import fullproject.composeapp.generated.resources.Res
 import fullproject.composeapp.generated.resources.magic
@@ -67,18 +71,24 @@ import ui.primary
 import ui.smallBold
 
 
-class SpellListScreen : Screen {
+class SpellListScreen() : Screen {
+
+    override val key: ScreenKey
+        get() = uniqueScreenKey
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
+        val navigator = LocalNavigator.currentOrThrow
         val viewModel: SpellScreenViewModel = koinInject()
         val uiState = viewModel.uiState.collectAsState()
+        val scope = rememberCoroutineScope()
+
+        // save ui state here
         val listState = rememberSaveable(saver = LazyListState.Saver) {
             LazyListState(0, 0)
         }
-        val scope = rememberCoroutineScope()
-        val navigator = LocalNavigator.currentOrThrow
+
         Column {
             // Search Bar
             val settingsExpended = remember { mutableStateOf(false) }
@@ -92,7 +102,7 @@ class SpellListScreen : Screen {
                                 Badge(
                                     backgroundColor = primary,
                                     contentColor = Color.White
-                                ) { Text("$uiState.value.filterCounter") }
+                                ) { Text("${uiState.value.filterCounter}") }
                         }) {
                             Crossfade(settingsExpended.value) { extended ->
                                 if (extended) {
@@ -126,11 +136,11 @@ class SpellListScreen : Screen {
                                 focusedBorderColor = Color.Transparent,
                                 unfocusedBorderColor = Color.Transparent,
                                 textColor = Color.White,
-                                focusedLabelColor = Color.White,
-
-                                ),
+                                focusedLabelColor = Color.White
+                            ),
                             trailingIcon = { Icon(Icons.Filled.Search, null, tint = Color.White) },
-                            onValueChange = { //viewModel.updateTextField(it)
+                            onValueChange = {
+                                viewModel.filterByText(it)
                             },
                             modifier = Modifier.weight(1f).padding(start = 8.dp, end = 8.dp)
                         )
@@ -141,34 +151,34 @@ class SpellListScreen : Screen {
                         modifier = Modifier.padding(8.dp),
                         columns = GridCells.Fixed(2),
                     ) {
-                        items(uiState.value.filterByLevel.entries.toList()) { (level, checked) ->
+                        items(Level.entries.subList(0, 10)) { level ->
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.height(30.dp)
                             ) {
                                 Checkbox(
                                     colors = CheckboxDefaults.colors(primary),
-                                    checked = checked,
-                                    onCheckedChange = {
-                                        viewModel.filterLevel(level, it)
+                                    checked = uiState.value.filterByLevel.contains(level),
+                                    onCheckedChange = { checked ->
+                                        viewModel.filterByLevel(level, checked)
                                     })
                                 Text(
-                                    "Level ${level.level}",
-                                    Modifier.weight(1f),
+                                    text = "Level ${level.level}",
+                                    modifier = Modifier.weight(1f),
                                     style = smallBold
                                 )
                             }
                         }
-                        items(uiState.value.filterByMagicSchool.entries.toList()) { (school, checked) ->
+                        items(MagicSchool.entries) { school ->
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.height(30.dp)
                             ) {
                                 Checkbox(
                                     colors = CheckboxDefaults.colors(primary),
-                                    checked = checked,
-                                    onCheckedChange = {
-                                        viewModel.filterMagicSchool(school, it)
+                                    checked = uiState.value.filterByMagicSchool.contains(school),
+                                    onCheckedChange = { checked ->
+                                        viewModel.filterByMagicSchool(school, checked)
                                     })
                                 Text(
                                     school.displayName,

@@ -1,7 +1,9 @@
 package domain
 
 import androidx.compose.ui.graphics.Color
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class MagicSchool(val index: String, val displayName: String, val color: Color) {
     ABJURATION("abjuration", "Abjuration", Color(0xFFAEDFF7)), // Pastel Blue
     CONJURATION("conjuration", "Conjuration", Color(0xFFD8BFD8)), // Pastel Purple
@@ -13,8 +15,6 @@ enum class MagicSchool(val index: String, val displayName: String, val color: Co
     TRANSMUTATION("transmutation", "Transmutation", Color(0xFF90EE90)); // Pastel Green
 
     companion object {
-        fun valueOfOrNull(name: String): MagicSchool? = entries.find { it.name == name }
-
         fun fromIndex(index: String): MagicSchool? {
             return entries.find { it.index == index }
         }

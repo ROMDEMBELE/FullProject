@@ -33,6 +33,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import domain.Level
 import domain.MagicSchool
 import domain.Spell
@@ -54,6 +56,9 @@ import ui.smallBoldWhite
 
 
 class SpellDetailsScreen(private val spell: Spell) : Screen {
+
+    override val key: ScreenKey
+        get() = uniqueScreenKey
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable

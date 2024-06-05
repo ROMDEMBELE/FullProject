@@ -1,7 +1,9 @@
 package domain
 
 import androidx.compose.ui.graphics.Color
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class Level(val level: Int, val color: Color) {
     LEVEL_0(0, Color(0xFFFFFFFF)),   // White
     LEVEL_1(1, Color(0xFFFFF0F0)),   // Lightest Red
@@ -26,8 +28,6 @@ enum class Level(val level: Int, val color: Color) {
     LEVEL_20(20, Color(0xFFFFFFFF));  // White
 
     companion object {
-        fun valueOfOrNull(name: String): Level? = entries.find { it.name == name }
-
         fun fromInt(level: Int): Level = entries.find { it.level == level } ?: LEVEL_0
     }
 }

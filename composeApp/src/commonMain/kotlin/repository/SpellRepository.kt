@@ -11,11 +11,11 @@ import org.lighthousegames.logging.logging
 
 class SpellRepository(private val spellApi: SpellApi, private val dataBase: RealmDataBase) {
 
-    suspend fun addSpellToFavorite(spell: Spell) {
+    suspend fun addFavorite(spell: Spell) {
         dataBase.saveFavoriteSpell(FavoriteSpell(spell.index))
     }
 
-    suspend fun removeSpellFromFavorite(spell: Spell) {
+    suspend fun removeFavorite(spell: Spell) {
         dataBase.deleteFavoriteSpell(spell.index)
     }
 

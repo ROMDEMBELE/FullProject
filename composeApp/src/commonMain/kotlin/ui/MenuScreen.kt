@@ -27,6 +27,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import fullproject.composeapp.generated.resources.Res
@@ -51,6 +53,9 @@ import org.jetbrains.compose.resources.stringResource
 import ui.spell.SpellListScreen
 
 class MenuScreen : Screen {
+
+    override val key: ScreenKey
+        get() = uniqueScreenKey
 
     @Composable
     override fun Content() {

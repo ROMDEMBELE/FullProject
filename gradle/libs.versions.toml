@@ -11,9 +11,9 @@ kotlinxSerializationJson = "1.7.0-RC"
 ktor = "2.3.11"
 coroutines = "1.8.0"
 libraryBase = "2.0.0"
-lifecycleViewmodel = "2.8.0"
+lifecycleViewmodel = "2.8.1"
 logging = "1.4.2"
-voyagerNavigator = "1.0.0"
+voyagerNavigator = "1.1.0-beta02"
 
 [libraries]
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycleViewmodel" }
