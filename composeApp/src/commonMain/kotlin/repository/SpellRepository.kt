@@ -2,14 +2,14 @@ package repository
 
 import data.FavoriteSpell
 import data.RealmDataBase
-import data.api.SpellApi
+import data.api.DndApi
 import domain.Level
 import domain.MagicSchool
 import domain.Spell
 import io.ktor.client.plugins.ServerResponseException
 import org.lighthousegames.logging.logging
 
-class SpellRepository(private val spellApi: SpellApi, private val dataBase: RealmDataBase) {
+class SpellRepository(private val spellApi: DndApi, private val dataBase: RealmDataBase) {
 
     suspend fun addFavorite(spell: Spell) {
         dataBase.saveFavoriteSpell(FavoriteSpell(spell.index))
@@ -27,7 +27,7 @@ class SpellRepository(private val spellApi: SpellApi, private val dataBase: Real
             // Get fav
             val favorite = dataBase.getFavoriteSpells()
 
-            val searchResult = spellApi.getSpells(
+            val searchResult = spellApi.getSpellByLevelOrSchool(
                 levelList = filterByLevel.map { it.level.toString() },
                 schoolList = filterBySchool.map { it.index }
             )
@@ -47,7 +47,7 @@ class SpellRepository(private val spellApi: SpellApi, private val dataBase: Real
 
     suspend fun getOneSpell(index: String): Spell? {
         try {
-            return spellApi.getSpell(index)?.let { dto ->
+            return spellApi.getSpellByIndex(index)?.let { dto ->
                 var fullDesc = dto.desc.orEmpty().joinToString()
                 fullDesc += dto.higher_level.orEmpty().joinToString()
                 val damageSlot: Map<Level, String> =

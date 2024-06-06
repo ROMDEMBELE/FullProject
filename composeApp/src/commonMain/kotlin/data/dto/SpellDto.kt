@@ -22,8 +22,8 @@ data class SpellDto(
     val dc: DcDto? = null,
     val area_of_effect: AreaOfEffectDto? = null,
     val school: MagicSchoolDto? = null,
-    val classes: List<CharacterClass>? = null,
-    val subclasses: List<Subclass>? = null,
+    val classes: List<CharacterClassDto>? = null,
+    val subclasses: List<SubclassDto>? = null,
 ) {
     @Serializable
     data class DamageTypeDto(
@@ -66,14 +66,14 @@ data class SpellDto(
     )
 
     @Serializable
-    data class CharacterClass(
+    data class CharacterClassDto(
         val index: String,
         val name: String,
         val url: String
     )
 
     @Serializable
-    data class Subclass(
+    data class SubclassDto(
         val index: String,
         val name: String,
         val url: String

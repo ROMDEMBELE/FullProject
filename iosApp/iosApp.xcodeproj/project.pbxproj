@@ -333,6 +333,7 @@
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
+					"-lsqlite3",
 					"-framework",
 					ComposeApp,
 				);
@@ -365,6 +366,7 @@
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
+					"-lsqlite3",
 					"-framework",
 					ComposeApp,
 				);

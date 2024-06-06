@@ -5,17 +5,12 @@ data class DndCharacter(
     val name: String,
     val age: Int,
     val race: String,
-    val characterClass: String,  // Use 'characterClass' instead of 'class' to avoid keyword conflict
+    val characterClass: DndClass,  // Use 'characterClass' instead of 'class' to avoid keyword conflict
     val subclass: String,
     val level: Level,
-    val cha: Int,
-    val con: Int,
-    val dex: Int,
-    val int: Int,
-    val str: Int,
-    val wis: Int,
-    val skill: List<String>,
-    val features: List<String>  // Use a list to represent features
+    val abilities: Map<Ability, Int>,
+    val skill: List<Skill>,
+    val features: List<Feature>  // Use a list to represent features
 ) {
     fun Int.getModifier(): Int {
         return when (this) {

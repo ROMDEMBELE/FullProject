@@ -50,6 +50,7 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import ui.character.CharacterCreationScreen
 import ui.spell.SpellListScreen
 
 class MenuScreen : Screen {
@@ -83,12 +84,12 @@ class MenuScreen : Screen {
                         onClick = {
                             when (menu) {
                                 MenuItem.MAGIC_SPELLS -> navigator.push(SpellListScreen())
+                                MenuItem.SKILL -> navigator.push(CharacterCreationScreen())
                                 else -> {}
                                 /*
                                 MenuItem.MONSTERS -> navigator.push(menu.name)
                                 MenuItem.MAGIC_ITEMS -> navigator.push(menu.name)
                                 MenuItem.CLASS -> navigator.push(menu.name)
-                                MenuItem.SKILL -> navigator.push(menu.name)
                                 MenuItem.EQUIPMENTS -> navigator.push(menu.name)
 
                                  */
