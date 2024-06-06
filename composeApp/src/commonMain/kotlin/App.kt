@@ -28,9 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.Navigator
-import di.dataModule
-import di.platformModule
-import di.repositoryModule
 import fullproject.composeapp.generated.resources.Res
 import fullproject.composeapp.generated.resources.menu_screen_title
 import fullproject.composeapp.generated.resources.ornament
@@ -38,8 +35,8 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.KoinApplication
 import ui.MenuScreen
+import ui.character.CharacterCreationScreen
 import ui.composable.MenuDrawer
 import ui.darkBlue
 import ui.darkGray
@@ -50,68 +47,67 @@ import ui.spell.SpellListScreen
 @Composable
 @Preview
 fun App() {
-    KoinApplication(application = {
-        modules(listOf(dataModule, repositoryModule, platformModule()))
-    }) {
-        MaterialTheme {
-            val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
-            val scope = rememberCoroutineScope()
-            Navigator(screen = MenuScreen()) { navigator ->
-                Scaffold(
-                    scaffoldState = scaffoldState,
-                    drawerBackgroundColor = lightGray,
-                    drawerContent = {
-                        MenuDrawer { menu: MenuScreen.MenuItem ->
-                            scope.launch {
-                                scaffoldState.drawerState.close()
-                                when (menu) {
-                                    MenuScreen.MenuItem.HOME -> navigator.replaceAll(MenuScreen())
-                                    MenuScreen.MenuItem.MAGIC_SPELLS -> navigator.replaceAll(
-                                        SpellListScreen()
-                                    )
+    MaterialTheme {
+        val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
+        val scope = rememberCoroutineScope()
+        Navigator(screen = MenuScreen()) { navigator ->
+            Scaffold(
+                scaffoldState = scaffoldState,
+                drawerBackgroundColor = lightGray,
+                drawerContent = {
+                    MenuDrawer { menu: MenuScreen.MenuItem ->
+                        scope.launch {
+                            scaffoldState.drawerState.close()
+                            when (menu) {
+                                MenuScreen.MenuItem.HOME -> navigator.replaceAll(MenuScreen())
+                                MenuScreen.MenuItem.MAGIC_SPELLS -> navigator.replaceAll(
+                                    SpellListScreen()
+                                )
 
-                                    MenuScreen.MenuItem.MONSTERS -> {}
-                                    MenuScreen.MenuItem.MAGIC_ITEMS -> {}
-                                    MenuScreen.MenuItem.CLASS -> {}
-                                    MenuScreen.MenuItem.SKILL -> {}
-                                    MenuScreen.MenuItem.EQUIPMENTS -> {}
-                                }
+                                MenuScreen.MenuItem.MONSTERS -> {}
+                                MenuScreen.MenuItem.MAGIC_ITEMS -> {}
+                                MenuScreen.MenuItem.CLASS -> {}
+                                MenuScreen.MenuItem.SKILL -> navigator.push(
+                                    CharacterCreationScreen()
+                                )
+
+                                MenuScreen.MenuItem.EQUIPMENTS -> {}
                             }
-                        }
-                    },
-                    topBar = {
-                        TopAppBar(backgroundColor = darkBlue) {
-                            IconButton(onClick = {
-                                scope.launch {
-                                    scaffoldState.drawerState.open()
-                                }
-                            }) {
-                                Icon(Icons.Filled.Menu, null, tint = Color.White)
-                            }
-                            Text(
-                                stringResource(Res.string.menu_screen_title),
-                                Modifier.weight(1f).padding(4.dp),
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = FontFamily.Serif,
-                                color = Color.White,
-                            )
                         }
                     }
-                ) { _ ->
-                    Box(Modifier.fillMaxSize().background(darkGray)) {
-                        Image(
-                            painterResource(Res.drawable.ornament),
-                            null,
-                            modifier = Modifier.padding(20.dp)
-                                .fillMaxSize()
-                                .aspectRatio(1f)
-                                .alpha(0.6f)
-                                .align(Alignment.Center),
-                            colorFilter = ColorFilter.tint(primary)
+                },
+                topBar = {
+                    TopAppBar(backgroundColor = darkBlue) {
+                        IconButton(onClick = {
+                            scope.launch {
+                                scaffoldState.drawerState.open()
+                            }
+                        }) {
+                            Icon(Icons.Filled.Menu, null, tint = Color.White)
+                        }
+                        Text(
+                            stringResource(Res.string.menu_screen_title),
+                            Modifier.weight(1f).padding(4.dp),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily.Serif,
+                            color = Color.White,
                         )
-                        CurrentScreen()
                     }
+                }
+            ) { _ ->
+                Box(Modifier.fillMaxSize().background(darkGray)) {
+                    Image(
+                        painterResource(Res.drawable.ornament),
+                        null,
+                        modifier = Modifier.padding(20.dp)
+                            .fillMaxSize()
+                            .aspectRatio(1f)
+                            .alpha(0.6f)
+                            .align(Alignment.Center),
+                        colorFilter = ColorFilter.tint(primary)
+                    )
+                    CurrentScreen()
                 }
             }
         }
