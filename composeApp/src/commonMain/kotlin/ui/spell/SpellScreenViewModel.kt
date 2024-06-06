@@ -67,7 +67,8 @@ class SpellScreenViewModel(private val spellRepository: SpellRepository) : ViewM
 
             val spellsByLevel =
                 spellRepository.searchSpell(level, school).sortedBy { spell -> spell.level }
-                    .filter { spell -> spell.name.contains(text) }.groupBy { spell -> spell.level }
+                    .filter { spell -> spell.name.contains(text, true) }
+                    .groupBy { spell -> spell.level }
             _uiState.update { it.copy(spellsByLevel = spellsByLevel) }
         }
     }
