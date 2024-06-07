@@ -14,6 +14,7 @@ val darkGray = Color(93, 109, 126)
 val darkBlue = Color(46, 64, 83)
 val lightBlue = Color(105, 127, 170)
 val lightGray = Color(174, 182, 191)
+val brown = Color(0xFF922610)
 
 val mediumBoldWhite = TextStyle(
     color = Color.White,
@@ -47,3 +48,4 @@ val item = TextStyle(
     color = Color.White,
     fontSize = 18.sp,
 )
+

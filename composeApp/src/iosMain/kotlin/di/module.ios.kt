@@ -1,6 +1,6 @@
 package di
 
-import data.sql_database.DriverFactory
+import data.database.DriverFactory
 import io.ktor.client.engine.darwin.Darwin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get

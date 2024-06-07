@@ -1,0 +1,25 @@
+CREATE TABLE SpellDbo (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    level INTEGER NOT NULL,
+    isFavorite INTEGER NOT NULL
+);
+
+CREATE INDEX spell_index ON SpellDbo(id);
+
+selectAll:
+SELECT *
+FROM SpellDbo;
+
+selectOne:
+SELECT *
+FROM SpellDbo
+WHERE id == ?;
+
+insertOrIgnore:
+INSERT OR IGNORE INTO SpellDbo (
+    id, name, level, isFavorite
+) VALUES (?, ?, ?, ?);
+
+setFavorite:
+UPDATE SpellDbo SET isFavorite = ? WHERE id = ?;

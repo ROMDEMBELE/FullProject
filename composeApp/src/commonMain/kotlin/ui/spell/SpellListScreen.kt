@@ -156,7 +156,7 @@ class SpellListScreen() : Screen {
                                 },
                                 onFavoriteClick = {
                                     scope.launch {
-                                        viewModel.updateFavorite(it)
+                                        viewModel.toggleSpellIsFavorite(it)
                                     }
                                 })
                         }
@@ -191,7 +191,7 @@ class SpellListScreen() : Screen {
                                     },
                                     onFavoriteClick = {
                                         scope.launch {
-                                            viewModel.updateFavorite(it)
+                                            viewModel.toggleSpellIsFavorite(it)
                                         }
                                     })
                             }

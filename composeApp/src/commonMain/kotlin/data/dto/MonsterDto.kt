@@ -10,10 +10,10 @@ data class MonsterDto(
     val size: String? = null,
     val type: String? = null,
     val alignment: String? = null,
-    val armorClass: List<ArmorClassDto>? = null,
-    val hitPoints: Int? = null,
-    val hitDice: String? = null,
-    val hitPointsRoll: String? = null,
+    val armor_class: List<ArmorClassDto>? = null,
+    val hit_points: Int? = null,
+    val hit_dice: String? = null,
+    val hit_points_roll: String? = null,
     val speed: SpeedDto? = null,
     val strength: Int? = null,
     val dexterity: Int? = null,
@@ -22,19 +22,19 @@ data class MonsterDto(
     val wisdom: Int? = null,
     val charisma: Int? = null,
     val proficiencies: List<ProficiencyDto>? = null,
-    val damageVulnerabilities: List<String>? = null,
-    val damageResistances: List<String>? = null,
-    val damageImmunities: List<String>? = null,
-    val conditionImmunities: List<ReferenceDto>? = null,
+    val damage_vulnerabilities: List<String>? = null,
+    val damage_resistances: List<String>? = null,
+    val damage_immunities: List<String>? = null,
+    val condition_immunities: List<ReferenceDto>? = null,
     val senses: SensesDto? = null,
     val languages: String? = null,
-    val challengeRating: Double? = null,
-    val proficiencyBonus: Int? = null,
+    val challenge_rating: Double? = null,
+    val proficiency_bonus: Int? = null,
     val xp: Int? = null,
-    val specialAbilities: List<SpecialAbilityDto>? = null,
+    val special_abilities: List<SpecialAbilityDto>? = null,
     val actions: List<ActionDto>? = null,
     val image: String? = null,
-    val legendaryActions: List<ActionDto>? = null
+    val legendary_actions: List<ActionDto>? = null
 ) {
     @Serializable
     data class ArmorClassDto(
@@ -59,7 +59,7 @@ data class MonsterDto(
     data class SensesDto(
         val darkVision: String? = null,
         val blindsight: String? = null,
-        val passivePerception: Int
+        val passive_perception: Int
     )
 
     @Serializable
@@ -71,10 +71,10 @@ data class MonsterDto(
     @Serializable
     data class ActionDto(
         val name: String,
-        val multiattackType: String? = null,
+        val multiattack_type: String? = null,
         val desc: String,
         val actions: List<SubActionDto> = emptyList(),
-        val attackBonus: Int? = null,
+        val attack_bonus: Int? = null,
         val damage: List<DamageDto> = emptyList()
     )
 
@@ -87,8 +87,8 @@ data class MonsterDto(
 
     @Serializable
     data class DamageDto(
-        val damageType: ReferenceDto,
-        val damageDice: String
+        val damage_type: ReferenceDto,
+        val damage_dice: String
     )
 }
 

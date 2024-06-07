@@ -1,14 +1,14 @@
 package repository
 
 import data.api.DndApi
-import data.sql_database.Database
+import data.database.SqlDatabase
 import domain.Ability
 import domain.CharacterClass
 import domain.Level
 import io.ktor.client.plugins.ServerResponseException
 import org.lighthousegames.logging.logging
 
-class CharacterRepository(private val dndApi: DndApi, private val database: Database) {
+class CharacterRepository(private val dndApi: DndApi, private val database: SqlDatabase) {
 
     suspend fun getClasses(): List<CharacterClass> {
         try {

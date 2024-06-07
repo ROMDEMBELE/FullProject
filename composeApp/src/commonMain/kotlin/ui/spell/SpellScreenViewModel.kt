@@ -8,6 +8,7 @@ import domain.MagicSchool
 import domain.Spell
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import repository.SpellRepository
@@ -18,18 +19,14 @@ class SpellScreenViewModel(private val spellRepository: SpellRepository) : ViewM
     val uiState = _uiState.asStateFlow()
 
     init {
-        searchSpell()
+        refreshUiState()
     }
 
-    suspend fun getSpell(index: String): Spell? = spellRepository.getOneSpell(index)
+    suspend fun getSpell(index: String): Spell? = spellRepository.getSpellByIndex(index)
 
-    suspend fun updateFavorite(spell: Spell) {
-        if (!spell.isFavorite) {
-            spellRepository.addFavorite(spell)
-        } else {
-            spellRepository.removeFavorite(spell)
-        }
-        searchSpell()
+    suspend fun toggleSpellIsFavorite(spell: Spell) {
+        spellRepository.setSpellIsFavorite(spell.index, !spell.isFavorite)
+        refreshUiState()
     }
 
     fun filterByLevel(filter: Level, enable: Boolean) {
@@ -39,7 +36,7 @@ class SpellScreenViewModel(private val spellRepository: SpellRepository) : ViewM
             }
             it.copy(filterByLevel = updatedList)
         }
-        searchSpell()
+        refreshUiState()
     }
 
     fun filterByMagicSchool(filter: MagicSchool, enable: Boolean) {
@@ -49,27 +46,32 @@ class SpellScreenViewModel(private val spellRepository: SpellRepository) : ViewM
             }
             it.copy(filterByMagicSchool = updatedList)
         }
-        searchSpell()
+        refreshUiState()
     }
 
     fun filterByText(textFieldValue: TextFieldValue) {
         _uiState.update {
             it.copy(textField = textFieldValue)
         }
-        searchSpell()
+        refreshUiState()
     }
 
-    private fun searchSpell() {
+    private fun refreshUiState() {
         viewModelScope.launch {
             val school = _uiState.value.filterByMagicSchool
             val level = _uiState.value.filterByLevel
             val text = _uiState.value.textField.text
-            val list = spellRepository.searchSpell(level, school)
-            val favorites = list.filter { spell -> spell.isFavorite }
-            val spellsByLevel = list.sortedBy { spell -> spell.level }
-                .filter { spell -> spell.name.contains(text, true) }
-                .groupBy { spell -> spell.level }
-            _uiState.update { it.copy(spellsByLevel = spellsByLevel, favorites = favorites) }
+            spellRepository.getSpells().collectLatest { list ->
+                val favorites = list.filter { spell -> spell.isFavorite }
+
+                val spellsByLevel = list.asSequence().sortedBy { spell -> spell.level }
+                    .filter { spell -> school.isEmpty() || school.contains(spell.school) }
+                    .filter { spell -> level.isEmpty() || level.contains(spell.level) }
+                    .filter { spell -> spell.name.contains(text, true) }
+                    .groupBy { spell -> spell.level }
+                _uiState.update { it.copy(spellsByLevel = spellsByLevel, favorites = favorites) }
+            }
+
         }
     }
 }

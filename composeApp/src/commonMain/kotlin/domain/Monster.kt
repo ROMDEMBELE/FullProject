@@ -10,7 +10,6 @@ data class Monster(
     val alignment: Alignment? = null,
     val armorClass: String? = null,
     val hitPoints: Int? = null,
-    val hitDice: String? = null,
     val hitPointsRoll: String? = null,
     val walkSpeed: Int? = null,
     val swimSpeed: Int? = null,

@@ -11,8 +11,13 @@ selectAll:
 SELECT *
 FROM MonsterDbo;
 
-insertOrUpdate:
-INSERT OR REPLACE INTO MonsterDbo (
+selectOne:
+SELECT *
+FROM MonsterDbo
+WHERE id == ?;
+
+insertOrIgnore:
+INSERT OR IGNORE INTO MonsterDbo (
     id, name, challenge, isFavorite
 ) VALUES (?, ?, ?, ?);
 

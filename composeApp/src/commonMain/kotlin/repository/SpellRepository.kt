@@ -1,51 +1,57 @@
 package repository
 
-import data.FavoriteSpell
-import data.RealmDataBase
 import data.api.DndApi
+import data.database.SqlDatabase
 import domain.Level
 import domain.MagicSchool
 import domain.Spell
 import io.ktor.client.plugins.ServerResponseException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import org.lighthousegames.logging.logging
 
-class SpellRepository(private val spellApi: DndApi, private val dataBase: RealmDataBase) {
+class SpellRepository(private val spellApi: DndApi, private val dataBase: SqlDatabase) {
 
-    suspend fun addFavorite(spell: Spell) {
-        dataBase.saveFavoriteSpell(FavoriteSpell(spell.index))
+    init {
+        loadSpellsDatabase()
     }
 
-    suspend fun removeFavorite(spell: Spell) {
-        dataBase.deleteFavoriteSpell(spell.index)
-    }
-
-    suspend fun searchSpell(
-        filterByLevel: List<Level>,
-        filterBySchool: List<MagicSchool>
-    ): List<Spell> {
-        try {
-            // Get fav
-            val favorite = dataBase.getFavoriteSpells()
-
-            val searchResult = spellApi.getSpellByLevelOrSchool(
-                levelList = filterByLevel.map { it.level.toString() },
-                schoolList = filterBySchool.map { it.index }
-            )
-            return searchResult.results.map { dto ->
-                Spell(
+    private fun loadSpellsDatabase() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val result = spellApi.getSpellByLevelOrSchool()
+            result.results.forEach { dto ->
+                dataBase.createSpell(
                     index = dto.index,
                     name = dto.name,
-                    isFavorite = favorite.any { fav -> dto.index == fav.index },
-                    level = Level.fromInt(dto.level),
+                    level = dto.level.toLong(),
                 )
             }
-        } catch (e: ServerResponseException) {
-            Log.e { e.message }
-            return emptyList()
         }
     }
 
-    suspend fun getOneSpell(index: String): Spell? {
+    fun setSpellIsFavorite(index: String, isFavorite: Boolean) {
+        dataBase.updateSpellFavoriteStatus(index, isFavorite)
+    }
+
+    fun getSpells(): Flow<List<Spell>> {
+        return dataBase.getAllSpells().map {
+            it.map { dbo ->
+                Spell(
+                    index = dbo.id,
+                    name = dbo.name,
+                    isFavorite = dbo.isFavorite == 1L,
+                    level = Level.fromInt(dbo.level.toInt()),
+                )
+            }
+        }
+    }
+
+    suspend fun getSpellByIndex(index: String): Spell? {
         try {
             return spellApi.getSpellByIndex(index)?.let { dto ->
                 var fullDesc = dto.desc.orEmpty().joinToString()
@@ -58,7 +64,8 @@ class SpellRepository(private val spellApi: DndApi, private val dataBase: RealmD
                         dto.damage?.damage_at_slot_level.orEmpty()
                             .mapKeys { (key, _) -> Level.fromInt(key) }
                     } else emptyMap()
-                val isFavorite: Boolean = dataBase.findFavoriteSpell(index) != null
+
+                val isFavorite: Boolean = dataBase.getSpellById(index).firstOrNull()?.isFavorite == 1L
                 Spell(
                     index = dto.index,
                     name = dto.name,

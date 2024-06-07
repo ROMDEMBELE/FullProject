@@ -8,6 +8,7 @@ import domain.Monster
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import repository.MonsterRepository
@@ -23,7 +24,7 @@ class MonsterScreenViewModel(private val monsterRepository: MonsterRepository) :
 
     private fun refreshUiState() {
         viewModelScope.launch {
-            monsterRepository.getMonsters().collect { list ->
+            monsterRepository.getMonsters().collectLatest { list ->
                 val favorites = list.filter { it.isFavorite }
                 val text = _uiState.value.textField.text
                 val challengeRange =
@@ -71,8 +72,8 @@ class MonsterScreenViewModel(private val monsterRepository: MonsterRepository) :
         return monsterRepository.getMonsterByIndex(index)
     }
 
-    fun setMonsterFavorite(monster: Monster) {
-        monsterRepository.setMonsterFavorite(monster.index, !monster.isFavorite)
+    fun toggleMonsterFavorite(monster: Monster) {
+        monsterRepository.setMonsterIsFavorite(monster.index, !monster.isFavorite)
         refreshUiState()
     }
 

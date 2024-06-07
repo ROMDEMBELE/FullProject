@@ -1,6 +1,6 @@
 package di
 
-import data.sql_database.DriverFactory
+import data.database.DriverFactory
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.Module

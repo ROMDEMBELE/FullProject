@@ -1,8 +1,8 @@
 package di
 
-import data.RealmDataBase
+import data.database.RealmDataBase
 import data.api.DndApi
-import data.sql_database.Database
+import data.database.SqlDatabase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -13,7 +13,7 @@ import repository.SpellRepository
 val dataModule = module {
     singleOf(::DndApi)
     single { RealmDataBase() }
-    single { Database(get()) }
+    single { SqlDatabase(get()) }
 }
 
 val repositoryModule = module {

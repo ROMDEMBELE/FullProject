@@ -127,7 +127,7 @@ class MonsterListScreen() : Screen {
                                     }
                                 },
                                 onFavoriteClick = {
-                                    viewModel.setMonsterFavorite(monster)
+                                    viewModel.toggleMonsterFavorite(monster)
                                 }
                             )
                         }
@@ -155,14 +155,14 @@ class MonsterListScreen() : Screen {
                                     monster = monster,
                                     onClick = {
                                         scope.launch {
-                                            viewModel.getMonster(monster.index)?.let { completeSpell ->
-                                                navigator.push(MonsterDetailScreen(completeSpell))
+                                            viewModel.getMonster(monster.index)?.let { completeMonster ->
+                                                navigator.push(MonsterDetailScreen(completeMonster))
                                             }
                                         }
                                     },
                                     onFavoriteClick = {
                                         scope.launch {
-                                            viewModel.setMonsterFavorite(monster)
+                                            viewModel.toggleMonsterFavorite(monster)
                                         }
                                     })
                             }
