@@ -24,6 +24,7 @@ class MonsterScreenViewModel(private val monsterRepository: MonsterRepository) :
     private fun refreshUiState() {
         viewModelScope.launch {
             monsterRepository.getMonsters().collect { list ->
+                val favorites = list.filter { it.isFavorite }
                 val text = _uiState.value.textField.text
                 val challengeRange =
                     _uiState.value.minChallenge.rating.._uiState.value.maxChallenge.rating
@@ -37,7 +38,7 @@ class MonsterScreenViewModel(private val monsterRepository: MonsterRepository) :
                     .sortedBy { it.challenge }
                     .groupBy { it.challenge }
                 _uiState.update {
-                    it.copy(monsterByChallenge = monsterByChallenge)
+                    it.copy(monsterByChallenge = monsterByChallenge, favorites = favorites)
                 }
             }
         }
@@ -68,6 +69,11 @@ class MonsterScreenViewModel(private val monsterRepository: MonsterRepository) :
 
     suspend fun getMonster(index: String): Monster? {
         return monsterRepository.getMonsterByIndex(index)
+    }
+
+    fun setMonsterFavorite(monster: Monster) {
+        monsterRepository.setMonsterFavorite(monster.index, !monster.isFavorite)
+        refreshUiState()
     }
 
 }

@@ -1,3 +1,4 @@
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -36,14 +37,10 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.MenuScreen
-import ui.character.CharacterCreationScreen
 import ui.composable.MenuDrawer
 import ui.darkBlue
 import ui.darkGray
-import ui.lightGray
-import ui.monster.MonsterListScreen
 import ui.primary
-import ui.spell.SpellListScreen
 
 @Composable
 @Preview
@@ -54,29 +51,11 @@ fun App() {
         Navigator(screen = MenuScreen()) { navigator ->
             Scaffold(
                 scaffoldState = scaffoldState,
-                drawerBackgroundColor = lightGray,
+                drawerBackgroundColor = darkBlue,
                 drawerContent = {
-                    MenuDrawer { menu: MenuScreen.MenuItem ->
+                    MenuDrawer(navigator) {
                         scope.launch {
                             scaffoldState.drawerState.close()
-                            when (menu) {
-                                MenuScreen.MenuItem.HOME -> navigator.replaceAll(MenuScreen())
-                                MenuScreen.MenuItem.MAGIC_SPELLS -> navigator.replaceAll(
-                                    SpellListScreen()
-                                )
-
-                                MenuScreen.MenuItem.MONSTERS -> navigator.replaceAll(
-                                    MonsterListScreen()
-                                )
-
-                                MenuScreen.MenuItem.MAGIC_ITEMS -> {}
-                                MenuScreen.MenuItem.CLASS -> {}
-                                MenuScreen.MenuItem.SKILL -> navigator.push(
-                                    CharacterCreationScreen()
-                                )
-
-                                MenuScreen.MenuItem.EQUIPMENTS -> {}
-                            }
                         }
                     }
                 },

@@ -28,6 +28,18 @@ class MonsterRepository(private val dndApi: DndApi, private val database: Databa
         )
     }
 
+    fun getFavoriteMonsters(): Flow<List<Monster>> = database.getAllMonsters().map {
+        it.filter { it.isFavorite == 1L }
+            .map { dbo ->
+                Monster(
+                    index = dbo.id,
+                    name = dbo.name,
+                    challenge = Challenge.fromDouble(dbo.challenge),
+                    isFavorite = dbo.isFavorite == 1L
+                )
+            }
+    }
+
     fun getMonsters(): Flow<List<Monster>> = database.getAllMonsters().map {
         it.map { dbo ->
             Monster(

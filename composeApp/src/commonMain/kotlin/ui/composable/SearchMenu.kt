@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Badge
+import androidx.compose.material.BadgedBox
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -30,13 +32,16 @@ import androidx.compose.ui.unit.dp
 import ui.darkBlue
 import ui.darkPrimary
 import ui.lightGray
+import ui.primary
 
 @Composable
 fun SearchMenu(
     searchTextPlaceholder: String,
     searchTextFieldValue: TextFieldValue,
     onTextChange: (TextFieldValue) -> Unit,
+    favoriteCounter: Int = 0,
     onFavoritesClick: (enabled: Boolean) -> Unit,
+    filterCounter: Int = 0,
     filterContent: @Composable () -> Unit
 ) {
     // Search Bar
@@ -46,20 +51,29 @@ fun SearchMenu(
     Column(Modifier.padding(8.dp)) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton({ filterExpended = !filterExpended }) {
-                Crossfade(filterExpended) { extended ->
-                    if (extended) {
-                        Icon(
-                            Icons.Filled.KeyboardArrowUp, null,
-                            tint = darkPrimary,
-                            modifier = Modifier.padding(10.dp)
-                        )
-                    } else {
-                        Icon(
-                            Icons.Filled.KeyboardArrowDown, null,
-                            tint = darkPrimary,
-                            modifier = Modifier.padding(10.dp)
-                        )
+
+            BadgedBox(badge = {
+                if (filterCounter > 0)
+                    Badge(
+                        backgroundColor = primary,
+                        contentColor = Color.White
+                    ) { Text("$filterCounter") }
+            }) {
+                IconButton({ filterExpended = !filterExpended }) {
+                    Crossfade(filterExpended) { extended ->
+                        if (extended) {
+                            Icon(
+                                Icons.Filled.KeyboardArrowUp, null,
+                                tint = darkPrimary,
+                                modifier = Modifier.padding(10.dp)
+                            )
+                        } else {
+                            Icon(
+                                Icons.Filled.KeyboardArrowDown, null,
+                                tint = darkPrimary,
+                                modifier = Modifier.padding(10.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -92,16 +106,24 @@ fun SearchMenu(
                 Crossfade(favoritesEnabled) { favorite ->
                     if (favorite) {
                         Icon(
-                            Icons.Filled.Star, null,
-                            tint = darkPrimary,
-                            modifier = Modifier.padding(10.dp)
-                        )
-                    } else {
-                        Icon(
                             Icons.Filled.Menu, null,
                             tint = darkPrimary,
                             modifier = Modifier.padding(10.dp)
                         )
+                    } else {
+                        BadgedBox(badge = {
+                            if (favoriteCounter > 0)
+                                Badge(
+                                    backgroundColor = primary,
+                                    contentColor = Color.White
+                                ) { Text("$favoriteCounter") }
+                        }) {
+                            Icon(
+                                Icons.Filled.Star, null,
+                                tint = darkPrimary,
+                                modifier = Modifier.padding(10.dp)
+                            )
+                        }
                     }
                 }
             }

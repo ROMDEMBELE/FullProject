@@ -1,5 +1,6 @@
 package ui.monster
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -25,8 +26,10 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -67,6 +70,7 @@ class MonsterListScreen() : Screen {
         val viewModel: MonsterScreenViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
         val scope = rememberCoroutineScope()
+        var favorite by rememberSaveable { mutableStateOf(false) }
 
         // save ui state here
         val listState = rememberSaveable(saver = LazyListState.Saver) {
@@ -78,7 +82,8 @@ class MonsterListScreen() : Screen {
                 searchTextPlaceholder = "Search by name",
                 searchTextFieldValue = uiState.textField,
                 onTextChange = { viewModel.filterByText(it) },
-                onFavoritesClick = { enabled -> }
+                favoriteCounter = uiState.favoriteCounter,
+                onFavoritesClick = { enabled -> favorite = enabled }
             ) {
                 Column(
                     modifier = Modifier.padding(12.dp),
@@ -105,40 +110,63 @@ class MonsterListScreen() : Screen {
                 }
             }
 
-
-
-            LazyColumn(
-                state = listState,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
-            ) {
-                uiState.monsterByChallenge.forEach { (challenge, spells) ->
-                    stickyHeader(challenge) {
-                        Column(Modifier.padding(vertical = 8.dp).alpha(0.7f)) {
-                            Text(
-                                text = "CR ${challenge.rating}",
-                                modifier = Modifier.clip(CutCornerShape(8.dp))
-                                    .background(challenge.color)
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                                style = mediumBoldWhite.copy(color = darkBlue)
+            AnimatedContent(favorite) { favorite ->
+                if (favorite) {
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
+                    ) {
+                        items(items = uiState.favorites) { monster ->
+                            MonsterItem(
+                                monster = monster,
+                                onClick = {
+                                    scope.launch {
+                                        viewModel.getMonster(monster.index)?.let {
+                                            navigator.push(MonsterDetailScreen(it))
+                                        }
+                                    }
+                                },
+                                onFavoriteClick = {
+                                    viewModel.setMonsterFavorite(monster)
+                                }
                             )
                         }
                     }
-                    items(items = spells) {
-                        MonsterItem(
-                            monster = it,
-                            onClick = {
-                                scope.launch {
-                                    viewModel.getMonster(it.index)?.let { completeSpell ->
-                                        navigator.push(MonsterDetailScreen(completeSpell))
-                                    }
+                } else {
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
+                    ) {
+                        uiState.monsterByChallenge.forEach { (challenge, spells) ->
+                            stickyHeader(challenge) {
+                                Column(Modifier.padding(vertical = 8.dp).alpha(0.7f)) {
+                                    Text(
+                                        text = "CR ${challenge.rating}",
+                                        modifier = Modifier.clip(CutCornerShape(8.dp))
+                                            .background(challenge.color)
+                                            .fillMaxWidth()
+                                            .padding(8.dp),
+                                        style = mediumBoldWhite.copy(color = darkBlue)
+                                    )
                                 }
-                            },
-                            onFavoriteClick = {
-                                scope.launch {
-                                    //viewModel.updateFavorite(it)
-                                }
-                            })
+                            }
+                            items(items = spells) { monster ->
+                                MonsterItem(
+                                    monster = monster,
+                                    onClick = {
+                                        scope.launch {
+                                            viewModel.getMonster(monster.index)?.let { completeSpell ->
+                                                navigator.push(MonsterDetailScreen(completeSpell))
+                                            }
+                                        }
+                                    },
+                                    onFavoriteClick = {
+                                        scope.launch {
+                                            viewModel.setMonsterFavorite(monster)
+                                        }
+                                    })
+                            }
+                        }
                     }
                 }
             }

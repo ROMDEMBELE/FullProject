@@ -121,13 +121,13 @@ class MenuScreen : Screen {
         }
     }
 
-    enum class MenuItem(val route: String, val title: StringResource, val icon: DrawableResource) {
-        HOME("home", Res.string.menu_home, Res.drawable.home),
-        MAGIC_SPELLS("spells", Res.string.menu_spell, Res.drawable.magic),
-        MONSTERS("monsters", Res.string.menu_monster, Res.drawable.monster),
-        MAGIC_ITEMS("items", Res.string.menu_magic_item, Res.drawable.magic_item),
-        CLASS("class", Res.string.menu_class, Res.drawable.knight),
-        SKILL("skills", Res.string.menu_skill, Res.drawable.d20),
-        EQUIPMENTS("equipments", Res.string.menu_equipment, Res.drawable.sword_tie)
+    enum class MenuItem(val title: StringResource, val icon: DrawableResource) {
+        HOME(Res.string.menu_home, Res.drawable.home),
+        MAGIC_SPELLS(Res.string.menu_spell, Res.drawable.magic),
+        MONSTERS(Res.string.menu_monster, Res.drawable.monster),
+        MAGIC_ITEMS(Res.string.menu_magic_item, Res.drawable.magic_item),
+        CLASS(Res.string.menu_class, Res.drawable.knight),
+        SKILL(Res.string.menu_skill, Res.drawable.d20),
+        EQUIPMENTS(Res.string.menu_equipment, Res.drawable.sword_tie)
     }
 }

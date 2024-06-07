@@ -64,12 +64,12 @@ class SpellScreenViewModel(private val spellRepository: SpellRepository) : ViewM
             val school = _uiState.value.filterByMagicSchool
             val level = _uiState.value.filterByLevel
             val text = _uiState.value.textField.text
-
-            val spellsByLevel =
-                spellRepository.searchSpell(level, school).sortedBy { spell -> spell.level }
-                    .filter { spell -> spell.name.contains(text, true) }
-                    .groupBy { spell -> spell.level }
-            _uiState.update { it.copy(spellsByLevel = spellsByLevel) }
+            val list = spellRepository.searchSpell(level, school)
+            val favorites = list.filter { spell -> spell.isFavorite }
+            val spellsByLevel = list.sortedBy { spell -> spell.level }
+                .filter { spell -> spell.name.contains(text, true) }
+                .groupBy { spell -> spell.level }
+            _uiState.update { it.copy(spellsByLevel = spellsByLevel, favorites = favorites) }
         }
     }
 }
