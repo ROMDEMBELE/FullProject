@@ -1,0 +1,20 @@
+CREATE TABLE MonsterDbo (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    challenge REAL NOT NULL,
+    isFavorite INTEGER NOT NULL
+);
+
+CREATE INDEX monster_index ON MonsterDbo(id);
+
+selectAll:
+SELECT *
+FROM MonsterDbo;
+
+insertOrUpdate:
+INSERT OR REPLACE INTO MonsterDbo (
+    id, name, challenge, isFavorite
+) VALUES (?, ?, ?, ?);
+
+setFavorite:
+UPDATE MonsterDbo SET isFavorite = ? WHERE id = ?;

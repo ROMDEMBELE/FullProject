@@ -1,4 +1,4 @@
-CREATE TABLE Character (
+CREATE TABLE CharacterDbo (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     age INTEGER NOT NULL,
@@ -15,22 +15,22 @@ CREATE TABLE Character (
     features TEXT NOT NULL
 );
 
-CREATE INDEX character_id ON Character(id);
+CREATE INDEX character_id ON CharacterDbo(id);
 
 selectAll:
 SELECT *
-FROM Character;
+FROM CharacterDbo;
 
 insert:
-INSERT OR FAIL INTO Character (
+INSERT OR FAIL INTO CharacterDbo (
     name, age, race, class, subclass, level, cha, con, dex, int, str, wis, features
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 selectById:
 SELECT *
-FROM Character
+FROM CharacterDbo
 WHERE id = ?;
 
 deleteById:
-DELETE FROM Character
+DELETE FROM CharacterDbo
 WHERE id = ?;

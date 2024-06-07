@@ -3,18 +3,18 @@ package repository
 import data.api.DndApi
 import data.sql_database.Database
 import domain.Ability
-import domain.DndClass
+import domain.CharacterClass
 import domain.Level
 import io.ktor.client.plugins.ServerResponseException
 import org.lighthousegames.logging.logging
 
 class CharacterRepository(private val dndApi: DndApi, private val database: Database) {
 
-    suspend fun getClasses(): List<DndClass> {
+    suspend fun getClasses(): List<CharacterClass> {
         try {
             val result = dndApi.getClasses()
             return result.results.map {
-                DndClass(
+                CharacterClass(
                     index = it.index, name = it.name
                 )
             }
@@ -27,7 +27,7 @@ class CharacterRepository(private val dndApi: DndApi, private val database: Data
     fun saveCharacter(
         name: String,
         age: Int,
-        characterClass: DndClass,
+        characterClass: CharacterClass,
         level: Level,
         abilities: Map<Ability, Int>
     ) {

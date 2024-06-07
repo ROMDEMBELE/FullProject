@@ -3,7 +3,7 @@ package ui.character
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import domain.Ability
-import domain.DndClass
+import domain.CharacterClass
 import domain.Level
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,7 +29,7 @@ class CharacterViewModel(private val characterRepository: CharacterRepository) :
         }
     }
 
-    fun updateClass(selectedClass: DndClass?) {
+    fun updateClass(selectedClass: CharacterClass?) {
         _uiState.update {
             it.copy(characterClass = selectedClass)
         }

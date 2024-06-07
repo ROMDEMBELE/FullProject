@@ -48,12 +48,6 @@ data class ClassDto(
     )
 
     @Serializable
-    data class ReferenceDto(
-        val index: String,
-        val name: String
-    )
-
-    @Serializable
     data class StartingEquipmentDto(
         val equipment: ReferenceDto,
         val quantity: Int

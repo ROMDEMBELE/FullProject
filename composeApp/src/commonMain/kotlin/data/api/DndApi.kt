@@ -2,6 +2,7 @@ package data.api
 
 import data.dto.ClassDto
 import data.dto.FeatureDto
+import data.dto.MonsterDto
 import data.dto.SearchResultDto
 import data.dto.SpellDto
 import io.ktor.client.HttpClient
@@ -10,9 +11,9 @@ import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
-import io.ktor.client.request.headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.headers
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
@@ -29,15 +30,37 @@ class DndApi {
         install(HttpCache) {
 
         }
+        headers {
+            append(HttpHeaders.CacheControl, "max-age=3600")
+            append("Accept", "application/json")
+        }
+    }
+
+    suspend fun getMonstersByChallenge(challengeRatings: Double): SearchResultDto<MonsterDto> {
+        val response = client.get("$BASE_URL/api/monsters") {
+            url {
+                parameters.append("challenge_rating", challengeRatings.toString())
+            }
+        }
+        when (response.status) {
+            HttpStatusCode.OK -> return response.body() as SearchResultDto<MonsterDto>
+            else -> throw ServerResponseException(
+                response,
+                "/api/monsters failed : status ${response.status}"
+            )
+        }
+    }
+
+    suspend fun getMonsterByIndex(index: String): MonsterDto? {
+        val response = client.get("$BASE_URL/api/monsters/$index")
+        return when (response.status) {
+            HttpStatusCode.OK -> return response.body() as MonsterDto
+            else -> null
+        }
     }
 
     suspend fun getClasses(): SearchResultDto<ClassDto> {
-        val response = client.get("$BASE_URL/api/classes") {
-            headers {
-                append(HttpHeaders.CacheControl, "max-age=3600")
-                append("Accept", "application/json")
-            }
-        }
+        val response = client.get("$BASE_URL/api/classes")
         return when (response.status) {
             HttpStatusCode.OK -> response.body() as SearchResultDto<ClassDto>
             else -> throw ServerResponseException(
@@ -48,12 +71,7 @@ class DndApi {
     }
 
     suspend fun getClassByIndex(index: String): ClassDto? {
-        val response = client.get("$BASE_URL/api/classes/$index") {
-            headers {
-                append(HttpHeaders.CacheControl, "max-age=3600")
-                append("Accept", "application/json")
-            }
-        }
+        val response = client.get("$BASE_URL/api/classes/$index")
         return when (response.status) {
             HttpStatusCode.OK -> response.body() as ClassDto
             else -> null
@@ -61,12 +79,7 @@ class DndApi {
     }
 
     suspend fun getFeatures(): SearchResultDto<FeatureDto> {
-        val response = client.get("$BASE_URL/api/features") {
-            headers {
-                append(HttpHeaders.CacheControl, "max-age=3600")
-                append("Accept", "application/json")
-            }
-        }
+        val response = client.get("$BASE_URL/api/features")
         return when (response.status) {
             HttpStatusCode.OK -> response.body() as SearchResultDto<FeatureDto>
             else -> throw ServerResponseException(
@@ -77,12 +90,7 @@ class DndApi {
     }
 
     suspend fun getFeature(index: String): FeatureDto? {
-        val response = client.get("$BASE_URL/api/features/$index") {
-            headers {
-                append(HttpHeaders.CacheControl, "max-age=3600")
-                append("Accept", "application/json")
-            }
-        }
+        val response = client.get("$BASE_URL/api/features/$index")
         return when (response.status) {
             HttpStatusCode.OK -> response.body() as FeatureDto
             else -> null
@@ -102,10 +110,6 @@ class DndApi {
                     parameters.append("school", it)
                 }
             }
-            headers {
-                append(HttpHeaders.CacheControl, "max-age=3600")
-                append("Accept", "application/json")
-            }
         }
         return when (response.status) {
             HttpStatusCode.OK -> response.body() as SearchResultDto<SpellDto>
@@ -117,12 +121,7 @@ class DndApi {
     }
 
     suspend fun getSpellByIndex(index: String): SpellDto? {
-        val response = client.get("$BASE_URL/api/spells/$index") {
-            headers {
-                append(HttpHeaders.CacheControl, "max-age=3600")
-                append("Accept", "application/json")
-            }
-        }
+        val response = client.get("$BASE_URL/api/spells/$index")
         return when (response.status) {
             HttpStatusCode.OK -> response.body() as SpellDto
             else -> null

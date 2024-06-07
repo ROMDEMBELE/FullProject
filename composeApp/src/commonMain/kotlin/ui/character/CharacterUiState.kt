@@ -2,14 +2,14 @@ package ui.character
 
 import androidx.compose.ui.text.input.TextFieldValue
 import domain.Ability
-import domain.DndClass
+import domain.CharacterClass
 import domain.Level
 
 data class CharacterUiState(
     val name: TextFieldValue = TextFieldValue(),
     val age: TextFieldValue = TextFieldValue(),
     // val race: TextFieldValue = TextFieldValue(),
-    val characterClass: DndClass? = null,
+    val characterClass: CharacterClass? = null,
     val level: Level = Level.LEVEL_0,
     //val subclass: TextFieldValue = TextFieldValue(),
     val abilities: Map<Ability, Int> = buildMap { Ability.entries.map { put(it, 10) } },

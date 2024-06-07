@@ -7,6 +7,7 @@ import org.koin.core.component.get
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import ui.character.CharacterViewModel
+import ui.monster.MonsterScreenViewModel
 import ui.spell.SpellScreenViewModel
 
 actual fun platformModule(): Module = module {
@@ -15,10 +16,12 @@ actual fun platformModule(): Module = module {
     }
     single { DriverFactory() }
     factory { SpellScreenViewModel(get()) }
-    factory { CharacterViewModel(get())}
+    factory { CharacterViewModel(get()) }
+    factory { MonsterScreenViewModel(get()) }
 }
 
 object ViewModelProvider : KoinComponent {
     fun getSpellScreenViewModel() = SpellScreenViewModel(get())
     fun getCharacterViewModel() = CharacterViewModel(get())
+    fun getMonsterViewModel() = MonsterScreenViewModel(get())
 }

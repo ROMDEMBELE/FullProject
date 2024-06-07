@@ -10,11 +10,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ExposedDropdownMenuBox
-import androidx.compose.material.ExposedDropdownMenuDefaults
 import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -34,13 +29,14 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import domain.DndClass
+import domain.CharacterClass
 import fullproject.composeapp.generated.resources.Res
 import fullproject.composeapp.generated.resources.minus_circle
 import fullproject.composeapp.generated.resources.plus_circle
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
+import ui.composable.DropDownTextField
 import ui.darkBlue
 import ui.lightGray
 import ui.mediumBoldWhite
@@ -51,7 +47,7 @@ class CharacterCreationScreen() : Screen {
         val viewModel: CharacterViewModel = koinInject()
         val scope = rememberCoroutineScope()
         val uiState by viewModel.uiState.collectAsState()
-        var classes by remember { mutableStateOf(emptyList<DndClass>()) }
+        var classes by remember { mutableStateOf(emptyList<CharacterClass>()) }
 
         scope.launch {
             classes = viewModel.getClasses()
@@ -69,9 +65,11 @@ class CharacterCreationScreen() : Screen {
                 Spacer(Modifier.height(12.dp))
 
                 if (classes.isNotEmpty()) {
-                    DropDownTextField("Classes", classes.map { it.name }) { value ->
-                        viewModel.updateClass(classes.find { it.name == value })
-                    }
+                    DropDownTextField(
+                        value = uiState.characterClass,
+                        label = "Classes",
+                        list = classes
+                    ) { viewModel.updateClass(it) }
                 }
 
                 Spacer(Modifier.height(12.dp))
@@ -111,46 +109,6 @@ class CharacterCreationScreen() : Screen {
             }
         }
     }
-
-    @OptIn(ExperimentalMaterialApi::class)
-    @Composable
-    fun DropDownTextField(label: String, list: List<String>, onSelected: (String) -> Unit) {
-        var expanded by remember { mutableStateOf(false) }
-        var selectionOption by remember { mutableStateOf(list[0]) }
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = it }
-        ) {
-            TextField(
-                value = selectionOption,
-                onValueChange = { },
-                readOnly = true,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                label = { Text(text = label) },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                modifier = Modifier.fillMaxWidth()
-            )
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = {
-                    expanded = false
-                }
-            ) {
-                list.forEach {
-                    DropdownMenuItem(
-                        onClick = {
-                            selectionOption = it
-                            expanded = false
-                            onSelected(it)
-                        },
-                    ) {
-                        Text(text = it)
-                    }
-                }
-            }
-        }
-    }
-
 
     @Composable
     fun CounterSelector(

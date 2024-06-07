@@ -7,6 +7,6 @@ import org.dembeyo.data.MySqlDelightDatabase
 
 actual class DriverFactory(private val context: Context) {
     actual fun createDriver(): SqlDriver {
-        return AndroidSqliteDriver(MySqlDelightDatabase.Schema, context, "character.db")
+        return AndroidSqliteDriver(MySqlDelightDatabase.Schema, context, "my-dnd-app.db")
     }
 }

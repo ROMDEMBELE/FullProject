@@ -1,11 +1,11 @@
 package domain
 
-data class DndCharacter(
+data class Character(
     val id: Long? = null,  // ID can be null if it's not assigned yet
     val name: String,
     val age: Int,
     val race: String,
-    val characterClass: DndClass,  // Use 'characterClass' instead of 'class' to avoid keyword conflict
+    val characterClass: CharacterClass,  // Use 'characterClass' instead of 'class' to avoid keyword conflict
     val subclass: String,
     val level: Level,
     val abilities: Map<Ability, Int>,

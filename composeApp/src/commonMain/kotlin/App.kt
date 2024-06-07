@@ -41,6 +41,7 @@ import ui.composable.MenuDrawer
 import ui.darkBlue
 import ui.darkGray
 import ui.lightGray
+import ui.monster.MonsterListScreen
 import ui.primary
 import ui.spell.SpellListScreen
 
@@ -64,7 +65,10 @@ fun App() {
                                     SpellListScreen()
                                 )
 
-                                MenuScreen.MenuItem.MONSTERS -> {}
+                                MenuScreen.MenuItem.MONSTERS -> navigator.replaceAll(
+                                    MonsterListScreen()
+                                )
+
                                 MenuScreen.MenuItem.MAGIC_ITEMS -> {}
                                 MenuScreen.MenuItem.CLASS -> {}
                                 MenuScreen.MenuItem.SKILL -> navigator.push(

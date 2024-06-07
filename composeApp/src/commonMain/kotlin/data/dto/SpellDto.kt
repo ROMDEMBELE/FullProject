@@ -21,34 +21,21 @@ data class SpellDto(
     val damage: DamageDto? = null,
     val dc: DcDto? = null,
     val area_of_effect: AreaOfEffectDto? = null,
-    val school: MagicSchoolDto? = null,
-    val classes: List<CharacterClassDto>? = null,
-    val subclasses: List<SubclassDto>? = null,
+    val school: ReferenceDto? = null,
+    val classes: List<ReferenceDto>? = null,
+    val subclasses: List<ReferenceDto>? = null,
 ) {
-    @Serializable
-    data class DamageTypeDto(
-        val index: String,
-        val name: String,
-        val url: String
-    )
 
     @Serializable
     data class DamageDto(
-        val damage_type: DamageTypeDto,
+        val damage_type: ReferenceDto,
         val damage_at_slot_level: Map<Int, String>? = null,
         val damage_at_character_level: Map<Int, String>? = null
     )
 
     @Serializable
-    data class DcTypeDto(
-        val index: String,
-        val name: String,
-        val url: String
-    )
-
-    @Serializable
     data class DcDto(
-        val dc_type: DcTypeDto,
+        val dc_type: ReferenceDto,
         val dc_success: String
     )
 
@@ -56,26 +43,5 @@ data class SpellDto(
     data class AreaOfEffectDto(
         val type: String,
         val size: Int
-    )
-
-    @Serializable
-    data class MagicSchoolDto(
-        val index: String,
-        val name: String,
-        val url: String
-    )
-
-    @Serializable
-    data class CharacterClassDto(
-        val index: String,
-        val name: String,
-        val url: String
-    )
-
-    @Serializable
-    data class SubclassDto(
-        val index: String,
-        val name: String,
-        val url: String
     )
 }
