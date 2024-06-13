@@ -72,10 +72,17 @@ class SpellDetailsScreen(private val spell: Spell) : Screen {
     override fun Content() {
         val scope = rememberCoroutineScope()
         val pagerState = rememberPagerState(pageCount = { spell.damageSlot.size })
+        val gradient = Brush.linearGradient(
+            listOf(
+                lightGray,
+                secondary,
+                spell.level.color
+            )
+        )
         Column {
             Box(
                 Modifier.fillMaxWidth()
-                    .background(secondary)
+                    .background(gradient)
                     .height(150.dp)
             ) {
                 if (spell.school != null) {

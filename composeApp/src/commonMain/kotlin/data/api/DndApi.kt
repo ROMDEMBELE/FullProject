@@ -14,8 +14,10 @@ import io.ktor.client.request.get
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headers
+import io.ktor.serialization.JsonConvertException
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import kotlin.coroutines.cancellation.CancellationException
 
 class DndApi {
 
@@ -51,6 +53,7 @@ class DndApi {
         }
     }
 
+    @Throws(ServerResponseException::class, CancellationException::class, JsonConvertException::class)
     suspend fun getMonsterByIndex(index: String): MonsterDto? {
         val response = client.get("$BASE_URL/api/monsters/$index")
         return when (response.status) {

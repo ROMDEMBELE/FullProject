@@ -46,7 +46,8 @@ data class MonsterDto(
     val specialAbilities: List<SpecialAbilityDto>? = null,
     val actions: List<ActionDto>? = null,
     val image: String? = null,
-    val legendary_actions: List<ActionDto>? = null
+    @SerialName("legendary_actions")
+    val legendaryActions: List<ActionDto>? = null
 ) {
     @Serializable
     data class ArmorClassDto(

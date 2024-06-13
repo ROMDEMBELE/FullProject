@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -40,6 +42,8 @@ import org.dembeyo.shared.resources.monster_damage_resistances
 import org.dembeyo.shared.resources.monster_damage_vulnerabilities
 import org.dembeyo.shared.resources.monster_hit_points
 import org.dembeyo.shared.resources.monster_languages
+import org.dembeyo.shared.resources.monster_proficiencies
+import org.dembeyo.shared.resources.monster_saving_throws
 import org.dembeyo.shared.resources.monster_senses
 import org.dembeyo.shared.resources.monster_speed
 import org.jetbrains.compose.resources.StringResource
@@ -49,6 +53,7 @@ import ui.SmallBold
 import ui.darkBlue
 import ui.darkGray
 import ui.darkPrimary
+import ui.lightGray
 import ui.monsterPropertyText
 import ui.monsterPropertyTitle
 import ui.monsterSubTitle
@@ -61,7 +66,19 @@ class MonsterDetailScreen(private val monster: Monster) : Screen {
 
     @Composable
     override fun Content() {
-        LazyColumn(modifier = Modifier.padding(horizontal = 16.dp)) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
+                .background(
+                    Brush.linearGradient(
+                        listOf(
+                            lightGray,
+                            secondary,
+                            monster.challenge.color
+                        )
+                    )
+                )
+                .padding(horizontal = 12.dp)
+        ) {
             item {
                 Divider(
                     color = orange,
@@ -162,14 +179,28 @@ class MonsterDetailScreen(private val monster: Monster) : Screen {
                         Res.string.monster_challenge_rating,
                         monster.challenge.rating.toString() + " (${monster.xp} XP)"
                     )
+                    if (monster.skills.isNotEmpty()) {
+                        PropertyLine(
+                            Res.string.monster_proficiencies,
+                            monster.skills.joinToString()
+                        )
+                    }
+                    if (monster.savingThrows.isNotEmpty()) {
+                        PropertyLine(
+                            Res.string.monster_saving_throws,
+                            monster.savingThrows.joinToString()
+                        )
+                    }
                 }
                 TaperedRule()
 
-                monster.specialAbilities.forEach {
-                    PropertyLine(it.name, it.desc)
+                if (monster.specialAbilities.isNotEmpty()) {
+                    monster.specialAbilities.forEach {
+                        PropertyLine(it.name, it.desc)
+                    }
+                    TaperedRule()
                 }
 
-                TaperedRule()
                 Text(
                     text = stringResource(Res.string.monster_actions),
                     fontSize = 21.sp,
