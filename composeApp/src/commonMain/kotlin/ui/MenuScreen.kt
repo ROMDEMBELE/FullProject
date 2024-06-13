@@ -28,7 +28,6 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -114,7 +113,6 @@ class MenuScreen : Screen {
                 Image(
                     painterResource(menu.icon),
                     null,
-                    colorFilter = ColorFilter.tint(primary),
                     modifier = Modifier.fillMaxWidth()
                         .padding(16.dp)
                         .alpha(0.3f)

@@ -15,17 +15,17 @@ enum class Level(val level: Int, val color: Color, val skillBonus: Int) {
     LEVEL_7(7, Color(0xFFFF9696), 3),
     LEVEL_8(8, Color(0xFFFF8787), 3),
     LEVEL_9(9, Color(0xFFFF7878), 4),   // Pastel Red
-    LEVEL_10(10, Color(0xFFFFFFFF), 4),  // White (Middle point)
-    LEVEL_11(11, Color(0xFFFFFFFF), 4),
-    LEVEL_12(12, Color(0xFFFFFFFF), 4),
-    LEVEL_13(13, Color(0xFFFFFFFF), 5),
-    LEVEL_14(14, Color(0xFFFFFFFF), 5),
-    LEVEL_15(15, Color(0xFFFFFFFF), 5),
-    LEVEL_16(16, Color(0xFFFFFFFF), 5),
-    LEVEL_17(17, Color(0xFFFFFFFF), 6),
-    LEVEL_18(18, Color(0xFFFFFFFF), 6),
-    LEVEL_19(19, Color(0xFFFFFFFF), 6),
-    LEVEL_20(20, Color(0xFFFFFFFF), 6);  // White
+    LEVEL_10(10, Color(0xFFFF7878), 4),
+    LEVEL_11(11, Color(0xFFFF7878), 4),
+    LEVEL_12(12, Color(0xFFFF7878), 4),
+    LEVEL_13(13, Color(0xFFFF7878), 5),
+    LEVEL_14(14, Color(0xFFFF7878), 5),
+    LEVEL_15(15, Color(0xFFFF7878), 5),
+    LEVEL_16(16, Color(0xFFFF7878), 5),
+    LEVEL_17(17, Color(0xFFFF7878), 6),
+    LEVEL_18(18, Color(0xFFFF7878), 6),
+    LEVEL_19(19, Color(0xFFFF7878), 6),
+    LEVEL_20(20, Color(0xFFFF7878), 6);  // Pastel Red
 
     companion object {
         fun fromInt(level: Int): Level = entries.find { it.level == level } ?: LEVEL_0

@@ -1,10 +1,13 @@
 package ui.spell
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,28 +18,32 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
-import domain.Level
-import domain.MagicSchool
 import domain.Spell
 import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
@@ -46,13 +53,13 @@ import org.dembeyo.shared.resources.plus_circle
 import org.jetbrains.compose.resources.painterResource
 import ui.clip
 import ui.darkBlue
-import ui.darkGray
 import ui.darkPrimary
 import ui.lightBlue
 import ui.lightGray
 import ui.mediumBoldWhite
 import ui.primary
-import ui.smallBoldWhite
+import ui.secondary
+import ui.spellDetailsText
 
 
 class SpellDetailsScreen(private val spell: Spell) : Screen {
@@ -66,90 +73,92 @@ class SpellDetailsScreen(private val spell: Spell) : Screen {
         val scope = rememberCoroutineScope()
         val pagerState = rememberPagerState(pageCount = { spell.damageSlot.size })
         Column {
-            Box(Modifier.fillMaxWidth().background(darkGray).height(120.dp)) {
+            Box(
+                Modifier.fillMaxWidth()
+                    .background(secondary)
+                    .height(150.dp)
+            ) {
                 if (spell.school != null) {
-                    MagicSchoolClip(spell.school, Modifier.align(Alignment.TopStart))
+                    TextClip(spell.school.displayName, spell.school.color, Alignment.TopStart)
                 }
+
+                val gradient = Brush.linearGradient(listOf(primary, darkPrimary))
 
                 Image(
                     painterResource(Res.drawable.magic),
                     null,
-                    colorFilter = ColorFilter.tint(primary),
                     modifier = Modifier.align(Alignment.Center)
-                        .height(100.dp)
                         .padding(12.dp)
-                        .alpha(0.6f)
+                        .alpha(0.2f)
+                        .drawWithContent {
+                            drawContent()
+                            drawRect(gradient, blendMode = BlendMode.SrcAtop)
+                        }
                 )
+
+                TextClip(" Level ${spell.level.level}", spell.level.color, Alignment.TopEnd)
+
+                if (spell.ritual == true) {
+                    TextClip(
+                        text = "Ritual",
+                        lightBlue,
+                        Alignment.BottomEnd
+                    )
+                }
+                if (spell.concentration == true) {
+                    TextClip(
+                        text = "Concentration",
+                        primary,
+                        Alignment.BottomStart
+                    )
+                }
+
                 Text(
                     spell.name,
                     Modifier.align(Alignment.Center),
                     textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontFamily = FontFamily.Monospace,
+                    color = darkBlue,
+                    fontFamily = FontFamily.Serif,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp
+                    fontSize = 30.sp
                 )
-
-                LevelClip(spell.level, Modifier.align(Alignment.TopEnd))
-
-                if (spell.ritual == true) {
-                    Text(
-                        text = "Ritual",
-                        modifier = Modifier.align(Alignment.BottomEnd)
-                            .padding(8.dp)
-                            .width(120.dp)
-                            .clip(CutCornerShape(8.dp))
-                            .background(lightBlue),
-                        style = clip,
-                        color = Color.White
-                    )
-                }
-                if (spell.concentration == true) {
-                    Text(
-                        text = "Concentration",
-                        modifier = Modifier.align(Alignment.BottomStart)
-                            .padding(8.dp)
-                            .width(120.dp)
-                            .clip(CutCornerShape(8.dp))
-                            .background(darkPrimary),
-                        style = clip,
-                        color = Color.White
-                    )
-                }
             }
 
             Box(Modifier.fillMaxWidth().background(darkBlue)) {
                 Row(
-                    Modifier.padding(8.dp).fillMaxWidth().height(30.dp),
+                    Modifier.fillMaxWidth().height(60.dp).padding(12.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(spell.range.toString(), style = smallBoldWhite)
-                    Text(spell.duration.toString(), style = smallBoldWhite)
-                    Text(spell.components.toString(), style = smallBoldWhite)
-                    Text(spell.casting_time.toString(), style = smallBoldWhite)
+                    Text(spell.range.toString(), style = spellDetailsText)
+                    Text(spell.duration.toString(), style = spellDetailsText)
+                    Text(spell.components.toString(), style = spellDetailsText)
+                    Text(spell.casting_time.toString(), style = spellDetailsText)
                 }
             }
 
-            Surface(color = lightBlue, modifier = Modifier.weight(1f)) {
+            Surface(color = secondary, modifier = Modifier.weight(1f)) {
                 LazyColumn {
                     item {
                         Text(
                             spell.text.toString(),
                             Modifier.padding(8.dp),
-                            fontSize = 14.sp,
+                            fontSize = 16.sp,
+                            style = TextStyle.Default.copy(lineBreak = LineBreak.Paragraph),
                             fontFamily = FontFamily.Serif,
-                            color = Color.White
+                            color = darkBlue
                         )
                     }
                 }
             }
 
+            val animatedColorMinus by animateColorAsState(if (pagerState.canScrollBackward) secondary else lightGray)
+            val animatedColorPlus by animateColorAsState(if (pagerState.canScrollForward) secondary else lightGray)
             if (spell.damageSlot.isNotEmpty()) {
                 Box(Modifier.fillMaxWidth().background(darkBlue)) {
                     Row(
-                        Modifier.padding(8.dp).fillMaxWidth().height(30.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        Modifier.fillMaxWidth().height(60.dp).padding(12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(onClick = {
@@ -160,12 +169,12 @@ class SpellDetailsScreen(private val spell: Spell) : Screen {
                             Image(
                                 painterResource(Res.drawable.minus_circle),
                                 null,
-                                colorFilter = ColorFilter.tint(if (pagerState.canScrollBackward) Color.White else lightGray)
+                                colorFilter = ColorFilter.tint(animatedColorMinus)
                             )
                         }
                         Text(
                             "Level " + spell.damageSlot.toList()[pagerState.currentPage].first.level,
-                            style = mediumBoldWhite
+                            style = mediumBoldWhite.copy(color = secondary)
                         )
                         IconButton(onClick = {
                             scope.launch {
@@ -175,7 +184,7 @@ class SpellDetailsScreen(private val spell: Spell) : Screen {
                             Image(
                                 painterResource(Res.drawable.plus_circle),
                                 null,
-                                colorFilter = ColorFilter.tint(if (pagerState.canScrollForward) Color.White else lightGray)
+                                colorFilter = ColorFilter.tint(animatedColorPlus)
                             )
                         }
                     }
@@ -185,12 +194,13 @@ class SpellDetailsScreen(private val spell: Spell) : Screen {
                     Column(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.background(darkGray).fillMaxWidth().padding(16.dp),
+                        modifier = Modifier.background(damage.first.color).fillMaxWidth()
+                            .padding(16.dp),
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 text = damage.second,
-                                color = Color.White,
+                                color = darkBlue,
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = FontFamily.Monospace,
                                 textAlign = TextAlign.Center,
@@ -199,7 +209,7 @@ class SpellDetailsScreen(private val spell: Spell) : Screen {
                             Spacer(Modifier.width(12.dp))
                             Text(
                                 text = spell.damageType.toString(),
-                                color = primary,
+                                color = darkPrimary,
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = FontFamily.Monospace,
                                 textAlign = TextAlign.Center,
@@ -226,28 +236,17 @@ class SpellDetailsScreen(private val spell: Spell) : Screen {
     }
 
     @Composable
-    fun MagicSchoolClip(magicSchool: MagicSchool, modifier: Modifier) {
+    fun BoxScope.TextClip(text: String, color: Color, alignment: Alignment) {
         Text(
-            magicSchool.displayName,
-            modifier.padding(8.dp)
+            text,
+            modifier = Modifier
                 .width(120.dp)
-                .clip(CutCornerShape(8.dp))
-                .background(color = magicSchool.color),
-            style = clip,
-            color = Color.Black
-        )
-    }
-
-    @Composable
-    fun LevelClip(level: Level, modifier: Modifier) {
-        Text(
-            "Level ${level.level}",
-            modifier.padding(8.dp)
-                .width(120.dp)
-                .clip(CutCornerShape(8.dp))
-                .background(color = level.color),
-            style = clip,
-            color = Color.Black
+                .padding(8.dp)
+                .border(2.dp, darkBlue, CircleShape)
+                .clip(CircleShape)
+                .align(alignment)
+                .background(color = color),
+            style = clip
         )
     }
 

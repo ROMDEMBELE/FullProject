@@ -23,9 +23,9 @@ val mediumBoldWhite = TextStyle(
     textAlign = TextAlign.Center,
 )
 
-val smallBoldWhite = TextStyle(
-    color = Color.White,
-    fontSize = 12.sp,
+val spellDetailsText = TextStyle(
+    color = secondary,
+    fontSize = 18.sp,
     fontWeight = FontWeight.Bold,
     textAlign = TextAlign.Center,
 )
