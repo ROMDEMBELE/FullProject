@@ -5,8 +5,10 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
@@ -52,10 +55,11 @@ import org.koin.compose.koinInject
 import ui.composable.DropDownTextField
 import ui.composable.SearchMenu
 import ui.darkBlue
+import ui.darkGray
 import ui.item
-import ui.lightBlue
 import ui.mediumBoldWhite
 import ui.primary
+import ui.secondary
 
 
 class MonsterListScreen() : Screen {
@@ -140,14 +144,15 @@ class MonsterListScreen() : Screen {
                     ) {
                         uiState.monsterByChallenge.forEach { (challenge, spells) ->
                             stickyHeader(challenge) {
-                                Column(Modifier.padding(vertical = 8.dp).alpha(0.7f)) {
+                                Column(Modifier.padding(vertical = 8.dp).alpha(0.8f)) {
                                     Text(
                                         text = "CR ${challenge.rating}",
                                         modifier = Modifier.clip(CutCornerShape(8.dp))
                                             .background(challenge.color)
+                                            .border(2.dp, darkBlue, CutCornerShape(8.dp))
                                             .fillMaxWidth()
                                             .padding(8.dp),
-                                        style = mediumBoldWhite.copy(color = darkBlue)
+                                        style = mediumBoldWhite.copy(color = secondary)
                                     )
                                 }
                             }
@@ -185,16 +190,20 @@ class MonsterListScreen() : Screen {
         Button(
             shape = RoundedCornerShape(20.dp),
             border = BorderStroke(2.dp, primary),
+            contentPadding = PaddingValues(),
             modifier = Modifier.padding(4.dp).fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(darkBlue),
+            colors = ButtonDefaults.buttonColors(Color.Transparent),
             onClick = onClick
         ) {
-            Box {
+            val boxMonsterBrush = Brush.linearGradient(listOf(darkBlue, darkBlue, darkBlue, monster.challenge.color))
+            Box(
+                Modifier.background(boxMonsterBrush)
+            ) {
                 Image(
                     painterResource(Res.drawable.monster),
                     null,
                     colorFilter = ColorFilter.tint(primary),
-                    modifier = Modifier.align(Alignment.Center).height(50.dp).alpha(.7f)
+                    modifier = Modifier.align(Alignment.Center).height(50.dp).alpha(.5f)
                 )
                 Text(
                     monster.name,
@@ -210,7 +219,7 @@ class MonsterListScreen() : Screen {
                     Icon(
                         Icons.Filled.Star,
                         null,
-                        tint = if (monster.isFavorite) Color.Yellow else lightBlue
+                        tint = if (monster.isFavorite) Color.Yellow else darkGray
                     )
                 }
             }

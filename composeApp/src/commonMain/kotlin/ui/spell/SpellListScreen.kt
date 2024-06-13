@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -41,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
@@ -58,8 +60,8 @@ import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import ui.composable.SearchMenu
 import ui.darkBlue
+import ui.darkGray
 import ui.item
-import ui.lightBlue
 import ui.mediumBoldWhite
 import ui.primary
 import ui.smallBold
@@ -188,16 +190,18 @@ class SpellListScreen() : Screen {
         Button(
             shape = RoundedCornerShape(20.dp),
             border = BorderStroke(2.dp, primary),
+            contentPadding = PaddingValues(),
             modifier = Modifier.padding(4.dp).fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(darkBlue),
             onClick = onClick
         ) {
-            Box {
+            val boxMonsterBrush = Brush.linearGradient(listOf(darkBlue, darkBlue, darkBlue, spell.level.color))
+            Box(Modifier.background(boxMonsterBrush)) {
                 Image(
                     painterResource(Res.drawable.magic),
                     null,
                     colorFilter = ColorFilter.tint(primary),
-                    modifier = Modifier.align(Alignment.Center).height(50.dp).alpha(.7f)
+                    modifier = Modifier.align(Alignment.Center).height(50.dp).alpha(.5f)
                 )
                 Text(
                     spell.name,
@@ -213,7 +217,7 @@ class SpellListScreen() : Screen {
                     Icon(
                         Icons.Filled.Star,
                         null,
-                        tint = if (spell.isFavorite) Color.Yellow else lightBlue
+                        tint = if (spell.isFavorite) Color.Yellow else darkGray
                     )
                 }
             }
