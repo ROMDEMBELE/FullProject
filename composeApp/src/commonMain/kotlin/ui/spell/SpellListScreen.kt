@@ -45,6 +45,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
@@ -58,13 +59,12 @@ import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.magic
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
+import ui.MediumBold
 import ui.composable.SearchMenu
 import ui.darkBlue
 import ui.darkGray
 import ui.item
-import ui.mediumBoldWhite
 import ui.primary
-import ui.smallBold
 
 
 class SpellListScreen() : Screen {
@@ -90,7 +90,7 @@ class SpellListScreen() : Screen {
             SearchMenu(
                 searchTextPlaceholder = "Search by name",
                 searchTextFieldValue = uiState.textField,
-                onTextChange = { viewModel.filterByText(it)},
+                onTextChange = { viewModel.filterByText(it) },
                 favoriteCounter = uiState.favoritesCounter,
                 filterCounter = uiState.filterCounter,
                 onFavoritesClick = { favorites = it },
@@ -105,7 +105,7 @@ class SpellListScreen() : Screen {
                             modifier = Modifier.height(30.dp)
                         ) {
                             Checkbox(
-                                colors = CheckboxDefaults.colors(primary),
+                                colors = CheckboxDefaults.colors(darkBlue),
                                 checked = uiState.filterByLevel.contains(level),
                                 onCheckedChange = { checked ->
                                     viewModel.filterByLevel(level, checked)
@@ -113,14 +113,17 @@ class SpellListScreen() : Screen {
                             Text(
                                 text = "Level ${level.level}",
                                 modifier = Modifier.weight(1f),
-                                style = smallBold
+                                style = MediumBold.copy(
+                                    color = darkBlue,
+                                    textAlign = TextAlign.Start
+                                )
                             )
                         }
                     }
                 }
             }
             // Search Bar
-            AnimatedContent(favorites) {favorites ->
+            AnimatedContent(favorites) { favorites ->
                 if (favorites) {
                     LazyColumn(
                         state = listState,
@@ -158,7 +161,7 @@ class SpellListScreen() : Screen {
                                             .fillMaxWidth()
                                             .border(2.dp, darkBlue, CutCornerShape(8.dp))
                                             .padding(8.dp),
-                                        style = mediumBoldWhite.copy(color = darkBlue)
+                                        style = MediumBold.copy(color = darkBlue)
                                     )
                                 }
                             }
@@ -195,7 +198,8 @@ class SpellListScreen() : Screen {
             colors = ButtonDefaults.buttonColors(darkBlue),
             onClick = onClick
         ) {
-            val boxMonsterBrush = Brush.linearGradient(listOf(darkBlue, darkBlue, darkBlue, spell.level.color))
+            val boxMonsterBrush =
+                Brush.linearGradient(listOf(darkBlue, darkBlue, darkBlue, spell.level.color))
             Box(Modifier.background(boxMonsterBrush)) {
                 Image(
                     painterResource(Res.drawable.magic),

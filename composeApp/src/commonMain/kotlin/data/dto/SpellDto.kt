@@ -27,16 +27,16 @@ data class SpellDto(
 ) {
 
     @Serializable
+    data class DcDto(
+        val dc_type: ReferenceDto,
+        val dc_success: String
+    )
+
+    @Serializable
     data class DamageDto(
         val damage_type: ReferenceDto,
         val damage_at_slot_level: Map<Int, String>? = null,
         val damage_at_character_level: Map<Int, String>? = null
-    )
-
-    @Serializable
-    data class DcDto(
-        val dc_type: ReferenceDto,
-        val dc_success: String
     )
 
     @Serializable

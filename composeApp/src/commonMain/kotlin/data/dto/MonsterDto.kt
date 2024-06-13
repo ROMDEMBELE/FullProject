@@ -1,5 +1,6 @@
 package data.dto
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -10,10 +11,14 @@ data class MonsterDto(
     val size: String? = null,
     val type: String? = null,
     val alignment: String? = null,
-    val armor_class: List<ArmorClassDto>? = null,
-    val hit_points: Int? = null,
-    val hit_dice: String? = null,
-    val hit_points_roll: String? = null,
+    @SerialName("armor_class")
+    val armorClass: List<ArmorClassDto>? = null,
+    @SerialName("hit_points")
+    val hitPoints: Int? = null,
+    @SerialName("hit_dice")
+    val hitDice: String? = null,
+    @SerialName("hit_points_roll")
+    val hitPointsRoll: String? = null,
     val speed: SpeedDto? = null,
     val strength: Int? = null,
     val dexterity: Int? = null,
@@ -22,16 +27,23 @@ data class MonsterDto(
     val wisdom: Int? = null,
     val charisma: Int? = null,
     val proficiencies: List<ProficiencyDto>? = null,
-    val damage_vulnerabilities: List<String>? = null,
-    val damage_resistances: List<String>? = null,
-    val damage_immunities: List<String>? = null,
-    val condition_immunities: List<ReferenceDto>? = null,
+    @SerialName("damage_vulnerabilities")
+    val damageVulnerabilities: List<String>? = null,
+    @SerialName("damage_resistances")
+    val damageResistances: List<String>? = null,
+    @SerialName("damage_immunities")
+    val damageImmunities: List<String>? = null,
+    @SerialName("condition_immunities")
+    val conditionImmunities: List<ReferenceDto>? = null,
     val senses: SensesDto? = null,
     val languages: String? = null,
-    val challenge_rating: Double? = null,
-    val proficiency_bonus: Int? = null,
+    @SerialName("challenge_rating")
+    val challengeRating: Double? = null,
+    @SerialName("proficiency_bonus")
+    val proficiencyBonus: Int? = null,
     val xp: Int? = null,
-    val special_abilities: List<SpecialAbilityDto>? = null,
+    @SerialName("special_abilities")
+    val specialAbilities: List<SpecialAbilityDto>? = null,
     val actions: List<ActionDto>? = null,
     val image: String? = null,
     val legendary_actions: List<ActionDto>? = null
@@ -40,7 +52,9 @@ data class MonsterDto(
     data class ArmorClassDto(
         val type: String,
         val value: Int
-    )
+    ) {
+        override fun toString(): String = "$value ($type)"
+    }
 
     @Serializable
     data class SpeedDto(
@@ -59,8 +73,18 @@ data class MonsterDto(
     data class SensesDto(
         val darkVision: String? = null,
         val blindsight: String? = null,
-        val passive_perception: Int
-    )
+        @SerialName("passive_perception")
+        val passivePerception: Int
+    ) {
+
+        override fun toString(): String {
+            return buildString {
+                append("passive Perception $passivePerception")
+                if (darkVision != null) append(", darkVision")
+                if (blindsight != null) append(", blind sight")
+            }
+        }
+    }
 
     @Serializable
     data class SpecialAbilityDto(
@@ -71,11 +95,62 @@ data class MonsterDto(
     @Serializable
     data class ActionDto(
         val name: String,
-        val multiattack_type: String? = null,
+        @SerialName("multiattack_type")
+        val multiAttackType: String? = null,
         val desc: String,
-        val actions: List<SubActionDto> = emptyList(),
-        val attack_bonus: Int? = null,
-        val damage: List<DamageDto> = emptyList()
+        val usage: UsageDto? = null,
+        val dc: DcDto? = null,
+        val actions: List<SubActionDto>? = null,
+        @SerialName("attack_bonus")
+        val attackBonus: Int? = null,
+        @SerialName("action_options")
+        val multiAttackOption: MultiAttackOption? = null,
+        val damage: List<DamageDto>? = null
+    )
+
+    @Serializable
+    data class MultiAttackOption(
+        val choose: Int,
+        val type: String,
+        val from: OptionSet<ActionOption>
+    )
+
+    @Serializable
+    data class OptionSet<T>(
+        val option_set_type: String,
+        val options: List<T>
+    )
+
+    @Serializable
+    data class ActionOption(
+        @SerialName("option_type")
+        val optionType: String,
+        val items: List<ActionOption>? = null,
+        @SerialName("action_name")
+        val actionName: String? = null,
+        val count: Int? = null,
+        val type: String? = null
+    )
+
+    @Serializable
+    data class DcDto(
+        @SerialName("dc_type")
+        val typeOfAbility: ReferenceDto,
+        @SerialName("dc_value")
+        val difficulty: Int,
+        @SerialName("success_type")
+        val success: String
+    ) {
+        override fun toString(): String {
+            return "Save DC $difficulty (${typeOfAbility.name}) for $success"
+        }
+    }
+
+    @Serializable
+    data class UsageDto(
+        val type: String,
+        val dice: String,
+        val min_value: Int,
     )
 
     @Serializable
@@ -87,8 +162,24 @@ data class MonsterDto(
 
     @Serializable
     data class DamageDto(
-        val damage_type: ReferenceDto,
-        val damage_dice: String
+        val choose: Int? = null,
+        val type: String? = null,
+        val from: OptionSet<DamageOption>? = null,
+        @SerialName("damage_type")
+        val damageType: ReferenceDto? = null,
+        @SerialName("damage_dice")
+        val damageDice: String? = null
+    )
+
+    @Serializable
+    data class DamageOption(
+        @SerialName("option_type")
+        val type: String,
+        @SerialName("damage_type")
+        val damageType: ReferenceDto,
+        @SerialName("damage_dice")
+        val damageDice: String,
+        val notes: String
     )
 }
 

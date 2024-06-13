@@ -8,4 +8,17 @@
     <string name="menu_class">Class</string>
     <string name="menu_skill">Skills</string>
     <string name="menu_equipment">Equipments</string>
+
+    <string name="monster_armor_class">Armor Class</string>
+    <string name="monster_hit_points">Hit Points</string>
+    <string name="monster_speed">Speed</string>
+    <string name="monster_damage_immunities">Damage Immunities</string>
+    <string name="monster_damage_vulnerabilities">Damage Vulnerabilities</string>
+    <string name="monster_condition_immunities">Condition Immunities</string>
+    <string name="monster_damage_resistances">Damage Resistances</string>
+    <string name="monster_senses">Senses</string>
+    <string name="monster_languages">Languages</string>
+    <string name="monster_actions">Actions</string>">
+    <string name="monster_challenge_rating">Challenge</string>
+
 </resources>

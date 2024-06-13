@@ -37,7 +37,7 @@ import org.koin.compose.koinInject
 import ui.composable.DropDownTextField
 import ui.darkBlue
 import ui.lightGray
-import ui.mediumBoldWhite
+import ui.MediumBold
 
 class CharacterCreationScreen() : Screen {
     @Composable
@@ -135,7 +135,7 @@ class CharacterCreationScreen() : Screen {
                 }
                 Text(
                     text = "$label : $value",
-                    style = mediumBoldWhite,
+                    style = MediumBold,
                     modifier = Modifier.align(Alignment.Center)
                 )
                 IconButton(

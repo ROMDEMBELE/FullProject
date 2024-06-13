@@ -15,6 +15,7 @@ enum class Ability(val id: String, val fullName: String) {
 
         fun Int.getModifier(): Int {
             return when (this) {
+                in 0..1 -> -5
                 in 2..3 -> -4
                 in 4..5 -> -3
                 in 6..7 -> -2

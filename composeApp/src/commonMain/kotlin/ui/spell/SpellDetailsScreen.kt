@@ -51,12 +51,12 @@ import org.dembeyo.shared.resources.magic
 import org.dembeyo.shared.resources.minus_circle
 import org.dembeyo.shared.resources.plus_circle
 import org.jetbrains.compose.resources.painterResource
+import ui.MediumBold
 import ui.clip
 import ui.darkBlue
 import ui.darkPrimary
 import ui.lightBlue
 import ui.lightGray
-import ui.mediumBoldWhite
 import ui.primary
 import ui.secondary
 import ui.spellDetailsText
@@ -174,7 +174,7 @@ class SpellDetailsScreen(private val spell: Spell) : Screen {
                         }
                         Text(
                             "Level " + spell.damageSlot.toList()[pagerState.currentPage].first.level,
-                            style = mediumBoldWhite.copy(color = secondary)
+                            style = MediumBold.copy(color = secondary)
                         )
                         IconButton(onClick = {
                             scope.launch {

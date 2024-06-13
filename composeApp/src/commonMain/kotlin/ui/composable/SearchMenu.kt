@@ -54,7 +54,7 @@ fun SearchMenu(
                 if (filterCounter > 0)
                     Badge(
                         backgroundColor = primary,
-                        contentColor = Color.White
+                        contentColor = Color.White,
                     ) { Text("$filterCounter") }
             }) {
                 IconButton(enabled = !favoritesEnabled, onClick = { filterExpended = !filterExpended }) {
@@ -63,13 +63,11 @@ fun SearchMenu(
                             Icon(
                                 Icons.Filled.KeyboardArrowUp, null,
                                 tint = darkPrimary,
-                                modifier = Modifier.padding(10.dp)
                             )
                         } else {
                             Icon(
                                 Icons.Filled.KeyboardArrowDown, null,
                                 tint = darkPrimary,
-                                modifier = Modifier.padding(10.dp)
                             )
                         }
                     }

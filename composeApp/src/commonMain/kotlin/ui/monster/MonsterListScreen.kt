@@ -57,7 +57,7 @@ import ui.composable.SearchMenu
 import ui.darkBlue
 import ui.darkGray
 import ui.item
-import ui.mediumBoldWhite
+import ui.MediumBold
 import ui.primary
 import ui.secondary
 
@@ -152,7 +152,7 @@ class MonsterListScreen() : Screen {
                                             .border(2.dp, darkBlue, CutCornerShape(8.dp))
                                             .fillMaxWidth()
                                             .padding(8.dp),
-                                        style = mediumBoldWhite.copy(color = secondary)
+                                        style = MediumBold.copy(color = secondary)
                                     )
                                 }
                             }

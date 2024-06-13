@@ -25,7 +25,7 @@ data class Monster(
     val damageResistances: List<String> = emptyList(),
     val damageImmunities: List<String> = emptyList(),
     val conditionImmunities: List<String> = emptyList(),
-    val senses: List<String> = emptyList(),
+    val senses: String? = null,
     val passivePerception: Int? = null,
     val languages: String? = null,
     val proficiencyBonus: Int? = null,
@@ -35,16 +35,50 @@ data class Monster(
     val image: String? = null,
     val legendaryActions: List<Action> = emptyList()
 ) {
+
     data class SpecialAbility(
         val name: String,
         val desc: String
     )
 
-    data class Action(
-        val name: String,
-        val desc: String,
-        val damageType: String,
-        val damageDice: String
+    abstract class Action {
+        abstract val name: String
+        abstract val desc: String
+    }
+
+    data class MultiAttackAction(
+        override val name: String,
+        override val desc: String,
+        val attacks: List<AttackAction>
+    ) : Action()
+
+    data class AttackAction(
+        override val name: String,
+        override val desc: String,
+        val damage: List<Damage>,
+        val bonus: Int,
+    ) : Action()
+
+    /**
+     * Attack with range and Saving Throw of Dive
+     */
+    data class PowerAction(
+        override val name: String,
+        override val desc: String,
+        val damage: List<Damage>,
+        val recharge: String,
+        val save: String,
+    ) : Action()
+
+    data class SimpleAction(
+        override val name: String,
+        override val desc: String,
+    ) : Action()
+
+    data class Damage(
+        val type: String,
+        val dice: String,
+        val notes: String? = null,
     )
 }
 

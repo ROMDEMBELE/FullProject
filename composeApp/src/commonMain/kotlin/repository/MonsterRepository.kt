@@ -2,6 +2,7 @@ package repository
 
 import data.api.DndApi
 import data.database.SqlDatabase
+import data.dto.MonsterDto
 import domain.Alignment
 import domain.Challenge
 import domain.CreatureSize
@@ -48,9 +49,9 @@ class MonsterRepository(private val dndApi: DndApi, private val database: SqlDat
                 size = CreatureSize.fromString(dto.size.toString()),
                 type = CreatureType.fromString(dto.type.toString()),
                 alignment = Alignment.fromString(dto.alignment.toString()),
-                armorClass = dto.armor_class?.first()?.let { "${it.value} (${it.type})" },
-                hitPoints = dto.hit_points,
-                hitPointsRoll = dto.hit_points_roll,
+                armorClass = dto.armorClass?.first()?.toString(),
+                hitPoints = dto.hitPoints,
+                hitPointsRoll = dto.hitPointsRoll,
                 walkSpeed = dto.speed?.walk?.dropLast(4)?.toInt(),
                 flySpeed = dto.speed?.fly?.dropLast(4)?.toInt(),
                 swimSpeed = dto.speed?.walk?.dropLast(4)?.toInt(),
@@ -60,21 +61,68 @@ class MonsterRepository(private val dndApi: DndApi, private val database: SqlDat
                 intelligence = dto.intelligence,
                 wisdom = dto.wisdom,
                 charisma = dto.charisma,
-                proficiencies = dto.proficiencies.orEmpty()
-                    .map { it.proficiency.name + "(${it.value})" },
-                damageVulnerabilities = dto.damage_vulnerabilities.orEmpty(),
-                damageResistances = dto.damage_resistances.orEmpty(),
-                damageImmunities = dto.damage_immunities.orEmpty(),
-                conditionImmunities = dto.condition_immunities.orEmpty().map { it.name },
-                //senses = dto.senses.orEmpty().map { it.name },
+                proficiencies = dto.proficiencies.orEmpty().map { "${it.proficiency.name} ${it.value})" },
+                damageVulnerabilities = dto.damageVulnerabilities.orEmpty(),
+                damageResistances = dto.damageResistances.orEmpty(),
+                damageImmunities = dto.damageImmunities.orEmpty(),
+                conditionImmunities = dto.conditionImmunities.orEmpty().map { it.name },
+                senses = dto.senses?.toString(),
                 languages = dto.languages,
-                challenge = Challenge.fromDouble(dto.challenge_rating ?: 0.0),
-                proficiencyBonus = dto.proficiency_bonus,
+                challenge = Challenge.fromDouble(dto.challengeRating ?: 0.0),
+                proficiencyBonus = dto.proficiencyBonus,
                 xp = dto.xp,
                 image = dto.image,
-                //specialAbilities = dto.specialAbilities.map { it.toDomainModel() },
-                //actions = dto.actions.map { it.toDomainModel() },
+                specialAbilities = dto.specialAbilities.orEmpty()
+                    .map { Monster.SpecialAbility(it.name, it.desc) },
+                actions = dto.actions.orEmpty().map { it.toDomainModel() },
                 //legendaryActions = dto.legendaryActions.map { it.toDomainModel() }
+            )
+        }
+    }
+
+    private fun getListOfDamageFromDto(list: List<MonsterDto.DamageDto>): List<Monster.Damage> {
+        return list.flatMap { dmg ->
+            when {
+                dmg.damageDice != null && dmg.damageType != null -> listOf(Monster.Damage(dmg.damageType.name, dmg.damageDice))
+                dmg.from != null -> dmg.from.options.map {
+                    Monster.Damage(it.damageType.name, it.damageDice, it.notes)
+                }
+                else -> emptyList()
+            }
+        }
+    }
+
+    private fun MonsterDto.ActionDto.toDomainModel(): Monster.Action {
+        if (multiAttackType == "action_options") {
+            return Monster.SimpleAction(
+                name = name,
+                desc = desc,
+            )
+        } else if (damage.isNullOrEmpty()) {
+            return Monster.SimpleAction(
+                name = name,
+                desc = desc,
+            )
+        } else if (attackBonus == null) {
+            // Damage Parsing
+            return Monster.PowerAction(
+                name = name,
+                desc = desc,
+                save = dc?.toString().toString(),
+                recharge = buildString {
+                    append(usage?.type)
+                    append(" : ")
+                    append(usage?.min_value)
+                    append('(' + usage?.dice.toString() + ')')
+                },
+                damage = getListOfDamageFromDto(damage)
+            )
+        } else {
+            return Monster.AttackAction(
+                name = name,
+                bonus = attackBonus,
+                desc = desc,
+                damage = getListOfDamageFromDto(damage)
             )
         }
     }

@@ -25,9 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -115,7 +118,7 @@ class MenuScreen : Screen {
                     null,
                     modifier = Modifier.fillMaxWidth()
                         .padding(16.dp)
-                        .alpha(0.3f)
+                        .alpha(0.6f)
                         .aspectRatio(1f)
                         .align(Alignment.Center)
                         .drawWithContent {
@@ -134,7 +137,14 @@ class MenuScreen : Screen {
                     textAlign = TextAlign.Center,
                     fontSize = 35.sp,
                     lineHeight = 34.sp,
-                    fontFamily = FontFamily(Font(Res.font.ancient))
+                    fontFamily = FontFamily(Font(Res.font.ancient)),
+                    style = TextStyle(
+                        shadow = Shadow(
+                            color = secondary,
+                            offset = Offset(5f, 5f),
+                            blurRadius = 12f
+                        )
+                    )
                 )
 
             }
