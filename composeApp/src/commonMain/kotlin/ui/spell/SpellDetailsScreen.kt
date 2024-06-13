@@ -38,11 +38,11 @@ import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import domain.Level
 import domain.MagicSchool
 import domain.Spell
-import fullproject.composeapp.generated.resources.Res
-import fullproject.composeapp.generated.resources.magic
-import fullproject.composeapp.generated.resources.minus_circle
-import fullproject.composeapp.generated.resources.plus_circle
 import kotlinx.coroutines.launch
+import org.dembeyo.shared.resources.Res
+import org.dembeyo.shared.resources.magic
+import org.dembeyo.shared.resources.minus_circle
+import org.dembeyo.shared.resources.plus_circle
 import org.jetbrains.compose.resources.painterResource
 import ui.clip
 import ui.darkBlue

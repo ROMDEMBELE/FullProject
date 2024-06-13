@@ -4,7 +4,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import domain.Level
-import domain.MagicSchool
 import domain.Spell
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,16 +38,6 @@ class SpellScreenViewModel(private val spellRepository: SpellRepository) : ViewM
         refreshUiState()
     }
 
-    fun filterByMagicSchool(filter: MagicSchool, enable: Boolean) {
-        _uiState.update {
-            val updatedList = it.filterByMagicSchool.toMutableList().apply {
-                if (enable) add(filter) else remove(filter)
-            }
-            it.copy(filterByMagicSchool = updatedList)
-        }
-        refreshUiState()
-    }
-
     fun filterByText(textFieldValue: TextFieldValue) {
         _uiState.update {
             it.copy(textField = textFieldValue)
@@ -58,14 +47,12 @@ class SpellScreenViewModel(private val spellRepository: SpellRepository) : ViewM
 
     private fun refreshUiState() {
         viewModelScope.launch {
-            val school = _uiState.value.filterByMagicSchool
             val level = _uiState.value.filterByLevel
             val text = _uiState.value.textField.text
             spellRepository.getSpells().collectLatest { list ->
                 val favorites = list.filter { spell -> spell.isFavorite }
 
                 val spellsByLevel = list.asSequence().sortedBy { spell -> spell.level }
-                    .filter { spell -> school.isEmpty() || school.contains(spell.school) }
                     .filter { spell -> level.isEmpty() || level.contains(spell.level) }
                     .filter { spell -> spell.name.contains(text, true) }
                     .groupBy { spell -> spell.level }

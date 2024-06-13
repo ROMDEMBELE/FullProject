@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -49,11 +50,10 @@ import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import domain.Level
-import domain.MagicSchool
 import domain.Spell
-import fullproject.composeapp.generated.resources.Res
-import fullproject.composeapp.generated.resources.magic
 import kotlinx.coroutines.launch
+import org.dembeyo.shared.resources.Res
+import org.dembeyo.shared.resources.magic
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import ui.composable.SearchMenu
@@ -115,26 +115,6 @@ class SpellListScreen() : Screen {
                             )
                         }
                     }
-                    items(MagicSchool.entries) { school ->
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.height(30.dp)
-                        ) {
-                            Checkbox(
-                                colors = CheckboxDefaults.colors(primary),
-                                checked = uiState.filterByMagicSchool.contains(school),
-                                onCheckedChange = { checked ->
-                                    viewModel.filterByMagicSchool(school, checked)
-                                })
-                            Text(
-                                school.displayName,
-                                Modifier.weight(1f),
-                                style = smallBold
-                            )
-
-                        }
-
-                    }
                 }
             }
             // Search Bar
@@ -168,12 +148,13 @@ class SpellListScreen() : Screen {
                     ) {
                         uiState.spellsByLevel.forEach { (level, spells) ->
                             stickyHeader(level) {
-                                Column(Modifier.padding(vertical = 8.dp).alpha(0.7f)) {
+                                Column(Modifier.padding(vertical = 8.dp).alpha(0.9f)) {
                                     Text(
                                         text = "Level ${level.level}",
                                         modifier = Modifier.clip(CutCornerShape(8.dp))
                                             .background(level.color)
                                             .fillMaxWidth()
+                                            .border(2.dp, darkBlue, CutCornerShape(8.dp))
                                             .padding(8.dp),
                                         style = mediumBoldWhite.copy(color = darkBlue)
                                     )

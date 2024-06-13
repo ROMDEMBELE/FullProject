@@ -44,9 +44,9 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import domain.Challenge
 import domain.Monster
-import fullproject.composeapp.generated.resources.Res
-import fullproject.composeapp.generated.resources.monster
 import kotlinx.coroutines.launch
+import org.dembeyo.shared.resources.Res
+import org.dembeyo.shared.resources.monster
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import ui.composable.DropDownTextField
@@ -83,32 +83,33 @@ class MonsterListScreen() : Screen {
                 searchTextFieldValue = uiState.textField,
                 onTextChange = { viewModel.filterByText(it) },
                 favoriteCounter = uiState.favoriteCounter,
-                onFavoritesClick = { enabled -> favorite = enabled }
-            ) {
-                Column(
-                    modifier = Modifier.padding(12.dp),
-                ) {
-                    DropDownTextField(
-                        label = "Min Challenge",
-                        value = uiState.minChallenge,
-                        list = Challenge.entries,
-                        modifier = Modifier.weight(.5f)
+                onFavoritesClick = { enabled -> favorite = enabled },
+                filterContent = {
+                    Column(
+                        modifier = Modifier.padding(12.dp),
                     ) {
-                        viewModel.setMinChallenge(it)
-                    }
+                        DropDownTextField(
+                            label = "Min Challenge",
+                            value = uiState.minChallenge,
+                            list = Challenge.entries,
+                            modifier = Modifier.weight(.5f)
+                        ) {
+                            viewModel.setMinChallenge(it)
+                        }
 
-                    Spacer(Modifier.height(12.dp))
+                        Spacer(Modifier.height(12.dp))
 
-                    DropDownTextField(
-                        label = "Max Challenge",
-                        value = uiState.maxChallenge,
-                        list = Challenge.entries,
-                        modifier = Modifier.weight(.5f)
-                    ) {
-                        viewModel.setMaxChallenge(it)
+                        DropDownTextField(
+                            label = "Max Challenge",
+                            value = uiState.maxChallenge,
+                            list = Challenge.entries,
+                            modifier = Modifier.weight(.5f)
+                        ) {
+                            viewModel.setMaxChallenge(it)
+                        }
                     }
-                }
-            }
+                },
+            )
 
             AnimatedContent(favorite) { favorite ->
                 if (favorite) {
@@ -155,9 +156,14 @@ class MonsterListScreen() : Screen {
                                     monster = monster,
                                     onClick = {
                                         scope.launch {
-                                            viewModel.getMonster(monster.index)?.let { completeMonster ->
-                                                navigator.push(MonsterDetailScreen(completeMonster))
-                                            }
+                                            viewModel.getMonster(monster.index)
+                                                ?.let { completeMonster ->
+                                                    navigator.push(
+                                                        MonsterDetailScreen(
+                                                            completeMonster
+                                                        )
+                                                    )
+                                                }
                                         }
                                     },
                                     onFavoriteClick = {

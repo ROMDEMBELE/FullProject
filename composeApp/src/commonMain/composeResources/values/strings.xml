@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">My Dungeon</string>
-    <string name="menu_screen_title">My Dungeon &amp; Dragon</string>
+    <string name="menu_screen_title">Dungeon &amp; Dragon</string>
     <string name="menu_home">Home</string>
     <string name="menu_spell">Spells</string>
     <string name="menu_monster">Monsters</string>

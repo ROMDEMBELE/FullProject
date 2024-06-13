@@ -8,13 +8,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 
 val primary = Color(205, 97, 85)
-val lightPrimary = Color(254, 25, 88)
 val darkPrimary = Color(123, 36, 28)
 val darkGray = Color(93, 109, 126)
-val darkBlue = Color(46, 64, 83)
-val lightBlue = Color(105, 127, 170)
+val darkBlue = Color(28, 43, 98)
+val lightBlue = Color(95, 99, 175)
 val lightGray = Color(174, 182, 191)
 val brown = Color(0xFF922610)
+val secondary = Color(255, 248, 219)
 
 val mediumBoldWhite = TextStyle(
     color = Color.White,

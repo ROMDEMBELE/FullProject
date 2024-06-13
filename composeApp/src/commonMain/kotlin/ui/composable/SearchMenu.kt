@@ -42,16 +42,14 @@ fun SearchMenu(
     favoriteCounter: Int = 0,
     onFavoritesClick: (enabled: Boolean) -> Unit,
     filterCounter: Int = 0,
-    filterContent: @Composable () -> Unit
+    filterContent: @Composable () -> Unit,
 ) {
     // Search Bar
     var filterExpended by remember { mutableStateOf(false) }
     var favoritesEnabled by remember { mutableStateOf(false) }
 
     Column(Modifier.padding(8.dp)) {
-
         Row(verticalAlignment = Alignment.CenterVertically) {
-
             BadgedBox(badge = {
                 if (filterCounter > 0)
                     Badge(
@@ -59,8 +57,8 @@ fun SearchMenu(
                         contentColor = Color.White
                     ) { Text("$filterCounter") }
             }) {
-                IconButton({ filterExpended = !filterExpended }) {
-                    Crossfade(filterExpended) { extended ->
+                IconButton(enabled = !favoritesEnabled, onClick = { filterExpended = !filterExpended }) {
+                    Crossfade(filterExpended && !favoritesEnabled) { extended ->
                         if (extended) {
                             Icon(
                                 Icons.Filled.KeyboardArrowUp, null,
@@ -81,6 +79,7 @@ fun SearchMenu(
             TextField(
                 shape = RoundedCornerShape(30.dp),
                 value = searchTextFieldValue,
+                enabled = !favoritesEnabled,
                 label = { Text(searchTextPlaceholder) },
                 leadingIcon = { Icon(Icons.Filled.Search, null) },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -91,6 +90,7 @@ fun SearchMenu(
                     cursorColor = darkPrimary,
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent,
+                    disabledBorderColor = Color.Transparent,
                     focusedLabelColor = darkPrimary,
                     unfocusedLabelColor = darkPrimary,
                     placeholderColor = Color.Transparent
@@ -128,7 +128,7 @@ fun SearchMenu(
                 }
             }
         }
-        AnimatedVisibility(filterExpended) {
+        AnimatedVisibility(filterExpended && !favoritesEnabled) {
             filterContent()
         }
     }

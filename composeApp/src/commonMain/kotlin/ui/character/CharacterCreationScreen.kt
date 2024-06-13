@@ -30,10 +30,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import domain.CharacterClass
-import fullproject.composeapp.generated.resources.Res
-import fullproject.composeapp.generated.resources.minus_circle
-import fullproject.composeapp.generated.resources.plus_circle
 import kotlinx.coroutines.launch
+import org.dembeyo.shared.resources.*
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import ui.composable.DropDownTextField

@@ -82,6 +82,12 @@ kotlin {
     }
 }
 
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "org.dembeyo.shared.resources"
+    generateResClass = always
+}
+
 android {
     namespace = "org.dembeyo.shared"
     compileSdk = libs.versions.android.compileSdk.get().toInt()

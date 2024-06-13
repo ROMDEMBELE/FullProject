@@ -23,7 +23,7 @@ import ui.MenuScreen.MenuItem.MAGIC_SPELLS
 import ui.MenuScreen.MenuItem.MONSTERS
 import ui.MenuScreen.MenuItem.SKILL
 import ui.character.CharacterCreationScreen
-import ui.lightGray
+import ui.darkBlue
 import ui.monster.MonsterListScreen
 import ui.spell.SpellListScreen
 
@@ -48,8 +48,8 @@ fun MenuDrawer(navigator: Navigator, onDismiss: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(8.dp).height(40.dp),
             ) {
-                Text(stringResource(menu.title), modifier = Modifier.weight(1f), color = lightGray)
-                Image(painterResource(menu.icon), null, colorFilter = ColorFilter.tint(lightGray))
+                Text(stringResource(menu.title), modifier = Modifier.weight(1f), color = darkBlue)
+                Image(painterResource(menu.icon), null, colorFilter = ColorFilter.tint(darkBlue))
             }
         }
     }
