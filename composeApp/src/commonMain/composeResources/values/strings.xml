@@ -21,6 +21,10 @@
     <string name="monster_actions">Actions</string>">
     <string name="monster_challenge_rating">Challenge</string>
     <string name="monster_proficiencies">Proficiencies</string>
-    <string name="monster_saving_throws">Saving Throws</string>">
+    <string name="monster_saving_throws">Saving Throws</string>
+    <string name="monster_senses_dark_vision">Darkvision</string>
+    <string name="monster_senses_blind_sight">Blindsight</string>
+    <string name="monster_senses_passive_perception">Passive perception</string>
+    <string name="monster_senses_true_sight">Truesight</string>
 
 </resources>

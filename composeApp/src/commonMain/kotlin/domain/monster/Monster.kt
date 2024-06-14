@@ -1,7 +1,7 @@
 package domain.monster
 
+import CreatureAlignment
 import domain.Ability
-import domain.Alignment
 import domain.Level
 
 open class Monster(
@@ -17,7 +17,7 @@ open class Monster(
         override val isFavorite: Boolean,
         val size: CreatureSize,
         val type: CreatureType,
-        val alignment: Alignment,
+        val alignment: CreatureAlignment,
         val armors: Map<String, Int>,
         val hitPoints: Int,
         val hitPointsRoll: String,
@@ -43,7 +43,9 @@ open class Monster(
         val value: Int,
         val ability: Ability,
         val success: String? = null
-    )
+    ) {
+        override fun toString(): String = "${ability.fullName} saving throw DD $value for $success"
+    }
 
     data class SpellCastingSpell(
         val level: Level,
@@ -83,7 +85,9 @@ open class Monster(
         override val components: List<String>,
         override val spellByLevel: Map<Level, List<SpellCastingSpell>>,
         val level: Level,
+        val ability: Ability,
         val modifier: Int,
+        val dc: Int,
         val school: String,
         val slots: Map<Level, Int>,
     ) : InnateSpellCastingAbility(name, desc, savingThrow, components, spellByLevel)

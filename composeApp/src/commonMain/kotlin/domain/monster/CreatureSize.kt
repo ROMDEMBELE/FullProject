@@ -4,22 +4,22 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class CreatureSize {
+enum class CreatureSize(val fullName: String) {
     @SerialName("Tiny")
-    TINY,
+    TINY("Tiny"),
 
     @SerialName("Small")
-    SMALL,
+    SMALL("Small"),
 
     @SerialName("Medium")
-    MEDIUM,
+    MEDIUM("Medium"),
 
     @SerialName("Large")
-    LARGE,
+    LARGE("Large"),
 
     @SerialName("Huge")
-    HUGE,
+    HUGE("Huge"),
 
     @SerialName("Gargantuan")
-    GARGANTUAN;
+    GARGANTUAN("Gargantuan");
 }

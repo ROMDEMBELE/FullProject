@@ -1,7 +1,7 @@
 package data.dto.monster
 
+import CreatureAlignment
 import data.dto.ReferenceDto
-import domain.Alignment
 import domain.monster.CreatureMovement
 import domain.monster.CreatureSense
 import domain.monster.CreatureSize
@@ -16,7 +16,7 @@ data class MonsterDto(
     val url: String,
     val size: CreatureSize,
     val type: CreatureType,
-    val alignment: Alignment,
+    val alignment: CreatureAlignment,
     @SerialName("armor_class")
     val armorClass: List<ArmorDto>,
     @SerialName("hit_points")

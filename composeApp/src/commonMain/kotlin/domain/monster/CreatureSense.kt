@@ -2,18 +2,24 @@ package domain.monster
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.dembeyo.shared.resources.Res
+import org.dembeyo.shared.resources.monster_senses_blind_sight
+import org.dembeyo.shared.resources.monster_senses_dark_vision
+import org.dembeyo.shared.resources.monster_senses_passive_perception
+import org.dembeyo.shared.resources.monster_senses_true_sight
+import org.jetbrains.compose.resources.StringResource
 
 @Serializable
-enum class CreatureSense {
+enum class CreatureSense(val fullName: StringResource) {
     @SerialName("darkvision")
-    DARKVISION,
+    DARKVISION(Res.string.monster_senses_dark_vision),
 
     @SerialName("blindsight")
-    BLINDSIGHT,
+    BLINDSIGHT(Res.string.monster_senses_blind_sight),
 
     @SerialName("truesight")
-    TRUESIGHT,
+    TRUESIGHT(Res.string.monster_senses_true_sight),
 
     @SerialName("passive_perception")
-    PASSIVE_PERCEPTION
+    PASSIVE_PERCEPTION(Res.string.monster_senses_passive_perception)
 }

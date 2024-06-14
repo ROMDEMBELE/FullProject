@@ -116,6 +116,8 @@ class MonsterRepository(private val dndApi: DndApi, private val database: SqlDat
                                     level
                                 )
                             },
+                            dc = details.dc,
+                            ability = Ability.valueOf(details.ability.name),
                             spellByLevel = details.spells.map { sp ->
                                 SpellCastingSpell(
                                     level = Level.fromInt(sp.level),

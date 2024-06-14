@@ -6,12 +6,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,6 +49,7 @@ import org.dembeyo.shared.resources.monster_saving_throws
 import org.dembeyo.shared.resources.monster_senses
 import org.dembeyo.shared.resources.monster_speed
 import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ui.MediumBold
 import ui.SmallBold
@@ -88,11 +92,11 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
                 Text(text = monster.name, style = monsterTitle)
                 // Size, Type of Creature, Alignment
                 val subtitle = buildString {
-                    append(monster.size.name.capitalize(Locale.current))
+                    append(monster.size.fullName)
                     append(" ")
-                    append(monster.type.name.capitalize(Locale.current))
+                    append(monster.type.fullName)
                     append(", ")
-                    append(monster.alignment.name.capitalize(Locale.current))
+                    append(monster.alignment.fullName)
                 }
                 Text(
                     text = subtitle,
@@ -102,7 +106,8 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
 
                 TaperedRule()
 
-                PropertyLine(Res.string.monster_armor_class, monster.armors.toString())
+                val armorClass = monster.armors.entries.joinToString { "${it.value}(${it.key})" }
+                PropertyLine(Res.string.monster_armor_class, armorClass)
 
                 val life: String = buildString {
                     append(monster.hitPoints)
@@ -112,10 +117,35 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
                 }
                 PropertyLine(Res.string.monster_hit_points, life)
 
-                val speed = monster.movements.entries.joinToString { (movement, value) ->
-                    movement.name.capitalize(Locale.current) + value
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(vertical = 2.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(secondary),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Text(
+                        text = stringResource(Res.string.monster_speed),
+                        style = monsterPropertyTitle,
+                        modifier = Modifier.padding(4.dp).weight(1f)
+                    )
+                    monster.movements.entries.forEach { (movement, value) ->
+                        Icon(
+                            modifier = Modifier.size(20.dp).aspectRatio(1f).padding(2.dp),
+                            painter = painterResource(movement.icon),
+                            contentDescription = null,
+                            tint = darkPrimary
+                        )
+                        Text(
+                            text = "${movement.fullName} $value",
+                            modifier = Modifier.padding(4.dp),
+                            textAlign = TextAlign.End,
+                            style = monsterPropertyText,
+                        )
+                    }
                 }
-                PropertyLine(Res.string.monster_speed, speed)
 
                 TaperedRule()
 
@@ -125,7 +155,7 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     monster.abilities.entries.forEach { (ability, value) ->
-                        AbilityScope(ability.name, value, value.getAbilityBonus())
+                        AbilityScore(ability.name, value, value.getAbilityBonus())
                     }
                 }
 
@@ -156,10 +186,13 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
                             monster.conditionImmunities.joinToString()
                         )
                     }
-                    PropertyLine(Res.string.monster_senses, monster.senses.toString())
+
+                    val sensesText =
+                        monster.senses.entries.map { (key, value) -> "${stringResource(key.fullName)} $value" }
+                    PropertyLine(Res.string.monster_senses, sensesText.joinToString())
 
                     if (monster.languages.isNotEmpty())
-                        PropertyLine(Res.string.monster_languages, monster.languages.toString())
+                        PropertyLine(Res.string.monster_languages, monster.languages)
 
                     PropertyLine(
                         Res.string.monster_challenge_rating,
@@ -182,7 +215,11 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
 
                 if (monster.specialAbilities.isNotEmpty()) {
                     monster.specialAbilities.forEach {
-                        PropertyLine(it.name, it.desc)
+                        when (it) {
+                            is Monster.SpellCastingAbility -> SpellCastingPropertyLine(monster.name, it)
+                            is Monster.InnateSpellCastingAbility -> InnateSpellCastingPropertyLine(monster.name, it)
+                            else -> PropertyLine(it.name, it.desc)
+                        }
                     }
                     TaperedRule()
                 }
@@ -208,7 +245,7 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
     }
 
     @Composable
-    fun RowScope.AbilityScope(name: String, value: Int, bonus: Int) {
+    fun RowScope.AbilityScore(name: String, value: Int, bonus: Int) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -248,7 +285,8 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
                 .padding(vertical = 2.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .background(secondary),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             val text: String = when (title) {
                 is StringResource -> stringResource(title)
@@ -270,17 +308,128 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
     }
 
     @Composable
+    fun SpellCastingPropertyLine(monsterName: String, ability: Monster.SpellCastingAbility) {
+        Column(
+            modifier = Modifier.fillMaxWidth()
+                .padding(vertical = 2.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(secondary),
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = ability.name,
+                    style = monsterPropertyTitle,
+                    modifier = Modifier.padding(4.dp)
+                )
+                val spellCastingDescription = buildString {
+                    append("The $monsterName is an ${ability.level.level}th-level SpellCaster")
+                    append(" with ${ability.ability.fullName} spell casting ability")
+                    append(" (spell save DC ${ability.dc}, +${ability.modifier} to hit with spell attacks)")
+                }
+                Text(
+                    text = spellCastingDescription,
+                    modifier = Modifier.padding(4.dp),
+                    textAlign = TextAlign.End,
+                    style = monsterPropertyText,
+                )
+
+            }
+            ability.slots.forEach { (level, slot) ->
+                val txt = buildString {
+                    append("Lv${level.level} ($slot slots) : ")
+                    append(ability.spellByLevel[level]?.joinToString { it.name })
+                }
+                Text(
+                    text = txt,
+                    color = secondary,
+                    lineHeight = 14.sp,
+                    fontSize = 10.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(darkGray)
+                        .padding(horizontal = 6.dp, vertical = 1.dp)
+                )
+            }
+        }
+    }
+
+    @Composable
+    fun InnateSpellCastingPropertyLine(monsterName: String, ability: Monster.InnateSpellCastingAbility) {
+        Column(
+            modifier = Modifier.fillMaxWidth()
+                .padding(vertical = 2.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(secondary),
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = ability.name,
+                    style = monsterPropertyTitle,
+                    modifier = Modifier.padding(4.dp)
+                )
+                val spellCastingDescription = buildString {
+                    append("The $monsterName spell casting ability ${ability.savingThrow.ability.fullName}")
+                    append(" (spell save DC ${ability.savingThrow.value})")
+                }
+                Text(
+                    text = spellCastingDescription,
+                    modifier = Modifier.padding(4.dp),
+                    textAlign = TextAlign.End,
+                    style = monsterPropertyText,
+                )
+
+            }
+            ability.spellByLevel
+                .flatMap { it.value }
+                .groupBy { it.usage }
+                .forEach { (usage, spell) ->
+                    val txt = buildString {
+                        append(usage?.capitalize(Locale.current))
+                        append(" : ")
+                        append(spell.joinToString { it.name })
+                    }
+                    Text(
+                        text = txt,
+                        color = secondary,
+                        lineHeight = 14.sp,
+                        fontSize = 10.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(darkGray)
+                            .padding(horizontal = 6.dp, vertical = 1.dp)
+                    )
+                }
+        }
+    }
+
+    @Composable
     fun ActionItem(action: Monster.Action) {
         val expended by remember { mutableStateOf(true) }
-        val title = remember(action) {
-            buildString {
-                append(action.name)
-                if (action is Monster.SavingThrowAction) {
-                    append(" - ${action.usage}")
+
+        val title: String = remember(action) {
+            when (action) {
+                is Monster.MultiAttackAction -> {
+                    buildString {
+                        append(action.name)
+                        append(" ")
+                        append("(${action.attacks.distinct().joinToString()})")
+                    }
+                }
+
+                else -> {
+                    buildString {
+                        append(action.name)
+                        if (!action.usage.isNullOrEmpty()) append("(${action.usage})")
+                    }
                 }
             }
         }
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -305,42 +454,44 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
                 )
             }
 
-            if (action is Monster.SavingThrowAction) {
-                val damageText = remember(action.damage) {
-                    buildString {
-                        action.damage.forEach { damage ->
-                            if (!damage.notes.isNullOrEmpty()) append("${damage.notes} : ")
-                            append("(${damage.dice} ${damage.type}) ")
+            when (action) {
+                is Monster.SavingThrowAction -> {
+                    val damageText = remember(action.damage) {
+                        action.damage.joinToString { damage ->
+                            when {
+                                !damage.notes.isNullOrEmpty() -> "${damage.notes} : (${damage.dice} ${damage.type})"
+                                else -> "${damage.dice} ${damage.type}"
+                            }
                         }
                     }
+                    Text(
+                        text = "${action.savingThrow} of $damageText",
+                        style = SmallBold,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(primary)
+                            .padding(4.dp)
+                    )
                 }
-                Text(
-                    text = "${action.savingThrow} of $damageText",
-                    style = SmallBold,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(primary)
-                        .padding(4.dp)
-                )
-            }
 
-            if (action is Monster.AttackAction) {
-                val damageText = remember(action.damage) {
-                    buildString {
-                        action.damage.forEach { damage ->
-                            if (!damage.notes.isNullOrEmpty()) append("${damage.notes} : ")
-                            append("(${damage.dice} ${damage.type}) ")
+                is Monster.AttackAction -> {
+                    val damageText = remember(action.damage) {
+                        action.damage.joinToString { damage ->
+                            when {
+                                !damage.notes.isNullOrEmpty() -> "${damage.notes} : (${damage.dice} ${damage.type})"
+                                else -> "${damage.dice} ${damage.type}"
+                            }
                         }
                     }
+                    Text(
+                        text = "+${action.attackBonus} $damageText",
+                        style = SmallBold,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(darkGray)
+                            .padding(4.dp)
+                    )
                 }
-                Text(
-                    text = "+${action.attackBonus} $damageText",
-                    style = SmallBold,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(darkGray)
-                        .padding(4.dp)
-                )
             }
         }
     }
