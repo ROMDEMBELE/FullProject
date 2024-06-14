@@ -1,8 +1,8 @@
 package ui.monster
 
 import androidx.compose.ui.text.input.TextFieldValue
-import domain.Challenge
-import domain.Monster
+import domain.monster.Challenge
+import domain.monster.Monster
 
 data class MonsterListUiState(
     val monsterByChallenge: Map<Challenge, List<Monster>> = emptyMap(),

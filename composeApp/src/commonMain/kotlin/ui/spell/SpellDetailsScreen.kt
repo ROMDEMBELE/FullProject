@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
-import domain.Spell
+import domain.spell.Spell
 import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.magic
@@ -62,7 +62,7 @@ import ui.secondary
 import ui.spellDetailsText
 
 
-class SpellDetailsScreen(private val spell: Spell) : Screen {
+class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {
 
     override val key: ScreenKey
         get() = uniqueScreenKey
@@ -72,7 +72,7 @@ class SpellDetailsScreen(private val spell: Spell) : Screen {
     override fun Content() {
         val scope = rememberCoroutineScope()
         val pagerState = rememberPagerState(pageCount = { spell.damageSlot.size })
-        val gradient = Brush.linearGradient(
+        val screenBackgroundGradientBrush = Brush.linearGradient(
             listOf(
                 lightGray,
                 secondary,
@@ -82,14 +82,10 @@ class SpellDetailsScreen(private val spell: Spell) : Screen {
         Column {
             Box(
                 Modifier.fillMaxWidth()
-                    .background(gradient)
+                    .background(screenBackgroundGradientBrush)
                     .height(150.dp)
             ) {
-                if (spell.school != null) {
-                    TextClip(spell.school.displayName, spell.school.color, Alignment.TopStart)
-                }
-
-                val gradient = Brush.linearGradient(listOf(primary, darkPrimary))
+                TextClip(spell.school.displayName, spell.school.color, Alignment.TopStart)
 
                 Image(
                     painterResource(Res.drawable.magic),
@@ -99,7 +95,10 @@ class SpellDetailsScreen(private val spell: Spell) : Screen {
                         .alpha(0.2f)
                         .drawWithContent {
                             drawContent()
-                            drawRect(gradient, blendMode = BlendMode.SrcAtop)
+                            drawRect(
+                                Brush.linearGradient(listOf(primary, darkPrimary)),
+                                blendMode = BlendMode.SrcAtop
+                            )
                         }
                 )
 
@@ -137,10 +136,10 @@ class SpellDetailsScreen(private val spell: Spell) : Screen {
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(spell.range.toString(), style = spellDetailsText)
-                    Text(spell.duration.toString(), style = spellDetailsText)
-                    Text(spell.components.toString(), style = spellDetailsText)
-                    Text(spell.casting_time.toString(), style = spellDetailsText)
+                    Text(spell.range, style = spellDetailsText)
+                    Text(spell.duration, style = spellDetailsText)
+                    Text(spell.components, style = spellDetailsText)
+                    Text(spell.castingTime, style = spellDetailsText)
                 }
             }
 

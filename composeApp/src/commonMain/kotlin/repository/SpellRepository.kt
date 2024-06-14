@@ -3,8 +3,8 @@ package repository
 import data.api.DndApi
 import data.database.SqlDatabase
 import domain.Level
-import domain.MagicSchool
-import domain.Spell
+import domain.spell.MagicSchool
+import domain.spell.Spell
 import io.ktor.client.plugins.ServerResponseException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -51,39 +51,40 @@ class SpellRepository(private val spellApi: DndApi, private val dataBase: SqlDat
         }
     }
 
-    suspend fun getSpellByIndex(index: String): Spell? {
+    suspend fun getSpellByIndex(index: String): Spell.SpellDetails? {
         try {
             return spellApi.getSpellByIndex(index)?.let { dto ->
-                var fullDesc = dto.desc.orEmpty().joinToString()
-                fullDesc += dto.higher_level.orEmpty().joinToString()
-                val damageSlot: Map<Level, String> =
-                    if (dto.damage?.damage_at_character_level.orEmpty().isNotEmpty()) {
-                        dto.damage?.damage_at_character_level.orEmpty()
-                            .mapKeys { (key, _) -> Level.fromInt(key) }
-                    } else if (dto.damage?.damage_at_slot_level.orEmpty().isNotEmpty()) {
-                        dto.damage?.damage_at_slot_level.orEmpty()
-                            .mapKeys { (key, _) -> Level.fromInt(key) }
-                    } else emptyMap()
 
-                val isFavorite: Boolean = dataBase.getSpellById(index).firstOrNull()?.isFavorite == 1L
-                Spell(
+                val damageSlot = when {
+                    !dto.damage.damageAtCharacterLevel.isNullOrEmpty() -> dto.damage.damageAtCharacterLevel
+                    !dto.damage.damageAtSlotLevel.isNullOrEmpty() -> dto.damage.damageAtSlotLevel
+                    else -> emptyMap()
+                }.mapKeys { (key, _) -> Level.fromInt(key) }
+
+                val isFavorite: Boolean =
+                    dataBase.getSpellById(index).firstOrNull()?.isFavorite == 1L
+
+                val school = MagicSchool.fromIndex(dto.school.index)
+                    ?: throw IllegalArgumentException("Unknown school index")
+
+                Spell.SpellDetails(
                     index = dto.index,
                     name = dto.name,
                     level = Level.fromInt(dto.level),
                     isFavorite = isFavorite,
-                    text = fullDesc,
+                    text = dto.desc.joinToString() + dto.higherLevel.joinToString(),
                     range = dto.range,
-                    components = dto.components.orEmpty().joinToString(),
+                    components = dto.components.joinToString(),
                     material = dto.material,
                     ritual = dto.ritual,
                     duration = dto.duration,
                     concentration = dto.concentration,
-                    casting_time = dto.casting_time,
-                    attack_type = dto.attack_type,
-                    damageType = dto.damage?.damage_type?.name,
+                    castingTime = dto.castingTime,
+                    attackType = dto.attackType,
+                    damageType = dto.damage.damageType.name,
                     damageSlot = damageSlot,
-                    save = dto.dc?.let { "${it.dc_type.name}(${it.dc_success})" },
-                    school = MagicSchool.fromIndex(dto.school?.index.toString())
+                    save = dto.dc.let { "${it.dcType.name}(${it.dcSuccess})" },
+                    school = school
                 )
             }
         } catch (e: ServerResponseException) {

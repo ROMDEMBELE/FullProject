@@ -1,4 +1,4 @@
-package data.dto
+package data.dto.monster
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.PolymorphicSerializer

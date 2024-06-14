@@ -22,7 +22,7 @@ enum class Skill(val id: String, val displayName: String, val abilityScore: Abil
 
     companion object {
         fun fromId(id: String): Skill? {
-            return values().find { it.id == id }
+            return entries.find { it.id == id }
         }
     }
 }

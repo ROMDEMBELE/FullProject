@@ -1,4 +1,4 @@
-package domain
+package domain.spell
 
 import androidx.compose.ui.graphics.Color
 import kotlinx.serialization.Serializable
@@ -15,8 +15,6 @@ enum class MagicSchool(val index: String, val displayName: String, val color: Co
     TRANSMUTATION("transmutation", "Transmutation", Color(0xFF90EE90)); // Pastel Green
 
     companion object {
-        fun fromIndex(index: String): MagicSchool? {
-            return entries.find { it.index == index }
-        }
+        fun fromIndex(index: String) = entries.find { it.index == index }
     }
 }

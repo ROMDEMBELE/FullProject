@@ -1,4 +1,4 @@
-package domain
+package domain.monster
 
 import androidx.compose.ui.graphics.Color
 import kotlin.math.max

@@ -2,7 +2,7 @@ package ui.spell
 
 import androidx.compose.ui.text.input.TextFieldValue
 import domain.Level
-import domain.Spell
+import domain.spell.Spell
 
 data class SpellListUiState(
     val spellsByLevel: Map<Level, List<Spell>> = emptyMap(),

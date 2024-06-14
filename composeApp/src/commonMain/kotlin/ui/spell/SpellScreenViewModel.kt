@@ -4,7 +4,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import domain.Level
-import domain.Spell
+import domain.spell.Spell
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -21,7 +21,8 @@ class SpellScreenViewModel(private val spellRepository: SpellRepository) : ViewM
         refreshUiState()
     }
 
-    suspend fun getSpell(index: String): Spell? = spellRepository.getSpellByIndex(index)
+    suspend fun getSpell(index: String): Spell.SpellDetails? =
+        spellRepository.getSpellByIndex(index)
 
     fun toggleSpellIsFavorite(spell: Spell) {
         spellRepository.setSpellIsFavorite(spell.index, !spell.isFavorite)
@@ -50,7 +51,8 @@ class SpellScreenViewModel(private val spellRepository: SpellRepository) : ViewM
             val level = _uiState.value.filterByLevel
             val text = _uiState.value.textField.text
             spellRepository.getSpells().collectLatest { list ->
-                val favorites = list.filter { spell -> spell.isFavorite }.sortedBy { spell -> spell.level }
+                val favorites =
+                    list.filter { spell -> spell.isFavorite }.sortedBy { spell -> spell.level }
 
                 val spellsByLevel = list.asSequence().sortedBy { spell -> spell.level }
                     .filter { spell -> level.isEmpty() || level.contains(spell.level) }

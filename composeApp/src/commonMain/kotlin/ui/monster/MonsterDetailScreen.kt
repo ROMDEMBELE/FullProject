@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import domain.Ability.Companion.getAbilityBonus
-import domain.Monster
+import domain.monster.Monster
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.monster_actions
 import org.dembeyo.shared.resources.monster_armor_class
@@ -61,7 +61,7 @@ import ui.orange
 import ui.primary
 import ui.secondary
 
-class MonsterDetailScreen(private val monster: Monster) : Screen {
+class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen {
 
     @Composable
     override fun Content() {
@@ -88,11 +88,11 @@ class MonsterDetailScreen(private val monster: Monster) : Screen {
                 Text(text = monster.name, style = monsterTitle)
                 // Size, Type of Creature, Alignment
                 val subtitle = buildString {
-                    append(monster.size?.name?.capitalize(Locale.current))
+                    append(monster.size.name.capitalize(Locale.current))
                     append(" ")
-                    append(monster.type?.name?.capitalize(Locale.current))
+                    append(monster.type.name.capitalize(Locale.current))
                     append(", ")
-                    append(monster.alignment?.name?.capitalize(Locale.current))
+                    append(monster.alignment.name.capitalize(Locale.current))
                 }
                 Text(
                     text = subtitle,
@@ -112,7 +112,7 @@ class MonsterDetailScreen(private val monster: Monster) : Screen {
                 }
                 PropertyLine(Res.string.monster_hit_points, life)
 
-                val speed = monster.movements.orEmpty().entries.joinToString { (movement, value) ->
+                val speed = monster.movements.entries.joinToString { (movement, value) ->
                     movement.name.capitalize(Locale.current) + value
                 }
                 PropertyLine(Res.string.monster_speed, speed)
@@ -158,7 +158,7 @@ class MonsterDetailScreen(private val monster: Monster) : Screen {
                     }
                     PropertyLine(Res.string.monster_senses, monster.senses.toString())
 
-                    if (!monster.languages.isNullOrEmpty())
+                    if (monster.languages.isNotEmpty())
                         PropertyLine(Res.string.monster_languages, monster.languages.toString())
 
                     PropertyLine(
@@ -242,7 +242,7 @@ class MonsterDetailScreen(private val monster: Monster) : Screen {
     }
 
     @Composable
-    fun PropertyLine(title: String, value: String) {
+    fun <T> PropertyLine(title: T, value: String) {
         Row(
             modifier = Modifier.fillMaxWidth()
                 .padding(vertical = 2.dp)
@@ -250,31 +250,13 @@ class MonsterDetailScreen(private val monster: Monster) : Screen {
                 .background(secondary),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            val text: String = when (title) {
+                is StringResource -> stringResource(title)
+                is String -> title
+                else -> title.toString()
+            }
             Text(
-                text = title,
-                style = monsterPropertyTitle,
-                modifier = Modifier.padding(4.dp)
-            )
-            Text(
-                text = value.capitalize(Locale.current),
-                modifier = Modifier.padding(4.dp),
-                textAlign = TextAlign.End,
-                style = monsterPropertyText,
-            )
-        }
-    }
-
-    @Composable
-    fun PropertyLine(title: StringResource, value: String) {
-        Row(
-            modifier = Modifier.fillMaxWidth()
-                .padding(vertical = 2.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(secondary),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = stringResource(title),
+                text = text,
                 style = monsterPropertyTitle,
                 modifier = Modifier.padding(4.dp)
             )
@@ -293,8 +275,8 @@ class MonsterDetailScreen(private val monster: Monster) : Screen {
         val title = remember(action) {
             buildString {
                 append(action.name)
-                if (action is Monster.PowerAction) {
-                    append(" - ${action.recharge}")
+                if (action is Monster.SavingThrowAction) {
+                    append(" - ${action.usage}")
                 }
             }
         }
@@ -323,7 +305,7 @@ class MonsterDetailScreen(private val monster: Monster) : Screen {
                 )
             }
 
-            if (action is Monster.PowerAction) {
+            if (action is Monster.SavingThrowAction) {
                 val damageText = remember(action.damage) {
                     buildString {
                         action.damage.forEach { damage ->
@@ -333,7 +315,7 @@ class MonsterDetailScreen(private val monster: Monster) : Screen {
                     }
                 }
                 Text(
-                    text = "${action.save} of $damageText",
+                    text = "${action.savingThrow} of $damageText",
                     style = SmallBold,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -352,7 +334,7 @@ class MonsterDetailScreen(private val monster: Monster) : Screen {
                     }
                 }
                 Text(
-                    text = "+${action.bonus} $damageText",
+                    text = "+${action.attackBonus} $damageText",
                     style = SmallBold,
                     modifier = Modifier
                         .fillMaxWidth()

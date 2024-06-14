@@ -1,5 +1,6 @@
-package data.dto
+package data.dto.monster
 
+import data.dto.ReferenceDto
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.SerialName
@@ -47,17 +48,8 @@ interface PolymorphicSpellCastingAbilityDetails {
         val level: Int,
         val notes: String? = null,
         val url: String,
-        val usage: Usage? = null,
+        val usage: PolymorphicUsageLimitDto? = null,
     )
-
-    @Serializable
-    data class Usage(
-        val type: String,
-        val time: Int? = null,
-        @SerialName("rest_types")
-        val restTypes: List<String>
-    )
-
 
     object Serializer : KSerializer<PolymorphicSpellCastingAbilityDetails> {
 
@@ -105,6 +97,7 @@ interface PolymorphicSpellCastingAbilityDetails {
                         MagicianSpellActing.serializer(),
                         jsonElement
                     )
+
                 else ->
                     json.decodeFromJsonElement(
                         InnateSpellCasting.serializer(),

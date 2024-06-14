@@ -3,8 +3,8 @@ package ui.monster
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import domain.Challenge
-import domain.Monster
+import domain.monster.Challenge
+import domain.monster.Monster
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -68,7 +68,7 @@ class MonsterScreenViewModel(private val monsterRepository: MonsterRepository) :
         refreshUiState()
     }
 
-    suspend fun getMonster(index: String): Monster? {
+    suspend fun getMonster(index: String): Monster.MonsterDetails? {
         return monsterRepository.getMonsterByIndex(index)
     }
 

@@ -1,4 +1,4 @@
-package data.dto
+package data.dto.monster
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.PolymorphicSerializer
@@ -18,37 +18,30 @@ sealed interface PolymorphicAction {
     val desc: String
 
     @Serializable
-    data class SpecialAbilityDto(
-        override val name: String,
-        override val desc: String
-    ) : PolymorphicAction
-
-    @Serializable
     data class AttackActionDto(
         override val name: String,
         override val desc: String,
         @SerialName("attack_bonus")
         val attackBonus: Int,
-        val damage: List<PolymorphicDamage>
+        val damage: List<PolymorphicDamage>,
+    ) : PolymorphicAction
+
+    @Serializable
+    data class SimpleActionDto(
+        override val name: String,
+        override val desc: String,
+        val usage: PolymorphicUsageLimitDto? = null,
     ) : PolymorphicAction
 
     @Serializable
     data class SavingThrowActionDto(
         override val name: String,
         override val desc: String,
-        val usage: PowerUsage,
-        val dc: AttackDcDto,
+        val usage: PolymorphicUsageLimitDto? = null,
+        val dc: SavingThrowDto,
         val damage: List<PolymorphicDamage>? = null
-    ) : PolymorphicAction {
-        @Serializable
-        data class PowerUsage(
-            val type: String,
-            val dice: String,
-            @SerialName("min_value")
-            val minValue: Int,
-        )
+    ) : PolymorphicAction
 
-    }
 
     @Serializable
     data class MultiAttackActionDto(
@@ -80,11 +73,6 @@ sealed interface PolymorphicAction {
             serializersModule = SerializersModule {
                 polymorphic(
                     PolymorphicAction::class,
-                    SpecialAbilityDto::class,
-                    SpecialAbilityDto.serializer()
-                )
-                polymorphic(
-                    PolymorphicAction::class,
                     AttackActionDto::class,
                     AttackActionDto.serializer()
                 )
@@ -110,11 +98,6 @@ sealed interface PolymorphicAction {
 
         override fun serialize(encoder: Encoder, value: PolymorphicAction) {
             when (value) {
-                is SpecialAbilityDto -> encoder.encodeSerializableValue(
-                    SpecialAbilityDto.serializer(),
-                    value
-                )
-
                 is AttackActionDto -> encoder.encodeSerializableValue(
                     AttackActionDto.serializer(),
                     value
@@ -127,6 +110,11 @@ sealed interface PolymorphicAction {
 
                 is SavingThrowActionDto -> encoder.encodeSerializableValue(
                     SavingThrowActionDto.serializer(),
+                    value
+                )
+
+                is SimpleActionDto -> encoder.encodeSerializableValue(
+                    SimpleActionDto.serializer(),
                     value
                 )
             }
@@ -156,13 +144,16 @@ sealed interface PolymorphicAction {
                     )
                 }
 
-                else -> {
+                jsonElement.jsonObject.containsKey("usage") -> {
                     return json.decodeFromJsonElement(
-                        SpecialAbilityDto.serializer(),
+                        SimpleActionDto.serializer(),
                         jsonElement
                     )
                 }
+
+                else -> throw IllegalArgumentException("Unknown action type")
             }
         }
     }
+
 }

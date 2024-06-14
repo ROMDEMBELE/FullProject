@@ -1,4 +1,4 @@
-package data.dto
+package data.dto.monster
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.PolymorphicSerializer
@@ -27,7 +27,7 @@ sealed interface PolymorphicAbility {
     data class SavingThrowAbilityDto(
         override val name: String,
         override val desc: String,
-        val dc: AttackDcDto,
+        val dc: SavingThrowDto,
     ) : PolymorphicAbility
 
     @Serializable

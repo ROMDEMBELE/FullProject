@@ -1,5 +1,6 @@
-package data.dto
+package data.dto.monster
 
+import data.dto.ReferenceDto
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.SerialName

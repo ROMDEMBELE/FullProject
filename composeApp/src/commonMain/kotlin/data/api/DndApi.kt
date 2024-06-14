@@ -2,9 +2,11 @@ package data.api
 
 import data.dto.ClassDto
 import data.dto.FeatureDto
-import data.dto.MonsterDto
+import data.dto.ReferenceDto
 import data.dto.SearchResultDto
 import data.dto.SpellDto
+import data.dto.SpellReferenceDto
+import data.dto.monster.MonsterDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ServerResponseException
@@ -38,14 +40,14 @@ class DndApi {
         }
     }
 
-    suspend fun getMonstersByChallenge(challengeRatings: Double): SearchResultDto<MonsterDto> {
+    suspend fun getMonstersByChallenge(challengeRatings: Double): SearchResultDto<ReferenceDto> {
         val response = client.get("$BASE_URL/api/monsters") {
             url {
                 parameters.append("challenge_rating", challengeRatings.toString())
             }
         }
         when (response.status) {
-            HttpStatusCode.OK -> return response.body() as SearchResultDto<MonsterDto>
+            HttpStatusCode.OK -> return response.body() as SearchResultDto<ReferenceDto>
             else -> throw ServerResponseException(
                 response,
                 "/api/monsters failed : status ${response.status}"
@@ -53,7 +55,12 @@ class DndApi {
         }
     }
 
-    @Throws(ServerResponseException::class, CancellationException::class, JsonConvertException::class, ServerResponseException::class)
+    @Throws(
+        ServerResponseException::class,
+        CancellationException::class,
+        JsonConvertException::class,
+        ServerResponseException::class
+    )
     suspend fun getMonsterByIndex(index: String): MonsterDto? {
         val response = client.get("$BASE_URL/api/monsters/$index")
         return when (response.status) {
@@ -103,7 +110,7 @@ class DndApi {
     suspend fun getSpellByLevelOrSchool(
         levelList: List<String> = emptyList(),
         schoolList: List<String> = emptyList()
-    ): SearchResultDto<SpellDto> {
+    ): SearchResultDto<SpellReferenceDto> {
         val response = client.get("$BASE_URL/api/spells") {
             url {
                 levelList.forEach {
@@ -115,7 +122,7 @@ class DndApi {
             }
         }
         return when (response.status) {
-            HttpStatusCode.OK -> response.body() as SearchResultDto<SpellDto>
+            HttpStatusCode.OK -> response.body() as SearchResultDto<SpellReferenceDto>
             else -> throw ServerResponseException(
                 response,
                 "/api/spells failed : status ${response.status}"

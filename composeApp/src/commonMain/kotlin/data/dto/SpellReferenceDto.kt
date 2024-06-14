@@ -3,9 +3,9 @@ package data.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-open class ReferenceDto(
+data class SpellReferenceDto(
     val index: String,
     val name: String,
-    val url: String
+    val url: String,
+    val level: Int
 )
-
