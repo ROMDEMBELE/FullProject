@@ -29,8 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
-import domain.Ability
-import domain.Ability.Companion.getModifier
+import domain.Ability.Companion.getAbilityBonus
 import domain.Monster
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.monster_actions
@@ -89,11 +88,11 @@ class MonsterDetailScreen(private val monster: Monster) : Screen {
                 Text(text = monster.name, style = monsterTitle)
                 // Size, Type of Creature, Alignment
                 val subtitle = buildString {
-                    append(monster.size?.description)
+                    append(monster.size?.name?.capitalize(Locale.current))
                     append(" ")
-                    append(monster.type?.description)
+                    append(monster.type?.name?.capitalize(Locale.current))
                     append(", ")
-                    append(monster.alignment?.description)
+                    append(monster.alignment?.name?.capitalize(Locale.current))
                 }
                 Text(
                     text = subtitle,
@@ -103,7 +102,7 @@ class MonsterDetailScreen(private val monster: Monster) : Screen {
 
                 TaperedRule()
 
-                PropertyLine(Res.string.monster_armor_class, monster.armorClass.toString())
+                PropertyLine(Res.string.monster_armor_class, monster.armors.toString())
 
                 val life: String = buildString {
                     append(monster.hitPoints)
@@ -113,13 +112,8 @@ class MonsterDetailScreen(private val monster: Monster) : Screen {
                 }
                 PropertyLine(Res.string.monster_hit_points, life)
 
-                val speed = buildString {
-                    append(monster.walkSpeed.toString())
-                    append(" ft.")
-                    if (monster.flySpeed != null)
-                        append(" (fly " + monster.flySpeed.toString() + " ft.)")
-                    if (monster.swimSpeed != null)
-                        append(" (swim " + monster.swimSpeed.toString() + " ft.)")
+                val speed = monster.movements.orEmpty().entries.joinToString { (movement, value) ->
+                    movement.name.capitalize(Locale.current) + value
                 }
                 PropertyLine(Res.string.monster_speed, speed)
 
@@ -130,16 +124,8 @@ class MonsterDetailScreen(private val monster: Monster) : Screen {
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Ability.entries.forEach { ability ->
-                        val value: Int = when (ability) {
-                            Ability.CHA -> monster.charisma ?: 0
-                            Ability.CON -> monster.constitution ?: 0
-                            Ability.DEX -> monster.dexterity ?: 0
-                            Ability.INT -> monster.intelligence ?: 0
-                            Ability.STR -> monster.strength ?: 0
-                            Ability.WIS -> monster.wisdom ?: 0
-                        }
-                        AbilityScope(ability.name, value, value.getModifier())
+                    monster.abilities.entries.forEach { (ability, value) ->
+                        AbilityScope(ability.name, value, value.getAbilityBonus())
                     }
                 }
 

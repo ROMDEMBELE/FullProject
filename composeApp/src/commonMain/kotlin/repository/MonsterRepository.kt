@@ -2,11 +2,8 @@ package repository
 
 import data.api.DndApi
 import data.database.SqlDatabase
-import data.dto.MonsterDto
-import domain.Alignment
+import domain.Ability
 import domain.Challenge
-import domain.CreatureSize
-import domain.CreatureType
 import domain.Monster
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -57,25 +54,28 @@ class MonsterRepository(private val dndApi: DndApi, private val database: SqlDat
                 }
                 val isFavorite: Boolean =
                     database.getMonsterById(index).firstOrNull()?.isFavorite == 1L
+
+                val abilities = buildMap {
+                    put(Ability.STR, dto.strength ?: 0)
+                    put(Ability.DEX, dto.dexterity ?: 0)
+                    put(Ability.CON, dto.constitution ?: 0)
+                    put(Ability.INT, dto.intelligence ?: 0)
+                    put(Ability.WIS, dto.wisdom ?: 0)
+                    put(Ability.CHA, dto.charisma ?: 0)
+                }
+
                 return Monster(
                     index = dto.index,
                     name = dto.name,
                     isFavorite = isFavorite,
-                    size = CreatureSize.fromString(dto.size.toString()),
-                    type = CreatureType.fromString(dto.type.toString()),
-                    alignment = Alignment.fromString(dto.alignment.toString()),
-                    armorClass = dto.armorClass?.first()?.toString(),
+                    size = dto.size,
+                    type = dto.type,
+                    alignment = dto.alignment,
+                    armors = buildMap { dto.armorClass.orEmpty().forEach { put(it.type, it.value) } },
                     hitPoints = dto.hitPoints,
                     hitPointsRoll = dto.hitPointsRoll,
-                    walkSpeed = dto.speed?.walk?.dropLast(4)?.toInt(),
-                    flySpeed = dto.speed?.fly?.dropLast(4)?.toInt(),
-                    swimSpeed = dto.speed?.walk?.dropLast(4)?.toInt(),
-                    strength = dto.strength,
-                    dexterity = dto.dexterity,
-                    constitution = dto.constitution,
-                    intelligence = dto.intelligence,
-                    wisdom = dto.wisdom,
-                    charisma = dto.charisma,
+                    abilities = abilities,
+                    movements = dto.speed,
                     skills = skills,
                     savingThrows = savingThrows,
                     damageVulnerabilities = dto.damageVulnerabilities.orEmpty(),
@@ -89,7 +89,7 @@ class MonsterRepository(private val dndApi: DndApi, private val database: SqlDat
                     image = dto.image,
                     specialAbilities = dto.specialAbilities.orEmpty()
                         .map { Monster.SpecialAbility(it.name, it.desc) },
-                    actions = dto.actions.orEmpty().map { it.toDomainModel() },
+                    //actions = dto.actions.orEmpty().map { it.toDomainModel() },
                     //legendaryActions = dto.legendaryActions.map { it.toDomainModel() }
                 )
             }
@@ -98,6 +98,7 @@ class MonsterRepository(private val dndApi: DndApi, private val database: SqlDat
             return null
         }
     }
+    /*
 
     private fun getListOfDamageFromDto(list: List<MonsterDto.DamageDto>): List<Monster.Damage> {
         return list.flatMap { dmg ->
@@ -118,7 +119,7 @@ class MonsterRepository(private val dndApi: DndApi, private val database: SqlDat
         }
     }
 
-    private fun MonsterDto.ActionDto.toDomainModel(): Monster.Action {
+    private fun PolymorphicAction.toDomainModel(): Monster.Action {
         if (multiAttackType == "action_options") {
             return Monster.SimpleAction(
                 name = name,
@@ -152,6 +153,7 @@ class MonsterRepository(private val dndApi: DndApi, private val database: SqlDat
             )
         }
     }
+    */
 
     private suspend fun loadMonsterDatabaseByChallenge() {
         Challenge.entries.forEach {

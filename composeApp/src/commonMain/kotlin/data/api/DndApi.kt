@@ -53,7 +53,7 @@ class DndApi {
         }
     }
 
-    @Throws(ServerResponseException::class, CancellationException::class, JsonConvertException::class)
+    @Throws(ServerResponseException::class, CancellationException::class, JsonConvertException::class, ServerResponseException::class)
     suspend fun getMonsterByIndex(index: String): MonsterDto? {
         val response = client.get("$BASE_URL/api/monsters/$index")
         return when (response.status) {
