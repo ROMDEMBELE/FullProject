@@ -8,6 +8,9 @@ enum class Alignment {
     @SerialName("any alignment")
     ANY_ALIGNMENT,
 
+    @SerialName("any evil alignment")
+    ANY_EVIL_ALIGNMENT,
+
     @SerialName("unaligned")
     UNALIGNED,
 

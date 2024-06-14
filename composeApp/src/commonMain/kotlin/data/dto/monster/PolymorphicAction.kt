@@ -144,14 +144,12 @@ sealed interface PolymorphicAction {
                     )
                 }
 
-                jsonElement.jsonObject.containsKey("usage") -> {
+                else -> {
                     return json.decodeFromJsonElement(
                         SimpleActionDto.serializer(),
                         jsonElement
                     )
                 }
-
-                else -> throw IllegalArgumentException("Unknown action type")
             }
         }
     }
