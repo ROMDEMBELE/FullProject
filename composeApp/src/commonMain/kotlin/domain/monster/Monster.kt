@@ -18,11 +18,11 @@ open class Monster(
         val size: CreatureSize,
         val type: CreatureType,
         val alignment: CreatureAlignment,
-        val armors: Map<String, Int>,
+        val armorsClass: Map<String, Int>,
         val hitPoints: Int,
         val hitPointsRoll: String,
-        val movements: Map<CreatureMovement, String>,
-        val abilities: Map<Ability, Int>,
+        val speedByMovements: Map<CreatureMovement, String>,
+        val scoreByAbilities: Map<Ability, Int>,
         val savingThrows: List<SavingThrow>,
         val skills: List<String>,
         val damageVulnerabilities: List<String>,
@@ -47,9 +47,10 @@ open class Monster(
         override fun toString(): String = "${ability.fullName} saving throw DD $value for $success"
     }
 
-    data class SpellCastingSpell(
+    data class SpellCasting(
         val level: Level,
         val name: String,
+        val index: String,
         val notes: String? = null,
         val usage: String? = null,
     )
@@ -75,22 +76,39 @@ open class Monster(
         override val desc: String,
         override val savingThrow: SavingThrow,
         open val components: List<String>,
-        open val spellByLevel: Map<Level, List<SpellCastingSpell>>,
-    ) : SavingThrowAbility(name, desc, savingThrow)
+        val spellByUsage: Map<String, List<SpellCasting>> = emptyMap()
+    ) : SavingThrowAbility(name, desc, savingThrow) {
+
+        open fun buildDescription(name: String): String {
+            return buildString {
+                append("The $name spell casting ability ${savingThrow.ability.fullName}")
+                append(" (spell save DC ${savingThrow.value})")
+            }
+        }
+    }
 
     data class SpellCastingAbility(
         override val name: String,
         override val desc: String,
         override val savingThrow: SavingThrow,
         override val components: List<String>,
-        override val spellByLevel: Map<Level, List<SpellCastingSpell>>,
+        val spellByLevel: Map<Level, List<SpellCasting>> = emptyMap(),
         val level: Level,
         val ability: Ability,
         val modifier: Int,
         val dc: Int,
         val school: String,
         val slots: Map<Level, Int>,
-    ) : InnateSpellCastingAbility(name, desc, savingThrow, components, spellByLevel)
+    ) : InnateSpellCastingAbility(name, desc, savingThrow, components) {
+
+        override fun buildDescription(name: String): String {
+            return buildString {
+                append("The $name is an ${level.level}th-level spell caster")
+                append(" with ${ability.fullName} spell casting ability")
+                append(" (spell save DC ${dc}, +${modifier} to hit with spell attacks)")
+            }
+        }
+    }
 
     open class Action(
         override val name: String,

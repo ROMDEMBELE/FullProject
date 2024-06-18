@@ -1,25 +1,33 @@
 package ui.monster
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,9 +39,18 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import domain.Ability.Companion.getAbilityBonus
+import domain.Ability.Companion.getAbilityBonusColor
 import domain.monster.Monster
+import domain.monster.Monster.InnateSpellCastingAbility
+import domain.monster.Monster.SpecialAbility
+import domain.monster.Monster.SpellCastingAbility
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.monster_actions
 import org.dembeyo.shared.resources.monster_armor_class
@@ -69,6 +86,16 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
 
     @Composable
     override fun Content() {
+        val navigator = LocalNavigator.currentOrThrow
+        var spellDialogDisplayed by rememberSaveable { mutableStateOf(false) }
+
+        monster.specialAbilities.find { it is SpellCastingAbility || it is InnateSpellCastingAbility }
+            ?.let {
+                AnimatedVisibility(spellDialogDisplayed) {
+                    SpellDialog(it, navigator) { spellDialogDisplayed = false }
+                }
+            }
+
         LazyColumn(
             modifier = Modifier.fillMaxSize()
                 .background(
@@ -106,14 +133,15 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
 
                 TaperedRule()
 
-                val armorClass = monster.armors.entries.joinToString { "${it.value}(${it.key})" }
+                val armorClass =
+                    monster.armorsClass.entries.joinToString { "${it.value} (${it.key})" }
                 PropertyLine(Res.string.monster_armor_class, armorClass)
 
                 val life: String = buildString {
                     append(monster.hitPoints)
-                    append(" (")
+                    append(" ( ")
                     append(monster.hitPointsRoll)
-                    append(")")
+                    append(" )")
                 }
                 PropertyLine(Res.string.monster_hit_points, life)
 
@@ -131,7 +159,7 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
                         style = monsterPropertyTitle,
                         modifier = Modifier.padding(4.dp).weight(1f)
                     )
-                    monster.movements.entries.forEach { (movement, value) ->
+                    monster.speedByMovements.entries.forEach { (movement, value) ->
                         Icon(
                             modifier = Modifier.size(20.dp).aspectRatio(1f).padding(2.dp),
                             painter = painterResource(movement.icon),
@@ -154,8 +182,8 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    monster.abilities.entries.forEach { (ability, value) ->
-                        AbilityScore(ability.name, value, value.getAbilityBonus())
+                    monster.scoreByAbilities.entries.forEach { (ability, value) ->
+                        AbilityBonusItem(ability.name, value)
                     }
                 }
 
@@ -216,9 +244,11 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
                 if (monster.specialAbilities.isNotEmpty()) {
                     monster.specialAbilities.forEach {
                         when (it) {
-                            is Monster.SpellCastingAbility -> SpellCastingPropertyLine(monster.name, it)
-                            is Monster.InnateSpellCastingAbility -> InnateSpellCastingPropertyLine(monster.name, it)
-                            else -> PropertyLine(it.name, it.desc)
+                            is InnateSpellCastingAbility, is SpellCastingAbility -> {
+                                SpellCastingAbilityItem(monster, it) { spellDialogDisplayed = true }
+                            }
+
+                            else -> SpecialAbilityItem(it)
                         }
                     }
                     TaperedRule()
@@ -245,26 +275,29 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
     }
 
     @Composable
-    fun RowScope.AbilityScore(name: String, value: Int, bonus: Int) {
+    fun RowScope.AbilityBonusItem(abilityName: String, abilityValue: Int) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(horizontal = 1.dp)
                 .weight(1f)
-                .clip(RoundedCornerShape(8.dp))
-                .background(darkBlue)
+                .clip(RoundedCornerShape(4.dp))
+                .background(darkPrimary)
         ) {
             Text(
-                text = "$name $value",
-                style = MediumBold,
+                text = "$abilityName $abilityValue",
+                style = SmallBold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().padding(2.dp)
             )
+            val signedBonus =
+                if (abilityValue.getAbilityBonus() > 0) "+${abilityValue.getAbilityBonus()}" else "${abilityValue.getAbilityBonus()}"
             Text(
-                text = "$bonus",
-                modifier = Modifier.fillMaxWidth().background(darkGray).padding(2.dp),
+                text = signedBonus,
+                modifier = Modifier.fillMaxWidth().background(abilityValue.getAbilityBonusColor())
+                    .padding(2.dp),
                 textAlign = TextAlign.Center,
-                style = MediumBold
+                style = MediumBold.copy(color = darkPrimary)
             )
         }
     }
@@ -279,7 +312,7 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
     }
 
     @Composable
-    fun <T> PropertyLine(title: T, value: String) {
+    fun PropertyLine(title: StringResource, value: String) {
         Row(
             modifier = Modifier.fillMaxWidth()
                 .padding(vertical = 2.dp)
@@ -288,13 +321,8 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val text: String = when (title) {
-                is StringResource -> stringResource(title)
-                is String -> title
-                else -> title.toString()
-            }
             Text(
-                text = text,
+                text = stringResource(title),
                 style = monsterPropertyTitle,
                 modifier = Modifier.padding(4.dp)
             )
@@ -308,110 +336,71 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
     }
 
     @Composable
-    fun SpellCastingPropertyLine(monsterName: String, ability: Monster.SpellCastingAbility) {
+    fun SpecialAbilityItem(ability: SpecialAbility) {
         Column(
             modifier = Modifier.fillMaxWidth()
                 .padding(vertical = 2.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .background(secondary),
         ) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = ability.name,
-                    style = monsterPropertyTitle,
-                    modifier = Modifier.padding(4.dp)
-                )
-                val spellCastingDescription = buildString {
-                    append("The $monsterName is an ${ability.level.level}th-level SpellCaster")
-                    append(" with ${ability.ability.fullName} spell casting ability")
-                    append(" (spell save DC ${ability.dc}, +${ability.modifier} to hit with spell attacks)")
-                }
-                Text(
-                    text = spellCastingDescription,
-                    modifier = Modifier.padding(4.dp),
-                    textAlign = TextAlign.End,
-                    style = monsterPropertyText,
-                )
-
-            }
-            ability.slots.forEach { (level, slot) ->
-                val txt = buildString {
-                    append("Lv${level.level} ($slot slots) : ")
-                    append(ability.spellByLevel[level]?.joinToString { it.name })
-                }
-                Text(
-                    text = txt,
-                    color = secondary,
-                    lineHeight = 14.sp,
-                    fontSize = 10.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(darkGray)
-                        .padding(horizontal = 6.dp, vertical = 1.dp)
-                )
-            }
+            Text(
+                text = ability.name,
+                style = SmallBold.copy(color = secondary),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(darkPrimary)
+                    .padding(4.dp)
+            )
+            Text(
+                text = ability.desc.capitalize(Locale.current),
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                style = monsterPropertyText.copy(textAlign = TextAlign.Center)
+            )
         }
     }
 
     @Composable
-    fun InnateSpellCastingPropertyLine(monsterName: String, ability: Monster.InnateSpellCastingAbility) {
+    fun <T> SpellCastingAbilityItem(
+        monster: Monster,
+        ability: T,
+        onClick: () -> Unit,
+    ) where T : SpecialAbility {
         Column(
             modifier = Modifier.fillMaxWidth()
                 .padding(vertical = 2.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .background(secondary),
         ) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            Text(
+                text = ability.name,
+                style = SmallBold.copy(color = secondary),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(darkPrimary)
+                    .padding(4.dp)
+            )
+            TextButton(
+                onClick = onClick,
+                colors = ButtonDefaults.textButtonColors(contentColor = darkPrimary),
+                modifier = Modifier.fillMaxWidth().height(30.dp)
             ) {
-                Text(
-                    text = ability.name,
-                    style = monsterPropertyTitle,
-                    modifier = Modifier.padding(4.dp)
-                )
-                val spellCastingDescription = buildString {
-                    append("The $monsterName spell casting ability ${ability.savingThrow.ability.fullName}")
-                    append(" (spell save DC ${ability.savingThrow.value})")
-                }
-                Text(
-                    text = spellCastingDescription,
-                    modifier = Modifier.padding(4.dp),
-                    textAlign = TextAlign.End,
-                    style = monsterPropertyText,
-                )
-
+                Text("See More")
             }
-            ability.spellByLevel
-                .flatMap { it.value }
-                .groupBy { it.usage }
-                .forEach { (usage, spell) ->
-                    val txt = buildString {
-                        append(usage?.capitalize(Locale.current))
-                        append(" : ")
-                        append(spell.joinToString { it.name })
-                    }
-                    Text(
-                        text = txt,
-                        color = secondary,
-                        lineHeight = 14.sp,
-                        fontSize = 10.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(darkGray)
-                            .padding(horizontal = 6.dp, vertical = 1.dp)
-                    )
-                }
+            val description: String = when (ability) {
+                is InnateSpellCastingAbility -> ability.buildDescription(monster.name)
+                is SpellCastingAbility -> ability.buildDescription(monster.name)
+                else -> throw IllegalArgumentException("Unknown ability type")
+            }
+            Text(
+                text = description.capitalize(Locale.current),
+                modifier = Modifier.padding(8.dp),
+                style = monsterPropertyText.copy(textAlign = TextAlign.Center)
+            )
         }
     }
 
     @Composable
     fun ActionItem(action: Monster.Action) {
-        val expended by remember { mutableStateOf(true) }
-
         val title: String = remember(action) {
             when (action) {
                 is Monster.MultiAttackAction -> {
@@ -446,13 +435,11 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
                     .padding(4.dp)
             )
 
-            AnimatedVisibility(expended) {
-                Text(
-                    text = action.desc.capitalize(Locale.current),
-                    modifier = Modifier.padding(8.dp),
-                    style = monsterPropertyText.copy(textAlign = TextAlign.Center)
-                )
-            }
+            Text(
+                text = action.desc.capitalize(Locale.current),
+                modifier = Modifier.padding(8.dp),
+                style = monsterPropertyText.copy(textAlign = TextAlign.Center)
+            )
 
             when (action) {
                 is Monster.SavingThrowAction -> {
@@ -496,4 +483,102 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
         }
     }
 
+    @OptIn(ExperimentalFoundationApi::class)
+    @Composable
+    fun <T> SpellDialog(
+        ability: T,
+        navigator: Navigator,
+        onDismissRequest: () -> Unit
+    ) where T : SpecialAbility {
+        Dialog(
+            onDismissRequest = onDismissRequest,
+            properties = DialogProperties(
+                dismissOnBackPress = true,
+                dismissOnClickOutside = true
+            )
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(secondary),
+            ) {
+                Text(
+                    text = ability.name,
+                    style = SmallBold.copy(color = secondary),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(darkPrimary)
+                        .padding(4.dp)
+                )
+                LazyColumn(
+                    Modifier.height(400.dp).fillMaxWidth(),
+                    contentPadding = PaddingValues(0.dp),
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    when (ability) {
+                        is SpellCastingAbility -> {
+                            ability.slots.forEach { (level, slot) ->
+                                stickyHeader(level) {
+                                    Text(
+                                        text = "Lv${level.level} ($slot slots)",
+                                        modifier = Modifier.background(darkGray).fillMaxWidth()
+                                            .padding(4.dp),
+                                        color = level.color,
+                                        fontWeight = FontWeight.Bold,
+                                        textAlign = TextAlign.Center,
+                                    )
+                                }
+                                items(items = ability.spellByLevel[level].orEmpty()) { spell ->
+                                    TextButton(
+                                        modifier = Modifier.background(level.color).fillMaxWidth(),
+                                        colors = ButtonDefaults.textButtonColors(
+                                            contentColor = darkPrimary,
+                                        ),
+                                        onClick = {
+
+                                        }) {
+                                        Text(text = spell.name.capitalize(Locale.current))
+                                    }
+                                }
+                            }
+                        }
+
+                        is InnateSpellCastingAbility -> {
+                            ability.spellByUsage.forEach { (usage, spells) ->
+                                stickyHeader(usage) {
+                                    Text(
+                                        text = usage.capitalize(Locale.current),
+                                        modifier = Modifier.background(darkGray)
+                                            .fillMaxWidth()
+                                            .padding(4.dp),
+                                        color = secondary,
+                                        fontWeight = FontWeight.Bold,
+                                        textAlign = TextAlign.Center,
+                                    )
+                                }
+                                items(items = spells) { spell ->
+                                    TextButton(
+                                        modifier = Modifier.background(spell.level.color)
+                                            .fillMaxWidth(),
+                                        colors = ButtonDefaults.textButtonColors(
+                                            contentColor = darkPrimary,
+                                        ),
+                                        onClick = {
+
+                                        }) {
+                                        Text(text = spell.name.capitalize(Locale.current))
+                                    }
+                                }
+                            }
+
+                        }
+
+
+                    }
+
+                }
+            }
+
+        }
+    }
 }

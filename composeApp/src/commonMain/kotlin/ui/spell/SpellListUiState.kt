@@ -8,10 +8,10 @@ data class SpellListUiState(
     val spellsByLevel: Map<Level, List<Spell>> = emptyMap(),
     val filterByLevel: List<Level> = emptyList(),
     val textField: TextFieldValue = TextFieldValue(),
-    val favorites: List<Spell> = emptyList()
+    val favoriteSpells: List<Spell> = emptyList()
 ) {
     val filterCounter: Int
         get() = filterByLevel.size
 
-    val favoritesCounter: Int = favorites.size
+    val favoritesCounter: Int = favoriteSpells.size
 }

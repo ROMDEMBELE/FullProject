@@ -58,7 +58,12 @@ class SpellScreenViewModel(private val spellRepository: SpellRepository) : ViewM
                     .filter { spell -> level.isEmpty() || level.contains(spell.level) }
                     .filter { spell -> spell.name.contains(text, true) }
                     .groupBy { spell -> spell.level }
-                _uiState.update { it.copy(spellsByLevel = spellsByLevel, favorites = favorites) }
+                _uiState.update {
+                    it.copy(
+                        spellsByLevel = spellsByLevel,
+                        favoriteSpells = favorites
+                    )
+                }
             }
 
         }

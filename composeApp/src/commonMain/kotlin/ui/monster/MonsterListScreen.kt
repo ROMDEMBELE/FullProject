@@ -52,12 +52,12 @@ import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.monster
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
+import ui.MediumBold
 import ui.composable.DropDownTextField
 import ui.composable.SearchMenu
 import ui.darkBlue
 import ui.darkGray
 import ui.item
-import ui.MediumBold
 import ui.primary
 import ui.secondary
 
@@ -146,7 +146,7 @@ class MonsterListScreen() : Screen {
                             stickyHeader(challenge) {
                                 Column(Modifier.padding(vertical = 8.dp).alpha(0.8f)) {
                                     Text(
-                                        text = "CR ${challenge.rating}",
+                                        text = "CR ${challenge.rating} (${uiState.monsterByChallenge[challenge]?.size ?: 0})",
                                         modifier = Modifier.clip(CutCornerShape(8.dp))
                                             .background(challenge.color)
                                             .border(2.dp, darkBlue, CutCornerShape(8.dp))
@@ -195,7 +195,8 @@ class MonsterListScreen() : Screen {
             colors = ButtonDefaults.buttonColors(Color.Transparent),
             onClick = onClick
         ) {
-            val boxMonsterBrush = Brush.linearGradient(listOf(darkBlue, darkBlue, darkBlue, monster.challenge.color))
+            val boxMonsterBrush =
+                Brush.linearGradient(listOf(darkBlue, darkBlue, darkBlue, monster.challenge.color))
             Box(
                 Modifier.background(boxMonsterBrush)
             ) {

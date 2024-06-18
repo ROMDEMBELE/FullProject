@@ -16,7 +16,7 @@ import domain.monster.Monster.InnateSpellCastingAbility
 import domain.monster.Monster.SavingThrow
 import domain.monster.Monster.SavingThrowAbility
 import domain.monster.Monster.SpecialAbility
-import domain.monster.Monster.SpellCastingSpell
+import domain.monster.Monster.SpellCasting
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -49,88 +49,80 @@ class MonsterRepository(private val dndApi: DndApi, private val database: SqlDat
         }
     }
 
-    private fun PolymorphicUsageLimitDto.toDomain(): String {
-        return when (this) {
-            is PolymorphicUsageLimitDto.AtWill -> "at will"
-            // 3 per day(long rest)
-            is PolymorphicUsageLimitDto.PerDay -> "$times per day"
-            is PolymorphicUsageLimitDto.RechargeOnRoll -> "recharge on roll $minValue $dice"
-            else -> throw IllegalArgumentException("Unknown usage type")
-        }
+    private fun PolymorphicUsageLimitDto.toDomain(): String = when (this) {
+        is PolymorphicUsageLimitDto.AtWill -> "at will"
+        is PolymorphicUsageLimitDto.PerDay -> "$times per day"
+        is PolymorphicUsageLimitDto.RechargeOnRoll -> "recharge on roll $minValue $dice"
+        else -> throw IllegalArgumentException("Unknown usage type")
     }
 
     private fun PolymorphicAbility.toDomain(): SpecialAbility? {
         return when (this) {
-            is PolymorphicAbility.SpecialAbilityDto -> {
-                SpecialAbility(name, desc)
-            }
-
-            is PolymorphicAbility.SavingThrowAbilityDto -> {
-                SavingThrowAbility(
-                    name = name,
-                    desc = desc,
-                    savingThrow = SavingThrow(
-                        value = dc.dcValue,
-                        ability = Ability.valueOf(dc.typeOfDc.name),
-                        success = dc.successType
-                    )
+            is PolymorphicAbility.SpecialAbilityDto -> SpecialAbility(name, desc)
+            is PolymorphicAbility.SavingThrowAbilityDto -> SavingThrowAbility(
+                name = name,
+                desc = desc,
+                savingThrow = SavingThrow(
+                    value = dc.dcValue,
+                    ability = Ability.valueOf(dc.typeOfDc.name),
+                    success = dc.successType
                 )
-            }
+            )
 
-            is PolymorphicAbility.SpellCastingAbilityDto -> {
-                when (val details = spellCasting) {
-                    is PolymorphicSpellCastingAbilityDetails.InnateSpellCasting -> {
-                        InnateSpellCastingAbility(
-                            name = name,
-                            desc = desc,
-                            savingThrow = SavingThrow(
-                                value = details.dc,
-                                ability = Ability.valueOf(details.ability.name),
-                            ),
-                            components = details.componentsRequired,
-                            spellByLevel = details.spells.map { sp ->
-                                SpellCastingSpell(
-                                    level = Level.fromInt(sp.level),
-                                    name = sp.name,
-                                    notes = sp.notes,
-                                    usage = sp.usage?.toDomain()
-                                )
-                            }.groupBy { it.level }
-                        )
-                    }
-
-                    is PolymorphicSpellCastingAbilityDetails.MagicianSpellActing -> {
-                        Monster.SpellCastingAbility(
-                            name = name,
-                            desc = desc,
-                            savingThrow = SavingThrow(
-                                value = details.dc,
-                                ability = Ability.valueOf(details.ability.name),
-                            ),
-                            components = details.componentsRequired,
-                            level = Level.fromInt(details.level),
-                            school = details.school,
-                            modifier = details.modifier,
-                            slots = details.slots.mapKeys { (level, _) ->
-                                Level.fromInt(
-                                    level
-                                )
-                            },
-                            dc = details.dc,
+            is PolymorphicAbility.SpellCastingAbilityDto -> when (val details = spellCasting) {
+                is PolymorphicSpellCastingAbilityDetails.InnateSpellCasting -> {
+                    InnateSpellCastingAbility(
+                        name = name,
+                        desc = desc,
+                        savingThrow = SavingThrow(
+                            value = details.dc,
                             ability = Ability.valueOf(details.ability.name),
-                            spellByLevel = details.spells.map { sp ->
-                                SpellCastingSpell(
-                                    level = Level.fromInt(sp.level),
-                                    name = sp.name,
-                                    notes = sp.notes,
-                                    usage = sp.usage?.toDomain()
-                                )
-                            }.groupBy { it.level }
-                        )
-                    }
-
-                    else -> null
+                        ),
+                        components = details.componentsRequired,
+                        spellByUsage = details.spells.map { sp ->
+                            SpellCasting(
+                                level = Level.fromInt(sp.level),
+                                name = sp.name,
+                                notes = sp.notes,
+                                index = sp.url.split("/").last(),
+                                usage = sp.usage?.toDomain(),
+                            )
+                        }.groupBy { it.usage.toString() }
+                    )
                 }
+
+                is PolymorphicSpellCastingAbilityDetails.MagicianSpellActing -> {
+                    Monster.SpellCastingAbility(
+                        name = name,
+                        desc = desc,
+                        savingThrow = SavingThrow(
+                            value = details.dc,
+                            ability = Ability.valueOf(details.ability.name),
+                        ),
+                        components = details.componentsRequired,
+                        level = Level.fromInt(details.level),
+                        school = details.school,
+                        modifier = details.modifier,
+                        slots = details.slots.mapKeys { (level, _) ->
+                            Level.fromInt(
+                                level
+                            )
+                        },
+                        dc = details.dc,
+                        ability = Ability.valueOf(details.ability.name),
+                        spellByLevel = details.spells.map { sp ->
+                            SpellCasting(
+                                level = Level.fromInt(sp.level),
+                                name = sp.name,
+                                index = sp.url.split("/").last(),
+                                notes = sp.notes,
+                                usage = sp.usage?.toDomain()
+                            )
+                        }.groupBy { it.level }
+                    )
+                }
+
+                else -> null
             }
         }
     }
@@ -254,13 +246,13 @@ class MonsterRepository(private val dndApi: DndApi, private val database: SqlDat
                     size = monsterDto.size,
                     type = monsterDto.type,
                     alignment = monsterDto.alignment,
-                    armors = buildMap {
+                    armorsClass = buildMap {
                         monsterDto.armorClass.forEach { put(it.type, it.value) }
                     },
                     hitPoints = monsterDto.hitPoints,
                     hitPointsRoll = monsterDto.hitPointsRoll,
-                    abilities = abilities,
-                    movements = monsterDto.speed,
+                    scoreByAbilities = abilities,
+                    speedByMovements = monsterDto.speed,
                     skills = skills,
                     savingThrows = savingThrows,
                     damageVulnerabilities = monsterDto.damageVulnerabilities,

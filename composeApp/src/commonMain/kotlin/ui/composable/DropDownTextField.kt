@@ -1,6 +1,9 @@
 package ui.composable
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -16,7 +19,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import domain.monster.Challenge
 import ui.darkPrimary
 import ui.lightGray
 
@@ -53,12 +59,15 @@ fun <T> DropDownTextField(
                 placeholderColor = Color.Transparent
             ),
             modifier = modifier.fillMaxWidth()
+                .border(if (expanded) 1.dp else 0.dp, darkPrimary, RoundedCornerShape(10.dp))
         )
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = {
                 expanded = false
-            }
+            },
+            modifier = Modifier.background(lightGray).fillMaxWidth(0.3f),
+            offset = DpOffset(250.dp, 350.dp),
         ) {
             list.forEach {
                 DropdownMenuItem(
@@ -66,10 +75,17 @@ fun <T> DropDownTextField(
                         expanded = false
                         onSelected(it)
                     },
+                    modifier = Modifier.fillMaxWidth().height(20.dp),
                 ) {
-                    Text(text = it.toString())
+                    Text(
+                        text = it.toString(),
+                        fontSize = 13.sp,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
                 }
             }
         }
     }
 }
+
+fun Pair<Challenge, Int>.toString(): String = "CR ${first.rating} ($second)"
