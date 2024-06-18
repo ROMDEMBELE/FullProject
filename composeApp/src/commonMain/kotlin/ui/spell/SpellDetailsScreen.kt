@@ -71,7 +71,7 @@ class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {
     @Composable
     override fun Content() {
         val scope = rememberCoroutineScope()
-        val pagerState = rememberPagerState(pageCount = { spell.damageSlot.size })
+        val pagerState = rememberPagerState(pageCount = { spell.damageByLevel.size })
         val screenBackgroundGradientBrush = Brush.linearGradient(
             listOf(
                 lightGray,
@@ -160,7 +160,7 @@ class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {
 
             val animatedColorMinus by animateColorAsState(if (pagerState.canScrollBackward) secondary else lightGray)
             val animatedColorPlus by animateColorAsState(if (pagerState.canScrollForward) secondary else lightGray)
-            if (spell.damageSlot.isNotEmpty()) {
+            if (spell.damageByLevel.isNotEmpty()) {
                 Box(Modifier.fillMaxWidth().background(darkBlue)) {
                     Row(
                         Modifier.fillMaxWidth().height(60.dp).padding(12.dp),
@@ -179,7 +179,7 @@ class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {
                             )
                         }
                         Text(
-                            "Level " + spell.damageSlot.toList()[pagerState.currentPage].first.level,
+                            "Level " + spell.damageByLevel.toList()[pagerState.currentPage].first.level,
                             style = MediumBold.copy(color = secondary)
                         )
                         IconButton(onClick = {
@@ -196,16 +196,16 @@ class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {
                     }
                 }
                 HorizontalPager(pagerState) { pageIndex ->
-                    val damage = spell.damageSlot.toList()[pageIndex]
+                    val (level, damage) = spell.damageByLevel.toList()[pageIndex]
                     Column(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.background(damage.first.color).fillMaxWidth()
+                        modifier = Modifier.background(level.color).fillMaxWidth()
                             .padding(16.dp),
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                text = damage.second,
+                                text = damage.dice,
                                 color = darkBlue,
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = FontFamily.Monospace,
@@ -214,7 +214,7 @@ class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {
                             )
                             Spacer(Modifier.width(12.dp))
                             Text(
-                                text = spell.damageType.toString(),
+                                text = damage.type,
                                 color = darkPrimary,
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = FontFamily.Monospace,
@@ -225,11 +225,11 @@ class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {
                     }
                 }
             }
-            if (spell.save != null) {
+            if (spell.savingThrow != null) {
                 Surface(color = primary) {
                     Text(
                         modifier = Modifier.fillMaxWidth().padding(12.dp),
-                        text = "Save DC ${spell.save}",
+                        text = "Save DC ${spell.savingThrow}",
                         color = Color.Black,
                         fontWeight = FontWeight.Bold,
                         fontFamily = FontFamily.Monospace,

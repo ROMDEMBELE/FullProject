@@ -61,6 +61,7 @@ import org.dembeyo.shared.resources.monster_damage_resistances
 import org.dembeyo.shared.resources.monster_damage_vulnerabilities
 import org.dembeyo.shared.resources.monster_hit_points
 import org.dembeyo.shared.resources.monster_languages
+import org.dembeyo.shared.resources.monster_legendary_actions
 import org.dembeyo.shared.resources.monster_proficiencies
 import org.dembeyo.shared.resources.monster_saving_throws
 import org.dembeyo.shared.resources.monster_senses
@@ -265,6 +266,23 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
                 monster.actions.forEach { action ->
                     ActionItem(action)
                 }
+
+                if (monster.legendaryActions.isNotEmpty()) {
+                    TaperedRule()
+                    Text(
+                        text = stringResource(Res.string.monster_legendary_actions),
+                        fontSize = 21.sp,
+                        fontWeight = FontWeight.Normal,
+                        fontFamily = FontFamily.Serif,
+                        color = darkPrimary,
+                        modifier = Modifier.padding(vertical = 12.dp)
+                    )
+
+                    monster.legendaryActions.forEach { action ->
+                        ActionItem(action)
+                    }
+                }
+
                 Divider(
                     color = orange,
                     thickness = 5.dp,
@@ -379,13 +397,6 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
                     .background(darkPrimary)
                     .padding(4.dp)
             )
-            TextButton(
-                onClick = onClick,
-                colors = ButtonDefaults.textButtonColors(contentColor = darkPrimary),
-                modifier = Modifier.fillMaxWidth().height(30.dp)
-            ) {
-                Text("See More")
-            }
             val description: String = when (ability) {
                 is InnateSpellCastingAbility -> ability.buildDescription(monster.name)
                 is SpellCastingAbility -> ability.buildDescription(monster.name)
@@ -396,6 +407,13 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
                 modifier = Modifier.padding(8.dp),
                 style = monsterPropertyText.copy(textAlign = TextAlign.Center)
             )
+            TextButton(
+                onClick = onClick,
+                colors = ButtonDefaults.textButtonColors(contentColor = darkPrimary),
+                modifier = Modifier.fillMaxWidth().height(30.dp)
+            ) {
+                Text("See More")
+            }
         }
     }
 

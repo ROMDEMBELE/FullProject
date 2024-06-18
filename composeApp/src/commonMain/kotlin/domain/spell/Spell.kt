@@ -18,15 +18,20 @@ open class Spell(
         val text: String,
         val range: String,
         val components: String,
-        val material: String,
+        val material: String? = null,
         val ritual: Boolean,
         val duration: String,
         val concentration: Boolean,
         val castingTime: String,
-        val attackType: String,
-        val damageType: String,
-        val damageSlot: Map<Level, String>,
-        val save: String? = null,
+        val attackType: String? = null,
+        val areaOfEffect: String? = null,
+        val damageByLevel: Map<Level, SpellDamage> = emptyMap(),
+        val savingThrow: String? = null,
         val school: MagicSchool,
     ) : Spell(index, name, level, isFavorite)
+
+    data class SpellDamage(
+        val type: String,
+        val dice: String,
+    )
 }

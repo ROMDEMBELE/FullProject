@@ -2,6 +2,7 @@ package repository
 
 import data.api.DndApi
 import data.database.SqlDatabase
+import data.dto.SpellDto
 import domain.Level
 import domain.spell.MagicSchool
 import domain.spell.Spell
@@ -51,16 +52,22 @@ class SpellRepository(private val spellApi: DndApi, private val dataBase: SqlDat
         }
     }
 
+    private fun SpellDto.getDamageByLevel(): Map<Level, Spell.SpellDamage> {
+        val damageLevels = damage?.damageAtSlotLevel ?: damage?.damageAtCharacterLevel
+        return damageLevels?.let { levels ->
+            levels.mapKeys { (level, _) -> Level.fromInt(level) }
+                .mapValues { (_, dice) ->
+                    Spell.SpellDamage(
+                        type = damage?.damageType?.name.toString(),
+                        dice = dice
+                    )
+                }
+        } ?: emptyMap()
+    }
+
     suspend fun getSpellByIndex(index: String): Spell.SpellDetails? {
         try {
             return spellApi.getSpellByIndex(index)?.let { dto ->
-
-                val damageSlot = when {
-                    !dto.damage.damageAtCharacterLevel.isNullOrEmpty() -> dto.damage.damageAtCharacterLevel
-                    !dto.damage.damageAtSlotLevel.isNullOrEmpty() -> dto.damage.damageAtSlotLevel
-                    else -> emptyMap()
-                }.mapKeys { (key, _) -> Level.fromInt(key) }
-
                 val isFavorite: Boolean =
                     dataBase.getSpellById(index).firstOrNull()?.isFavorite == 1L
 
@@ -81,9 +88,8 @@ class SpellRepository(private val spellApi: DndApi, private val dataBase: SqlDat
                     concentration = dto.concentration,
                     castingTime = dto.castingTime,
                     attackType = dto.attackType,
-                    damageType = dto.damage.damageType.name,
-                    damageSlot = damageSlot,
-                    save = dto.dc.let { "${it.dcType.name}(${it.dcSuccess})" },
+                    damageByLevel = dto.getDamageByLevel(),
+                    savingThrow = dto.dc?.let { "${it.dcType.name} saving throw for ${it.dcSuccess} damage" },
                     school = school
                 )
             }
