@@ -1,4 +1,4 @@
-package ui.character
+package ui.player
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -8,12 +8,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Divider
 import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -26,23 +26,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
-import domain.CharacterClass
+import domain.model.character.CharacterClass
 import kotlinx.coroutines.launch
-import org.dembeyo.shared.resources.*
+import org.dembeyo.shared.resources.Res
+import org.dembeyo.shared.resources.ancient
+import org.dembeyo.shared.resources.minus_circle
+import org.dembeyo.shared.resources.plus_circle
+import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
-import ui.composable.DropDownTextField
-import ui.darkBlue
-import ui.lightGray
 import ui.MediumBold
+import ui.composable.CustomTextField
+import ui.darkBlue
+import ui.darkGray
+import ui.darkPrimary
+import ui.lightGray
+import ui.secondary
 
-class CharacterCreationScreen() : Screen {
+class EditPlayerStatScreen(val id: Int? = null) : Screen {
     @Composable
     override fun Content() {
-        val viewModel: CharacterViewModel = koinInject()
+        val viewModel: PlayerViewModel = koinInject()
         val scope = rememberCoroutineScope()
         val uiState by viewModel.uiState.collectAsState()
         var classes by remember { mutableStateOf(emptyList<CharacterClass>()) }
@@ -51,55 +60,96 @@ class CharacterCreationScreen() : Screen {
             classes = viewModel.getClasses()
         }
 
-        LazyColumn(modifier = Modifier.padding(16.dp)) {
+        LazyColumn(modifier = Modifier.padding(8.dp)) {
             item {
-                TextField(
-                    value = uiState.name,
-                    onValueChange = { viewModel.updateName(it) },
-                    label = { Text("Name") },
+                Text(
+                    "Player Character",
+                    modifier = Modifier.fillMaxWidth(),
+                    fontSize = 40.sp,
+                    textAlign = TextAlign.Center,
+                    fontFamily = FontFamily(Font(Res.font.ancient)),
+                    color = darkPrimary
+                )
+
+                Divider(
+                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp),
+                    color = darkPrimary,
+                    thickness = 3.dp
+                )
+
+                CustomTextField(
+                    textFieldValue = uiState.playerName,
+                    onTextChange = { viewModel.updatePlayerName(it) },
+                    placeholder = "Player Name",
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                CustomTextField(
+                    textFieldValue = uiState.characterName,
+                    onTextChange = { viewModel.updateCharacterName(it) },
+                    placeholder = "Character Name",
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(Modifier.height(12.dp))
-
-                if (classes.isNotEmpty()) {
-                    DropDownTextField(
-                        value = uiState.characterClass,
-                        label = "Classes",
-                        list = classes
-                    ) { viewModel.updateClass(it) }
-                }
-
-                Spacer(Modifier.height(12.dp))
-
-                TextField(
-                    value = uiState.age,
-                    onValueChange = { viewModel.updateAge(it) },
-                    label = { Text("Age") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth()
+                Divider(
+                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp),
+                    color = darkPrimary,
+                    thickness = 3.dp
                 )
 
-                Spacer(Modifier.height(12.dp))
-
-                CounterSelector("Level") {
+                CounterSelector("Level", minus = 1, maximum = 20, defaultValue = 1) {
                     viewModel.updateLevel(it)
                 }
 
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(8.dp))
+
+                CounterSelector("Armor Class") {
+                    viewModel.updateArmorClass(it)
+                }
+
+                Spacer(Modifier.height(8.dp))
+
+                CounterSelector("Hit Point", minus = 1, maximum = 999) {
+                    viewModel.updateHitPoint(it)
+                }
+
+                Spacer(Modifier.height(8.dp))
+
+                CounterSelector("Spell Save") {
+                    viewModel.updateSpellSave(it)
+                }
+
+                Divider(
+                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp),
+                    color = darkPrimary,
+                    thickness = 3.dp
+                )
 
                 uiState.abilities.forEach { (ability, modifier) ->
                     CounterSelector(ability.fullName, defaultValue = modifier) {
                         viewModel.updateAbilityScores(ability, it)
                     }
-                    Spacer(Modifier.height(12.dp))
+                    Spacer(Modifier.height(8.dp))
                 }
+
+                Divider(
+                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp),
+                    color = darkPrimary,
+                    thickness = 3.dp
+                )
 
                 Button(
                     enabled = uiState.isValid,
-                    onClick = {
-                        viewModel.saveCharacter()
-                    },
+                    onClick = {},
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = darkPrimary,
+                        contentColor = secondary,
+                        disabledContentColor = darkGray,
+                        disabledBackgroundColor = lightGray
+                    ),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Save")

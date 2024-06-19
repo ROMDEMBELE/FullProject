@@ -8,3 +8,5 @@ actual fun getPlatform(): Platform = AndroidPlatform()
 
 
 actual typealias PlatformContext = android.content.Context
+
+actual typealias JavaSerializable = java.io.Serializable

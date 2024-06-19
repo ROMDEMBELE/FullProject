@@ -3,16 +3,16 @@ package ui.spell
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import domain.Level
-import domain.spell.Spell
+import domain.model.Level
+import domain.model.spell.Spell
+import domain.repository.SpellRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import repository.SpellRepository
 
-class SpellScreenViewModel(private val spellRepository: SpellRepository) : ViewModel() {
+class SpellViewModel(private val spellRepository: SpellRepository) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SpellListUiState())
     val uiState = _uiState.asStateFlow()
@@ -50,7 +50,7 @@ class SpellScreenViewModel(private val spellRepository: SpellRepository) : ViewM
         viewModelScope.launch {
             val level = _uiState.value.filterByLevel
             val text = _uiState.value.textField.text
-            spellRepository.getSpells().collectLatest { list ->
+            spellRepository.getListOfSpells().collectLatest { list ->
                 val favoriteByLevel =
                     list.filter { spell -> spell.isFavorite }
                         .sortedBy { spell -> spell.level }

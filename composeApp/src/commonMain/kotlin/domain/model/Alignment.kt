@@ -1,8 +1,10 @@
+package domain.model
+
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class CreatureAlignment(val fullName: String) {
+enum class Alignment(val fullName: String) {
     @SerialName("any alignment")
     ANY_ALIGNMENT("any alignment"),
 

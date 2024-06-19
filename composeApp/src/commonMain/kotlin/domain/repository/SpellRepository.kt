@@ -1,12 +1,12 @@
-package repository
+package domain.repository
 
 import data.api.DndApi
 import data.database.SqlDatabase
 import data.dto.SpellDto
-import domain.DamageType
-import domain.Level
-import domain.spell.MagicSchool
-import domain.spell.Spell
+import domain.model.DamageType
+import domain.model.Level
+import domain.model.spell.MagicSchool
+import domain.model.spell.Spell
 import io.ktor.client.plugins.ServerResponseException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +40,7 @@ class SpellRepository(private val spellApi: DndApi, private val dataBase: SqlDat
         dataBase.updateSpellFavoriteStatus(index, isFavorite)
     }
 
-    fun getSpells(): Flow<List<Spell>> {
+    fun getListOfSpells(): Flow<List<Spell>> {
         return dataBase.getAllSpells().map {
             it.map { dbo ->
                 Spell(

@@ -38,8 +38,8 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
-import domain.Level
-import domain.spell.Spell
+import domain.model.Level
+import domain.model.spell.Spell
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.magic
 import org.jetbrains.compose.resources.painterResource

@@ -6,22 +6,22 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.module.Module
 import org.koin.dsl.module
-import ui.character.CharacterViewModel
-import ui.monster.MonsterScreenViewModel
-import ui.spell.SpellScreenViewModel
+import ui.player.PlayerViewModel
+import ui.monster.MonsterViewModel
+import ui.spell.SpellViewModel
 
 actual fun platformModule(): Module = module {
     single {
         Darwin.create()
     }
     single { DriverFactory() }
-    factory { SpellScreenViewModel(get()) }
-    factory { CharacterViewModel(get()) }
-    factory { MonsterScreenViewModel(get()) }
+    factory { SpellViewModel(get()) }
+    factory { PlayerViewModel(get()) }
+    factory { MonsterViewModel(get()) }
 }
 
 object ViewModelProvider : KoinComponent {
-    fun getSpellScreenViewModel() = SpellScreenViewModel(get())
-    fun getCharacterViewModel() = CharacterViewModel(get())
-    fun getMonsterViewModel() = MonsterScreenViewModel(get())
+    fun getSpellScreenViewModel() = SpellViewModel(get())
+    fun getCharacterViewModel() = PlayerViewModel(get())
+    fun getMonsterViewModel() = MonsterViewModel(get())
 }

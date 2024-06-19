@@ -1,4 +1,4 @@
-package domain
+package domain.model
 
 import androidx.compose.ui.graphics.Color
 import kotlinx.serialization.SerialName

@@ -1,10 +1,10 @@
-package repository
+package domain.repository
 
 import data.api.DndApi
 import data.database.SqlDatabase
-import domain.Ability
-import domain.CharacterClass
-import domain.Level
+import domain.model.Ability
+import domain.model.Level
+import domain.model.character.CharacterClass
 import io.ktor.client.plugins.ServerResponseException
 import org.lighthousegames.logging.logging
 
@@ -31,21 +31,7 @@ class CharacterRepository(private val dndApi: DndApi, private val database: SqlD
         level: Level,
         abilities: Map<Ability, Int>
     ) {
-        database.createCharacter(
-            name = name,
-            age = age.toLong(),
-            characterClass = characterClass.index,
-            subclass = "",
-            level = level.level.toLong(),
-            cha = abilities[Ability.CHA]!!.toLong(),
-            wis = abilities[Ability.WIS]!!.toLong(),
-            str = abilities[Ability.STR]!!.toLong(),
-            int = abilities[Ability.INT]!!.toLong(),
-            con = abilities[Ability.CON]!!.toLong(),
-            dex = abilities[Ability.DEX]!!.toLong(),
-            race = "",
-            features = "",
-        )
+
     }
 
     companion object {

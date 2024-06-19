@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
-import domain.spell.Spell
+import domain.model.spell.Spell
 import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.magic
@@ -148,7 +148,7 @@ class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {
                 LazyColumn {
                     item {
                         Text(
-                            spell.text.toString(),
+                            spell.text,
                             Modifier.padding(8.dp),
                             fontSize = 16.sp,
                             style = TextStyle.Default.copy(lineBreak = LineBreak.Paragraph),

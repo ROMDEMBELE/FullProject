@@ -33,8 +33,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
-import domain.monster.Challenge
-import domain.monster.Monster
+import domain.model.monster.Challenge
+import domain.model.monster.Monster
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.monster
 import org.jetbrains.compose.resources.painterResource

@@ -1,9 +1,9 @@
-package domain.monster
+package domain.model.monster
 
-import CreatureAlignment
-import domain.Ability
-import domain.DamageType
-import domain.Level
+import domain.model.Alignment
+import domain.model.Ability
+import domain.model.DamageType
+import domain.model.Level
 
 open class Monster(
     open val index: String,
@@ -18,7 +18,7 @@ open class Monster(
         override val isFavorite: Boolean,
         val size: CreatureSize,
         val type: CreatureType,
-        val alignment: CreatureAlignment,
+        val alignment: Alignment,
         val armorsClass: Map<String, Int>,
         val hitPoints: Int,
         val hitPointsRoll: String,

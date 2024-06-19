@@ -1,7 +1,7 @@
-package domain.spell
+package domain.model.spell
 
-import domain.DamageType
-import domain.Level
+import domain.model.DamageType
+import domain.model.Level
 
 
 open class Spell(

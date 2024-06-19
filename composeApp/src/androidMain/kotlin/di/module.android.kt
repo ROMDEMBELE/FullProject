@@ -5,13 +5,13 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.Module
 import org.koin.dsl.module
-import ui.character.CharacterViewModel
-import ui.monster.MonsterScreenViewModel
-import ui.spell.SpellScreenViewModel
+import ui.player.PlayerViewModel
+import ui.monster.MonsterViewModel
+import ui.spell.SpellViewModel
 
 actual fun platformModule(): Module = module {
-    viewModelOf(::SpellScreenViewModel)
-    viewModelOf(::CharacterViewModel)
-    viewModelOf(::MonsterScreenViewModel)
+    viewModelOf(::SpellViewModel)
+    viewModelOf(::PlayerViewModel)
+    viewModelOf(::MonsterViewModel)
     single { DriverFactory(androidContext()) }
 }

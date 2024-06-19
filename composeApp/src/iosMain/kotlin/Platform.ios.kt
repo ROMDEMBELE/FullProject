@@ -9,3 +9,5 @@ actual fun getPlatform(): Platform = IOSPlatform()
 actual abstract class PlatformContext
 
 object IosContext : PlatformContext()
+
+actual interface JavaSerializable

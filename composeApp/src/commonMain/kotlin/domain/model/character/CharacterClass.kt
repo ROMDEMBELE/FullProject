@@ -1,4 +1,4 @@
-package domain
+package domain.model.character
 
 data class CharacterClass(
     val index: String,

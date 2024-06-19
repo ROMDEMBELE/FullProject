@@ -1,4 +1,6 @@
-package domain
+package domain.model.character
+
+import domain.model.Ability
 
 enum class Skill(val id: String, val displayName: String, val abilityScore: Ability) {
     DECEPTION("deception", "Deception", Ability.CHA),

@@ -1,4 +1,4 @@
-package domain.spell
+package domain.model.spell
 
 import androidx.compose.ui.graphics.Color
 import kotlinx.serialization.Serializable

@@ -28,10 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
-import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import domain.Level
+import domain.model.Level
 import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.ancient
@@ -46,15 +45,15 @@ import ui.darkBlue
 import ui.darkPrimary
 
 
-class SpellListScreen : Screen {
+class SpellListScreen() : Screen {
 
     override val key: ScreenKey
-        get() = uniqueScreenKey
+        get() = "SpellListScreen"
 
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel: SpellScreenViewModel = koinInject()
+        val viewModel: SpellViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
         var favoriteEnabled by rememberSaveable { mutableStateOf(false) }
         val scope = rememberCoroutineScope()

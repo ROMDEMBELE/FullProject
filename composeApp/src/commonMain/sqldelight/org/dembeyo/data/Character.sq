@@ -1,18 +1,17 @@
 CREATE TABLE CharacterDbo (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
-    age INTEGER NOT NULL,
-    race TEXT NOT NULL,
+    player TEXT NOT NULL,
     class TEXT NOT NULL,
-    subclass TEXT NOT NULL,
     level INTEGER NOT NULL,
+    armor INTEGER NOT NULL,
+    life INTEGER NOT NULL,
     cha INTEGER NOT NULL,
     con INTEGER NOT NULL,
     dex INTEGER NOT NULL,
     int INTEGER NOT NULL,
     str INTEGER NOT NULL,
-    wis INTEGER NOT NULL,
-    features TEXT NOT NULL
+    wis INTEGER NOT NULL
 );
 
 CREATE INDEX character_id ON CharacterDbo(id);
@@ -21,9 +20,9 @@ selectAll:
 SELECT *
 FROM CharacterDbo;
 
-insert:
-INSERT OR FAIL INTO CharacterDbo (
-    name, age, race, class, subclass, level, cha, con, dex, int, str, wis, features
+insertOrUpdate:
+INSERT OR REPLACE INTO CharacterDbo (
+    id, name, player, class, level, armor, life, cha, con, dex, int, str, wis
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 selectById:

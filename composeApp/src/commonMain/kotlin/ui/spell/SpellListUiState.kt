@@ -1,8 +1,8 @@
 package ui.spell
 
 import androidx.compose.ui.text.input.TextFieldValue
-import domain.Level
-import domain.spell.Spell
+import domain.model.Level
+import domain.model.spell.Spell
 
 data class SpellListUiState(
     val filteredSpellsByLevel: Map<Level, List<Spell>> = emptyMap(),

@@ -26,7 +26,7 @@ import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import domain.monster.Challenge
+import domain.model.monster.Challenge
 import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.ancient
@@ -49,7 +49,7 @@ class MonsterListScreen() : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel: MonsterScreenViewModel = koinInject()
+        val viewModel: MonsterViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
         val scope = rememberCoroutineScope()
         var favoriteEnabled by rememberSaveable { mutableStateOf(false) }

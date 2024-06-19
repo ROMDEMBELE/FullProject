@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import domain.monster.Challenge
+import domain.model.monster.Challenge
 import ui.darkPrimary
 import ui.lightGray
 

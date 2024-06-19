@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import domain.DamageType
+import domain.model.DamageType
 import org.jetbrains.compose.resources.painterResource
 import ui.darkBlue
 import ui.secondary

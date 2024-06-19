@@ -1,8 +1,8 @@
-package repository
+package domain.repository
 
 import data.api.DndApi
-import domain.Feature
-import domain.Level
+import domain.model.Level
+import domain.model.character.Feature
 import io.ktor.client.plugins.ServerResponseException
 import org.lighthousegames.logging.logging
 

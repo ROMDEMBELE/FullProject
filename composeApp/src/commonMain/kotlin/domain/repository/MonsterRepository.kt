@@ -1,4 +1,4 @@
-package repository
+package domain.repository
 
 import data.api.DndApi
 import data.database.SqlDatabase
@@ -8,16 +8,16 @@ import data.dto.monster.PolymorphicDamage
 import data.dto.monster.PolymorphicMultiAttackOption
 import data.dto.monster.PolymorphicSpellCastingAbilityDetails
 import data.dto.monster.PolymorphicUsageLimitDto
-import domain.Ability
-import domain.DamageType
-import domain.Level
-import domain.monster.Challenge
-import domain.monster.Monster
-import domain.monster.Monster.InnateSpellCastingAbility
-import domain.monster.Monster.SavingThrow
-import domain.monster.Monster.SavingThrowAbility
-import domain.monster.Monster.SpecialAbility
-import domain.monster.Monster.SpellCasting
+import domain.model.Ability
+import domain.model.DamageType
+import domain.model.Level
+import domain.model.monster.Challenge
+import domain.model.monster.Monster
+import domain.model.monster.Monster.InnateSpellCastingAbility
+import domain.model.monster.Monster.SavingThrow
+import domain.model.monster.Monster.SavingThrowAbility
+import domain.model.monster.Monster.SpecialAbility
+import domain.model.monster.Monster.SpellCasting
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -39,7 +39,7 @@ class MonsterRepository(private val dndApi: DndApi, private val database: SqlDat
         database.updateMonsterFavoriteStatus(index, isFavorite)
     }
 
-    fun getMonsters(): Flow<List<Monster>> = database.getAllMonsters().map {
+    fun getListOfMonsters(): Flow<List<Monster>> = database.getAllMonsters().map {
         it.map { dbo ->
             Monster(
                 index = dbo.id,
@@ -148,7 +148,7 @@ class MonsterRepository(private val dndApi: DndApi, private val database: SqlDat
         }
     }
 
-    private fun PolymorphicAction.toDomainModel(): Monster.Action {
+    private fun PolymorphicAction.toDomain(): Monster.Action {
         return when (this) {
 
             is PolymorphicAction.SimpleActionDto -> {
@@ -266,8 +266,8 @@ class MonsterRepository(private val dndApi: DndApi, private val database: SqlDat
                     xp = monsterDto.xp,
                     image = monsterDto.image,
                     specialAbilities = specialAbilities,
-                    actions = monsterDto.actions.map { it.toDomainModel() },
-                    legendaryActions = monsterDto.legendaryActions.map { it.toDomainModel() }
+                    actions = monsterDto.actions.map { it.toDomain() },
+                    legendaryActions = monsterDto.legendaryActions.map { it.toDomain() }
                 )
             }
         } catch (e: Exception) {

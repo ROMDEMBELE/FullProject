@@ -22,9 +22,9 @@ import ui.MenuScreen.MenuItem.MAGIC_ITEMS
 import ui.MenuScreen.MenuItem.MAGIC_SPELLS
 import ui.MenuScreen.MenuItem.MONSTERS
 import ui.MenuScreen.MenuItem.SKILL
-import ui.character.CharacterCreationScreen
 import ui.darkBlue
 import ui.monster.MonsterListScreen
+import ui.player.EditPlayerStatScreen
 import ui.spell.SpellListScreen
 
 @Composable
@@ -38,7 +38,7 @@ fun MenuDrawer(navigator: Navigator, onDismiss: () -> Unit) {
                     MONSTERS -> navigator.replaceAll(listOf(MenuScreen(), MonsterListScreen()))
                     MAGIC_ITEMS -> {}
                     CLASS -> {}
-                    SKILL -> navigator.replaceAll(listOf(MenuScreen(), CharacterCreationScreen()))
+                    SKILL -> navigator.replaceAll(listOf(MenuScreen(), EditPlayerStatScreen()))
                     EQUIPMENTS -> {}
                 }
                 onDismiss()

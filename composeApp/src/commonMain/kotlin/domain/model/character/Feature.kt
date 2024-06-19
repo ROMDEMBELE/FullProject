@@ -1,4 +1,6 @@
-package domain
+package domain.model.character
+
+import domain.model.Level
 
 data class Feature(
     val index: String,

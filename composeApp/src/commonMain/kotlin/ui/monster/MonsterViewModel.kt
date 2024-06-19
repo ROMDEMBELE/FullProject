@@ -3,17 +3,17 @@ package ui.monster
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import domain.monster.Challenge
-import domain.monster.Monster
+import domain.model.monster.Challenge
+import domain.model.monster.Monster
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import repository.MonsterRepository
+import domain.repository.MonsterRepository
 
-class MonsterScreenViewModel(private val monsterRepository: MonsterRepository) : ViewModel() {
+class MonsterViewModel(private val monsterRepository: MonsterRepository) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MonsterListUiState())
     val uiState: StateFlow<MonsterListUiState> = _uiState.asStateFlow()
@@ -24,7 +24,7 @@ class MonsterScreenViewModel(private val monsterRepository: MonsterRepository) :
 
     private fun refreshUiState() {
         viewModelScope.launch {
-            monsterRepository.getMonsters().collectLatest { list ->
+            monsterRepository.getListOfMonsters().collectLatest { list ->
                 val favorites =
                     list.filter { it.isFavorite }.sortedBy { it.challenge }.groupBy { it.challenge }
                 val text = _uiState.value.textField.text

@@ -1,4 +1,4 @@
-package domain.monster
+package domain.model.monster
 
 import androidx.compose.ui.graphics.Color
 import kotlinx.serialization.SerialName

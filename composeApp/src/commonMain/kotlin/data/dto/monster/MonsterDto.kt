@@ -1,11 +1,11 @@
 package data.dto.monster
 
-import CreatureAlignment
+import domain.model.Alignment
 import data.dto.ReferenceDto
-import domain.monster.CreatureMovement
-import domain.monster.CreatureSense
-import domain.monster.CreatureSize
-import domain.monster.CreatureType
+import domain.model.monster.CreatureMovement
+import domain.model.monster.CreatureSense
+import domain.model.monster.CreatureSize
+import domain.model.monster.CreatureType
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -16,7 +16,7 @@ data class MonsterDto(
     val url: String,
     val size: CreatureSize,
     val type: CreatureType,
-    val alignment: CreatureAlignment,
+    val alignment: Alignment,
     @SerialName("armor_class")
     val armorClass: List<ArmorDto>,
     @SerialName("hit_points")
