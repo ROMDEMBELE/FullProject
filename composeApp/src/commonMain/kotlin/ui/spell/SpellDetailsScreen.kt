@@ -53,6 +53,7 @@ import org.dembeyo.shared.resources.plus_circle
 import org.jetbrains.compose.resources.painterResource
 import ui.MediumBold
 import ui.clip
+import ui.composable.generateView
 import ui.darkBlue
 import ui.darkPrimary
 import ui.lightBlue
@@ -160,6 +161,21 @@ class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {
 
             val animatedColorMinus by animateColorAsState(if (pagerState.canScrollBackward) secondary else lightGray)
             val animatedColorPlus by animateColorAsState(if (pagerState.canScrollForward) secondary else lightGray)
+
+            if (spell.savingThrow != null) {
+                Surface(color = primary) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth().padding(12.dp),
+                        text = "${spell.savingThrow}",
+                        color = secondary,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Monospace,
+                        textAlign = TextAlign.Center,
+                        fontSize = 20.sp
+                    )
+                }
+            }
+
             if (spell.damageByLevel.isNotEmpty()) {
                 Box(Modifier.fillMaxWidth().background(darkBlue)) {
                     Row(
@@ -200,7 +216,7 @@ class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {
                     Column(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.background(level.color).fillMaxWidth()
+                        modifier = Modifier.background(Brush.linearGradient(listOf(secondary, level.color))).fillMaxWidth()
                             .padding(16.dp),
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -213,29 +229,9 @@ class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {
                                 fontSize = 30.sp
                             )
                             Spacer(Modifier.width(12.dp))
-                            Text(
-                                text = damage.type,
-                                color = darkPrimary,
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = FontFamily.Monospace,
-                                textAlign = TextAlign.Center,
-                                fontSize = 30.sp
-                            )
+                            damage.type.generateView()
                         }
                     }
-                }
-            }
-            if (spell.savingThrow != null) {
-                Surface(color = primary) {
-                    Text(
-                        modifier = Modifier.fillMaxWidth().padding(12.dp),
-                        text = "Save DC ${spell.savingThrow}",
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.Monospace,
-                        textAlign = TextAlign.Center,
-                        fontSize = 20.sp
-                    )
                 }
             }
         }

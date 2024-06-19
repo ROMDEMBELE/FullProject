@@ -3,6 +3,7 @@ package repository
 import data.api.DndApi
 import data.database.SqlDatabase
 import data.dto.SpellDto
+import domain.DamageType
 import domain.Level
 import domain.spell.MagicSchool
 import domain.spell.Spell
@@ -58,7 +59,7 @@ class SpellRepository(private val spellApi: DndApi, private val dataBase: SqlDat
             levels.mapKeys { (level, _) -> Level.fromInt(level) }
                 .mapValues { (_, dice) ->
                     Spell.SpellDamage(
-                        type = damage?.damageType?.name.toString(),
+                        type = DamageType.fromIndex(damage?.damageType?.index.toString()),
                         dice = dice
                     )
                 }

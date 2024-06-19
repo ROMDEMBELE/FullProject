@@ -9,6 +9,7 @@ import data.dto.monster.PolymorphicMultiAttackOption
 import data.dto.monster.PolymorphicSpellCastingAbilityDetails
 import data.dto.monster.PolymorphicUsageLimitDto
 import domain.Ability
+import domain.DamageType
 import domain.Level
 import domain.monster.Challenge
 import domain.monster.Monster
@@ -132,7 +133,7 @@ class MonsterRepository(private val dndApi: DndApi, private val database: SqlDat
             is PolymorphicDamage.DamageDto -> {
                 listOf(
                     Monster.Damage(
-                        type = damageType.name,
+                        type = DamageType.fromIndex(damageType.index),
                         dice = damageDice,
                         notes = notes
                     )

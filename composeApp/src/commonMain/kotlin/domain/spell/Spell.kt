@@ -1,5 +1,6 @@
 package domain.spell
 
+import domain.DamageType
 import domain.Level
 
 
@@ -31,7 +32,7 @@ open class Spell(
     ) : Spell(index, name, level, isFavorite)
 
     data class SpellDamage(
-        val type: String,
+        val type: DamageType,
         val dice: String,
     )
 }

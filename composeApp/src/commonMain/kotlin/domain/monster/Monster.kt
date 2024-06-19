@@ -2,6 +2,7 @@ package domain.monster
 
 import CreatureAlignment
 import domain.Ability
+import domain.DamageType
 import domain.Level
 
 open class Monster(
@@ -139,7 +140,7 @@ open class Monster(
     ) : Action(name, desc)
 
     data class Damage(
-        val type: String,
+        val type: DamageType,
         val dice: String,
         val notes: String? = null,
     )
