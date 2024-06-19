@@ -5,13 +5,14 @@ import domain.Level
 import domain.spell.Spell
 
 data class SpellListUiState(
-    val spellsByLevel: Map<Level, List<Spell>> = emptyMap(),
+    val filteredSpellsByLevel: Map<Level, List<Spell>> = emptyMap(),
     val filterByLevel: List<Level> = emptyList(),
     val textField: TextFieldValue = TextFieldValue(),
-    val favoriteSpells: List<Spell> = emptyList()
+    val favoriteByLevel: Map<Level, List<Spell>> = emptyMap(),
 ) {
     val filterCounter: Int
         get() = filterByLevel.size
 
-    val favoritesCounter: Int = favoriteSpells.size
+    val favoritesCounter: Int
+        get() = favoriteByLevel.values.sumOf { it.size }
 }

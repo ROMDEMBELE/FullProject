@@ -2,9 +2,13 @@ package ui.composable
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Badge
 import androidx.compose.material.BadgedBox
@@ -40,25 +44,34 @@ fun SearchMenu(
     searchTextFieldValue: TextFieldValue,
     onTextChange: (TextFieldValue) -> Unit,
     favoriteCounter: Int = 0,
-    onFavoritesClick: (enabled: Boolean) -> Unit,
+    favoriteEnabled: Boolean,
+    onFavoritesClick: () -> Unit,
     filterCounter: Int = 0,
     filterContent: @Composable () -> Unit,
 ) {
     // Search Bar
     var filterExpended by remember { mutableStateOf(false) }
-    var favoritesEnabled by remember { mutableStateOf(false) }
 
-    Column(Modifier.padding(8.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            BadgedBox(badge = {
-                if (filterCounter > 0)
-                    Badge(
-                        backgroundColor = primary,
-                        contentColor = Color.White,
-                    ) { Text("$filterCounter") }
-            }) {
-                IconButton(enabled = !favoritesEnabled, onClick = { filterExpended = !filterExpended }) {
-                    Crossfade(filterExpended && !favoritesEnabled) { extended ->
+    Column(Modifier.padding(vertical = 8.dp)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+        ) {
+            BadgedBox(
+                badge = {
+                    if (filterCounter > 0)
+                        Badge(
+                            backgroundColor = primary,
+                            contentColor = Color.White,
+                        ) { Text("$filterCounter") }
+                }
+            ) {
+                IconButton(
+                    modifier = Modifier.then(Modifier.size(30.dp).aspectRatio(1f)),
+                    enabled = !favoriteEnabled,
+                    onClick = { filterExpended = !filterExpended }) {
+                    Crossfade(filterExpended && !favoriteEnabled) { extended ->
                         if (extended) {
                             Icon(
                                 Icons.Filled.KeyboardArrowUp, null,
@@ -73,11 +86,10 @@ fun SearchMenu(
                     }
                 }
             }
-
             TextField(
-                shape = RoundedCornerShape(30.dp),
+                shape = RoundedCornerShape(20.dp),
                 value = searchTextFieldValue,
-                enabled = !favoritesEnabled,
+                enabled = !favoriteEnabled,
                 label = { Text(searchTextPlaceholder) },
                 leadingIcon = { Icon(Icons.Filled.Search, null) },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -94,19 +106,17 @@ fun SearchMenu(
                     placeholderColor = Color.Transparent
                 ),
                 onValueChange = onTextChange,
-                modifier = Modifier.weight(1f).padding(start = 8.dp, end = 8.dp)
+                modifier = Modifier.padding(horizontal = 12.dp).weight(1f)
             )
-
-            IconButton({
-                favoritesEnabled = !favoritesEnabled
-                onFavoritesClick(favoritesEnabled)
-            }) {
-                Crossfade(favoritesEnabled) { favorite ->
+            IconButton(
+                modifier = Modifier.then(Modifier.size(30.dp).aspectRatio(1f)),
+                onClick = onFavoritesClick
+            ) {
+                Crossfade(favoriteEnabled) { favorite ->
                     if (favorite) {
                         Icon(
                             Icons.Filled.Menu, null,
                             tint = darkPrimary,
-                            modifier = Modifier.padding(10.dp)
                         )
                     } else {
                         BadgedBox(badge = {
@@ -119,14 +129,13 @@ fun SearchMenu(
                             Icon(
                                 Icons.Filled.Star, null,
                                 tint = darkPrimary,
-                                modifier = Modifier.padding(10.dp)
                             )
                         }
                     }
                 }
             }
         }
-        AnimatedVisibility(filterExpended && !favoritesEnabled) {
+        AnimatedVisibility(filterExpended && !favoriteEnabled) {
             filterContent()
         }
     }

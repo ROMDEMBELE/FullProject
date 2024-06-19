@@ -21,7 +21,7 @@ class SpellScreenViewModel(private val spellRepository: SpellRepository) : ViewM
         refreshUiState()
     }
 
-    suspend fun getSpell(index: String): Spell.SpellDetails? =
+    suspend fun getSpellDetailsByIndex(index: String): Spell.SpellDetails? =
         spellRepository.getSpellByIndex(index)
 
     fun toggleSpellIsFavorite(spell: Spell) {
@@ -51,17 +51,22 @@ class SpellScreenViewModel(private val spellRepository: SpellRepository) : ViewM
             val level = _uiState.value.filterByLevel
             val text = _uiState.value.textField.text
             spellRepository.getSpells().collectLatest { list ->
-                val favorites =
-                    list.filter { spell -> spell.isFavorite }.sortedBy { spell -> spell.level }
+                val favoriteByLevel =
+                    list.filter { spell -> spell.isFavorite }
+                        .sortedBy { spell -> spell.level }
+                        .groupBy { spell -> spell.level }
+
 
                 val spellsByLevel = list.asSequence().sortedBy { spell -> spell.level }
                     .filter { spell -> level.isEmpty() || level.contains(spell.level) }
                     .filter { spell -> spell.name.contains(text, true) }
+                    .sortedBy { spell -> spell.level }
                     .groupBy { spell -> spell.level }
+
                 _uiState.update {
                     it.copy(
-                        spellsByLevel = spellsByLevel,
-                        favoriteSpells = favorites
+                        filteredSpellsByLevel = spellsByLevel,
+                        favoriteByLevel = favoriteByLevel
                     )
                 }
             }

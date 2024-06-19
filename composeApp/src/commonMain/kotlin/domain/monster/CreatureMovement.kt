@@ -4,6 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.climb
+import org.dembeyo.shared.resources.dig
 import org.dembeyo.shared.resources.ghost
 import org.dembeyo.shared.resources.swim
 import org.dembeyo.shared.resources.walk
@@ -12,6 +13,9 @@ import org.jetbrains.compose.resources.DrawableResource
 
 @Serializable
 enum class CreatureMovement(val fullName: String, val icon: DrawableResource) {
+    @SerialName("burrow")
+    BURROW("burrow", Res.drawable.dig),
+
     @SerialName("hover")
     HOVER("hover", Res.drawable.ghost),
 

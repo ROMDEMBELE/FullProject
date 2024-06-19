@@ -9,7 +9,7 @@ data class MonsterListUiState(
     val minChallenge: Challenge = Challenge.CR_0,
     val maxChallenge: Challenge = Challenge.CR_30,
     var textField: TextFieldValue = TextFieldValue(),
-    val favorites: List<Monster> = emptyList()
+    val favoriteMonsterByChallenge: Map<Challenge, List<Monster>> = emptyMap()
 ) {
-    val favoriteCounter get() = favorites.size
+    val favoriteCounter get() = favoriteMonsterByChallenge.values.sumOf { it.size }
 }

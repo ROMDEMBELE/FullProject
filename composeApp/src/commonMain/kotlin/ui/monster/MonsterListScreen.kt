@@ -1,30 +1,14 @@
 package ui.monster
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.material.Divider
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -32,34 +16,28 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import domain.monster.Challenge
-import domain.monster.Monster
 import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
-import org.dembeyo.shared.resources.monster
-import org.jetbrains.compose.resources.painterResource
+import org.dembeyo.shared.resources.ancient
+import org.dembeyo.shared.resources.menu_monster
+import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
-import ui.MediumBold
 import ui.composable.DropDownTextField
+import ui.composable.ListOfMonster
 import ui.composable.SearchMenu
-import ui.darkBlue
-import ui.darkGray
-import ui.item
-import ui.primary
-import ui.secondary
+import ui.darkPrimary
 
 
 class MonsterListScreen() : Screen {
@@ -74,20 +52,41 @@ class MonsterListScreen() : Screen {
         val viewModel: MonsterScreenViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
         val scope = rememberCoroutineScope()
-        var favorite by rememberSaveable { mutableStateOf(false) }
-
-        // save ui state here
-        val listState = rememberSaveable(saver = LazyListState.Saver) {
-            LazyListState(0, 0)
-        }
-
+        var favoriteEnabled by rememberSaveable { mutableStateOf(false) }
         Column {
+            AnimatedContent(favoriteEnabled) { fav ->
+                if (fav) {
+                    Text(
+                        "${uiState.favoriteCounter} Favorite Monsters",
+                        modifier = Modifier.fillMaxWidth(),
+                        fontSize = 40.sp,
+                        textAlign = TextAlign.Center,
+                        fontFamily = FontFamily(Font(Res.font.ancient)),
+                        color = darkPrimary
+                    )
+                } else {
+                    Text(
+                        stringResource(Res.string.menu_monster),
+                        modifier = Modifier.fillMaxWidth(),
+                        fontSize = 40.sp,
+                        textAlign = TextAlign.Center,
+                        fontFamily = FontFamily(Font(Res.font.ancient)),
+                        color = darkPrimary
+                    )
+                }
+            }
+            Divider(
+                modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
+                color = darkPrimary,
+                thickness = 3.dp
+            )
             SearchMenu(
                 searchTextPlaceholder = "Search by name",
                 searchTextFieldValue = uiState.textField,
                 onTextChange = { viewModel.filterByText(it) },
                 favoriteCounter = uiState.favoriteCounter,
-                onFavoritesClick = { enabled -> favorite = enabled },
+                favoriteEnabled = favoriteEnabled,
+                onFavoritesClick = { favoriteEnabled = !favoriteEnabled },
                 filterContent = {
                     Column(
                         modifier = Modifier.padding(12.dp),
@@ -114,114 +113,38 @@ class MonsterListScreen() : Screen {
                     }
                 },
             )
-
-            AnimatedContent(favorite) { favorite ->
+            Divider(
+                modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
+                color = darkPrimary,
+                thickness = 3.dp
+            )
+            AnimatedContent(favoriteEnabled) { favorite ->
                 if (favorite) {
-                    LazyColumn(
-                        state = listState,
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
-                    ) {
-                        items(items = uiState.favorites) { monster ->
-                            MonsterItem(
-                                monster = monster,
-                                onClick = {
-                                    scope.launch {
-                                        viewModel.getMonster(monster.index)?.let {
-                                            navigator.push(MonsterDetailScreen(it))
-                                        }
-                                    }
-                                },
-                                onFavoriteClick = {
-                                    viewModel.toggleMonsterFavorite(monster)
+                    ListOfMonster(
+                        monsterByChallenge = uiState.favoriteMonsterByChallenge,
+                        onMonsterClick = {
+                            scope.launch {
+                                viewModel.getMonster(it.index)?.let {
+                                    navigator.push(MonsterDetailScreen(it))
                                 }
-                            )
-                        }
-                    }
+                            }
+                        },
+                        onFavoriteClick = {
+                            viewModel.toggleMonsterFavorite(it)
+                        })
                 } else {
-                    LazyColumn(
-                        state = listState,
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
-                    ) {
-                        uiState.monsterByChallenge.forEach { (challenge, spells) ->
-                            stickyHeader(challenge) {
-                                Column(Modifier.padding(vertical = 8.dp).alpha(0.8f)) {
-                                    Text(
-                                        text = "CR ${challenge.rating} (${uiState.monsterByChallenge[challenge]?.size ?: 0})",
-                                        modifier = Modifier.clip(CutCornerShape(8.dp))
-                                            .background(challenge.color)
-                                            .border(2.dp, darkBlue, CutCornerShape(8.dp))
-                                            .fillMaxWidth()
-                                            .padding(8.dp),
-                                        style = MediumBold.copy(color = secondary)
-                                    )
+                    ListOfMonster(
+                        monsterByChallenge = uiState.monsterByChallenge,
+                        onMonsterClick = {
+                            scope.launch {
+                                viewModel.getMonster(it.index)?.let {
+                                    navigator.push(MonsterDetailScreen(it))
                                 }
                             }
-                            items(items = spells) { monster ->
-                                MonsterItem(
-                                    monster = monster,
-                                    onClick = {
-                                        scope.launch {
-                                            viewModel.getMonster(monster.index)
-                                                ?.let { completeMonster ->
-                                                    navigator.push(
-                                                        MonsterDetailScreen(
-                                                            completeMonster
-                                                        )
-                                                    )
-                                                }
-                                        }
-                                    },
-                                    onFavoriteClick = {
-                                        scope.launch {
-                                            viewModel.toggleMonsterFavorite(monster)
-                                        }
-                                    })
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-
-    @Composable
-    fun MonsterItem(monster: Monster, onClick: () -> Unit, onFavoriteClick: () -> Unit) {
-        Button(
-            shape = RoundedCornerShape(20.dp),
-            border = BorderStroke(2.dp, primary),
-            contentPadding = PaddingValues(),
-            modifier = Modifier.padding(4.dp).fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(Color.Transparent),
-            onClick = onClick
-        ) {
-            val boxMonsterBrush =
-                Brush.linearGradient(listOf(darkBlue, darkBlue, darkBlue, monster.challenge.color))
-            Box(
-                Modifier.background(boxMonsterBrush)
-            ) {
-                Image(
-                    painterResource(Res.drawable.monster),
-                    null,
-                    colorFilter = ColorFilter.tint(primary),
-                    modifier = Modifier.align(Alignment.Center).height(50.dp).alpha(.5f)
-                )
-                Text(
-                    monster.name,
-                    style = item,
-                    modifier = Modifier.padding(8.dp)
-                        .fillMaxWidth()
-                        .align(Alignment.Center)
-                )
-                IconButton(
-                    onClick = onFavoriteClick,
-                    modifier = Modifier.align(Alignment.CenterEnd).padding(10.dp)
-                ) {
-                    Icon(
-                        Icons.Filled.Star,
-                        null,
-                        tint = if (monster.isFavorite) Color.Yellow else darkGray
-                    )
+                        },
+                        onFavoriteClick = {
+                            viewModel.toggleMonsterFavorite(it)
+                        })
                 }
             }
         }

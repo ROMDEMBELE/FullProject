@@ -25,21 +25,20 @@ class MonsterScreenViewModel(private val monsterRepository: MonsterRepository) :
     private fun refreshUiState() {
         viewModelScope.launch {
             monsterRepository.getMonsters().collectLatest { list ->
-                val favorites = list.filter { it.isFavorite }.sortedBy { it.challenge }
+                val favorites =
+                    list.filter { it.isFavorite }.sortedBy { it.challenge }.groupBy { it.challenge }
                 val text = _uiState.value.textField.text
                 val challengeRange =
                     _uiState.value.minChallenge.rating.._uiState.value.maxChallenge.rating
                 val monsterByChallenge = list
-                    .filter {
-                        it.name.contains(
-                            text,
-                            true
-                        ) && it.challenge.rating in challengeRange
-                    }
+                    .filter { it.name.contains(text, true) && it.challenge.rating in challengeRange }
                     .sortedBy { it.challenge }
                     .groupBy { it.challenge }
                 _uiState.update {
-                    it.copy(monsterByChallenge = monsterByChallenge, favorites = favorites)
+                    it.copy(
+                        monsterByChallenge = monsterByChallenge,
+                        favoriteMonsterByChallenge = favorites
+                    )
                 }
             }
         }

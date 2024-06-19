@@ -25,6 +25,7 @@
     <string name="monster_saving_throws">Saving Throws</string>
     <string name="monster_senses_dark_vision">Darkvision</string>
     <string name="monster_senses_blind_sight">Blindsight</string>
+    <string name="monster_senses_tremor_sense">Tremorsense</string>
     <string name="monster_senses_passive_perception">Passive perception</string>
     <string name="monster_senses_true_sight">Truesight</string>
 
