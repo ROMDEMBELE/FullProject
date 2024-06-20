@@ -47,7 +47,7 @@ import org.dembeyo.shared.resources.home
 import org.dembeyo.shared.resources.knight
 import org.dembeyo.shared.resources.magic
 import org.dembeyo.shared.resources.magic_item
-import org.dembeyo.shared.resources.menu_class
+import org.dembeyo.shared.resources.menu_character
 import org.dembeyo.shared.resources.menu_equipment
 import org.dembeyo.shared.resources.menu_home
 import org.dembeyo.shared.resources.menu_magic_item
@@ -61,8 +61,9 @@ import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import ui.player.edit.EditCharacterStatScreen
 import ui.monster.MonsterListScreen
+import ui.player.CharacterListScreen
+import ui.player.edit.EditCharacterScreen
 import ui.spell.SpellListScreen
 
 class MenuScreen : Screen {
@@ -87,10 +88,10 @@ class MenuScreen : Screen {
                     MenuItemView(menu) {
                         when (menu) {
                             MenuItem.MAGIC_SPELLS -> navigator.push(SpellListScreen())
-                            MenuItem.SKILL -> navigator.push(EditCharacterStatScreen())
+                            MenuItem.SKILL -> navigator.push(EditCharacterScreen())
                             MenuItem.MONSTERS -> navigator.push(MonsterListScreen())
                             MenuItem.MAGIC_ITEMS -> {}
-                            MenuItem.CLASS -> {}
+                            MenuItem.CHARACTERS -> navigator.push(CharacterListScreen())
                             MenuItem.EQUIPMENTS -> {}
                             MenuItem.HOME -> {}
                         }
@@ -157,7 +158,7 @@ class MenuScreen : Screen {
         MAGIC_SPELLS(Res.string.menu_spell, Res.drawable.magic),
         MONSTERS(Res.string.menu_monster, Res.drawable.monster),
         MAGIC_ITEMS(Res.string.menu_magic_item, Res.drawable.magic_item),
-        CLASS(Res.string.menu_class, Res.drawable.knight),
+        CHARACTERS(Res.string.menu_character, Res.drawable.knight),
         SKILL(Res.string.menu_skill, Res.drawable.d20),
         EQUIPMENTS(Res.string.menu_equipment, Res.drawable.sword_tie)
     }

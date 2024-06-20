@@ -77,6 +77,7 @@ kotlin {
             implementation(libs.library.base)
             implementation(libs.runtime)
             implementation(libs.coroutines.extensions)
+            implementation(libs.constraintlayout.compose.multiplatform)
             api(libs.logging)
         }
     }

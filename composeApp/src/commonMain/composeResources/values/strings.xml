@@ -5,7 +5,7 @@
     <string name="menu_spell">Spells</string>
     <string name="menu_monster">Monsters</string>
     <string name="menu_magic_item">Magic Items</string>
-    <string name="menu_class">Class</string>
+    <string name="menu_character">Character</string>
     <string name="menu_skill">Skills</string>
     <string name="menu_equipment">Equipments</string>
 

@@ -61,14 +61,7 @@ fun ListOfMonster(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp)
-            .fadingEdge(
-                Brush.verticalGradient(
-                    0f to Color.Transparent,
-                    0.05f to Color.Red,
-                    0.95f to Color.Red,
-                    1f to Color.Transparent
-                )
-            )
+            .fadingEdge()
     ) {
         monsterByChallenge.forEach { (challenge, spells) ->
             stickyHeader(challenge) {
