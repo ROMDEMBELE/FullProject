@@ -226,15 +226,6 @@ class MonsterRepository(private val dndApi: DndApi, private val database: SqlDat
                 val isFavorite: Boolean =
                     database.getMonsterById(index).firstOrNull()?.isFavorite == 1L
 
-                val abilities = buildMap {
-                    put(Ability.STR, monsterDto.strength)
-                    put(Ability.DEX, monsterDto.dexterity)
-                    put(Ability.CON, monsterDto.constitution)
-                    put(Ability.INT, monsterDto.intelligence)
-                    put(Ability.WIS, monsterDto.wisdom)
-                    put(Ability.CHA, monsterDto.charisma)
-                }
-
                 val specialAbilities: List<SpecialAbility> =
                     monsterDto.specialAbilities.mapNotNull { dto ->
                         dto.toDomain()
@@ -252,8 +243,12 @@ class MonsterRepository(private val dndApi: DndApi, private val database: SqlDat
                     },
                     hitPoints = monsterDto.hitPoints,
                     hitPointsRoll = monsterDto.hitPointsRoll,
-                    scoreByAbilities = abilities,
-                    speedByMovements = monsterDto.speed,
+                    strength = monsterDto.strength,
+                    dexterity = monsterDto.dexterity,
+                    constitution = monsterDto.constitution,
+                    intelligence = monsterDto.intelligence,
+                    wisdom = monsterDto.wisdom,
+                    charisma = monsterDto.charisma, speedByMovements = monsterDto.speed,
                     skills = skills,
                     savingThrows = savingThrows,
                     damageVulnerabilities = monsterDto.damageVulnerabilities,

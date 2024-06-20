@@ -45,6 +45,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import domain.model.Ability
 import domain.model.Ability.Companion.getAbilityBonus
 import domain.model.Ability.Companion.getAbilityBonusColor
 import domain.model.monster.Monster
@@ -183,8 +184,15 @@ class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen 
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    monster.scoreByAbilities.entries.forEach { (ability, value) ->
-                        AbilityBonusItem(ability.name, value)
+                    Ability.entries.forEach { ability ->
+                        when (ability) {
+                            Ability.STR -> AbilityBonusItem(ability.fullName, monster.strength)
+                            Ability.DEX -> AbilityBonusItem(ability.fullName, monster.dexterity)
+                            Ability.CON -> AbilityBonusItem(ability.fullName, monster.constitution)
+                            Ability.INT -> AbilityBonusItem(ability.fullName, monster.intelligence)
+                            Ability.WIS -> AbilityBonusItem(ability.fullName, monster.wisdom)
+                            Ability.CHA -> AbilityBonusItem(ability.fullName, monster.charisma)
+                        }
                     }
                 }
 
