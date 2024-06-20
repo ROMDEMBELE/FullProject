@@ -1,0 +1,27 @@
+CREATE TABLE CampaingnDbo (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    fullName TEXT NOT NULL,
+    description TEXT NOT NULL
+);
+
+selectAll:
+SELECT *
+FROM CampaingnDbo;
+
+insertOrUpdate:
+INSERT OR REPLACE INTO CampaingnDbo (
+    id, fullName, description
+) VALUES (?, ?, ?);
+
+selectById:
+SELECT *
+FROM CampaingnDbo
+WHERE id = ?;
+
+deleteById:
+DELETE FROM CampaingnDbo
+WHERE id = ?;
+
+lastInsertRowId:
+SELECT last_insert_rowid()
+;

@@ -1,4 +1,4 @@
-package ui.player
+package ui.player.edit
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -18,8 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -31,8 +29,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
-import domain.model.character.CharacterClass
-import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.ancient
 import org.dembeyo.shared.resources.minus_circle
@@ -48,17 +44,11 @@ import ui.darkPrimary
 import ui.lightGray
 import ui.secondary
 
-class EditPlayerStatScreen(val id: Int? = null) : Screen {
+class EditCharacterStatScreen(val id: Int? = null) : Screen {
     @Composable
     override fun Content() {
-        val viewModel: PlayerViewModel = koinInject()
-        val scope = rememberCoroutineScope()
+        val viewModel: EditCharacterViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
-        var classes by remember { mutableStateOf(emptyList<CharacterClass>()) }
-
-        scope.launch {
-            classes = viewModel.getClasses()
-        }
 
         LazyColumn(modifier = Modifier.padding(8.dp)) {
             item {
@@ -99,25 +89,27 @@ class EditPlayerStatScreen(val id: Int? = null) : Screen {
                     thickness = 3.dp
                 )
 
-                CounterSelector("Level", minus = 1, maximum = 20, defaultValue = 1) {
+                CounterSelector("Level", minus = 1, maximum = 20, defaultValue = uiState.level) {
                     viewModel.updateLevel(it)
                 }
 
                 Spacer(Modifier.height(8.dp))
 
-                CounterSelector("Armor Class") {
+                CounterSelector("Armor Class", defaultValue = uiState.armorClass) {
                     viewModel.updateArmorClass(it)
                 }
 
                 Spacer(Modifier.height(8.dp))
 
-                CounterSelector("Hit Point", minus = 1, maximum = 999) {
+                CounterSelector(
+                    "Hit Point", minus = 1, maximum = 999, defaultValue = uiState.hitPoint
+                ) {
                     viewModel.updateHitPoint(it)
                 }
 
                 Spacer(Modifier.height(8.dp))
 
-                CounterSelector("Spell Save") {
+                CounterSelector("Spell Save", defaultValue = uiState.spellSave) {
                     viewModel.updateSpellSave(it)
                 }
 
@@ -127,8 +119,8 @@ class EditPlayerStatScreen(val id: Int? = null) : Screen {
                     thickness = 3.dp
                 )
 
-                uiState.abilities.forEach { (ability, modifier) ->
-                    CounterSelector(ability.fullName, defaultValue = modifier) {
+                uiState.abilities.forEach { (ability, value) ->
+                    CounterSelector(ability.fullName, defaultValue = value) {
                         viewModel.updateAbilityScores(ability, it)
                     }
                     Spacer(Modifier.height(8.dp))
@@ -150,7 +142,7 @@ class EditPlayerStatScreen(val id: Int? = null) : Screen {
                         disabledContentColor = darkGray,
                         disabledBackgroundColor = lightGray
                     ),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(8.dp)
                 ) {
                     Text("Save")
                 }
@@ -171,8 +163,7 @@ class EditPlayerStatScreen(val id: Int? = null) : Screen {
         Surface(shape = RoundedCornerShape(10.dp), color = darkBlue) {
             Box(Modifier.fillMaxWidth().height(50.dp).padding(12.dp)) {
                 IconButton(
-                    modifier = Modifier.align(Alignment.CenterStart),
-                    onClick = {
+                    modifier = Modifier.align(Alignment.CenterStart), onClick = {
                         if (value - step >= minus) value -= step else value = minus
                         onChange(value)
                     }, enabled = value > minus
@@ -189,8 +180,7 @@ class EditPlayerStatScreen(val id: Int? = null) : Screen {
                     modifier = Modifier.align(Alignment.Center)
                 )
                 IconButton(
-                    modifier = Modifier.align(Alignment.CenterEnd),
-                    onClick = {
+                    modifier = Modifier.align(Alignment.CenterEnd), onClick = {
                         if (defaultValue + step <= maximum) value += step else value = maximum
                         onChange(value)
                     }, enabled = value < maximum

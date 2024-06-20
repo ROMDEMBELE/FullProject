@@ -1,9 +1,8 @@
 package domain.model.character
 
-import domain.model.Ability
 import domain.model.Level
 
-data class PlayerCharacter(
+data class Character(
     val id: Long? = null,  // ID can be null if it's not assigned yet
     val fullName: String,
     val player: String,
@@ -11,5 +10,10 @@ data class PlayerCharacter(
     val armorClass: Int,
     val spellSavingThrow: Int,
     val hitPoint: Int,
-    val scoreByAbilities: Map<Ability, Int>,
+    val charisma: Int,
+    val dexterity: Int,
+    val constitution: Int,
+    val intelligence: Int,
+    val strength: Int,
+    val wisdom: Int,
 )

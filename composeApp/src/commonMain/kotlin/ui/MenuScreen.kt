@@ -61,7 +61,7 @@ import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import ui.player.EditPlayerStatScreen
+import ui.player.edit.EditCharacterStatScreen
 import ui.monster.MonsterListScreen
 import ui.spell.SpellListScreen
 
@@ -87,7 +87,7 @@ class MenuScreen : Screen {
                     MenuItemView(menu) {
                         when (menu) {
                             MenuItem.MAGIC_SPELLS -> navigator.push(SpellListScreen())
-                            MenuItem.SKILL -> navigator.push(EditPlayerStatScreen())
+                            MenuItem.SKILL -> navigator.push(EditCharacterStatScreen())
                             MenuItem.MONSTERS -> navigator.push(MonsterListScreen())
                             MenuItem.MAGIC_ITEMS -> {}
                             MenuItem.CLASS -> {}

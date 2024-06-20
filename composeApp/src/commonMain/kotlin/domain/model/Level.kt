@@ -28,6 +28,7 @@ enum class Level(val level: Int, val color: Color, val skillBonus: Int) {
     LEVEL_20(20, Color(0xFFFF7878), 6);  // Pastel Red
 
     companion object {
-        fun fromInt(level: Int): Level = entries.find { it.level == level } ?: LEVEL_0
+        fun fromInt(level: Int): Level = entries.find { it.level == level }
+            ?: throw IllegalArgumentException("Illegal $level do not correspond any Level")
     }
 }
