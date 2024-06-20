@@ -1,7 +1,7 @@
 package domain.model.monster
 
-import domain.model.Alignment
 import domain.model.Ability
+import domain.model.Alignment
 import domain.model.DamageType
 import domain.model.Level
 
@@ -23,7 +23,12 @@ open class Monster(
         val hitPoints: Int,
         val hitPointsRoll: String,
         val speedByMovements: Map<CreatureMovement, String>,
-        val scoreByAbilities: Map<Ability, Int>,
+        val charisma: Int,
+        val dexterity: Int,
+        val constitution: Int,
+        val intelligence: Int,
+        val strength: Int,
+        val wisdom: Int,
         val savingThrows: List<SavingThrow>,
         val skills: List<String>,
         val damageVulnerabilities: List<String>,
