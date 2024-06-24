@@ -21,7 +21,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import kotlin.coroutines.cancellation.CancellationException
 
-class DndApi {
+class Dnd5Api {
 
     private val client = HttpClient {
         install(ContentNegotiation) {

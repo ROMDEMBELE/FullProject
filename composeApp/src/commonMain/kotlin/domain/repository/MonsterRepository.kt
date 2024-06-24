@@ -1,6 +1,6 @@
 package domain.repository
 
-import data.api.DndApi
+import data.api.Dnd5Api
 import data.database.SqlDatabase
 import data.dto.monster.PolymorphicAbility
 import data.dto.monster.PolymorphicAction
@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.lighthousegames.logging.logging
 
-class MonsterRepository(private val dndApi: DndApi, private val database: SqlDatabase) {
+class MonsterRepository(private val dndApi: Dnd5Api, private val database: SqlDatabase) {
 
     init {
         CoroutineScope(Dispatchers.IO).launch {

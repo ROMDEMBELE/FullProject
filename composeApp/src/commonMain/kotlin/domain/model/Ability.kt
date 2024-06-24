@@ -24,7 +24,11 @@ enum class Ability(val id: String, val fullName: String) {
             in 16..17 -> 3
             in 18..19 -> 4
             in 20..21 -> 5
-            in 22..30 -> 6
+            in 22..23 -> 6
+            in 24..25 -> 7
+            in 26..27 -> 8
+            in 28..29 -> 9
+            in 30..100 -> 10
             else -> throw IllegalArgumentException("Invalid characteristic value")
         }
 

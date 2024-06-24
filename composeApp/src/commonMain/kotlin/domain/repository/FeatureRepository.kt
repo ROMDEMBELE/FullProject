@@ -1,12 +1,12 @@
 package domain.repository
 
-import data.api.DndApi
+import data.api.Dnd5Api
 import domain.model.Level
 import domain.model.character.Feature
 import io.ktor.client.plugins.ServerResponseException
 import org.lighthousegames.logging.logging
 
-class FeatureRepository(private val dndApi: DndApi) {
+class FeatureRepository(private val dndApi: Dnd5Api) {
 
     suspend fun getAllFeatures(): List<Feature> {
         try {

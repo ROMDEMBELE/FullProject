@@ -72,10 +72,11 @@ class SqlDatabase(driverFactory: DriverFactory) {
         dex: Long,
         int: Long,
         str: Long,
-        wis: Long
+        wis: Long,
+        picture: String?
     ): Long? {
         database.characterQueries.insertOrUpdate(
-            id, fullName, player, level, armor, life, spellSave, cha, con, dex, int, str, wis
+            id, fullName, player, level, armor, life, spellSave, cha, con, dex, int, str, wis, picture
         )
         return database.characterQueries.lastInsertRowId().executeAsOneOrNull()
     }

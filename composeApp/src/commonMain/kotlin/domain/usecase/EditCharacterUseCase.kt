@@ -20,8 +20,8 @@ class EditCharacterUseCase(private val characterRepository: CharacterRepository)
 
         val character = Character(
             id = uiState.id,
-            fullName = uiState.playerName.text,
-            player = uiState.characterName.text,
+            fullName = uiState.characterName.text,
+            player = uiState.playerName.text,
             level = Level.fromInt(uiState.level),
             armorClass = uiState.armorClass,
             hitPoint = uiState.hitPoint,
@@ -31,7 +31,8 @@ class EditCharacterUseCase(private val characterRepository: CharacterRepository)
             constitution = uiState.abilities[Ability.CON] ?: error("Constitution ability score must not be null"),
             intelligence = uiState.abilities[Ability.INT] ?: error("Intelligence ability score must not be null"),
             wisdom = uiState.abilities[Ability.WIS] ?: error("Wisdom ability score must not be null"),
-            strength = uiState.abilities[Ability.STR] ?: error("Strength ability score must not be null")
+            strength = uiState.abilities[Ability.STR] ?: error("Strength ability score must not be null"),
+            profilePicture = uiState.profilePicture
         )
 
         val id = characterRepository.createOrUpdateCharacter(character)

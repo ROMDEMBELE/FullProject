@@ -6,6 +6,7 @@ data class Character(
     val id: Long? = null,  // ID can be null if it's not assigned yet
     val fullName: String,
     val player: String,
+    val profilePicture: String? = null,
     val level: Level,
     val armorClass: Int,
     val spellSavingThrow: Int,

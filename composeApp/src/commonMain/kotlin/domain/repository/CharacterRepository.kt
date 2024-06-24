@@ -1,6 +1,6 @@
 package domain.repository
 
-import data.api.DndApi
+import data.api.Dnd5Api
 import data.database.SqlDatabase
 import domain.model.character.Character
 import domain.model.character.CharacterClass
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.map
 import org.dembeyo.data.CharacterDbo
 import org.lighthousegames.logging.logging
 
-class CharacterRepository(private val dndApi: DndApi, private val database: SqlDatabase) {
+class CharacterRepository(private val dndApi: Dnd5Api, private val database: SqlDatabase) {
 
     suspend fun getClasses(): List<CharacterClass> {
         try {
@@ -40,6 +40,7 @@ class CharacterRepository(private val dndApi: DndApi, private val database: SqlD
         intelligence = int.toInt(),
         strength = str.toInt(),
         wisdom = wis.toInt(),
+        profilePicture = picture
     )
 
     fun getCharacterById(id: Long): Flow<Character?> =
@@ -64,6 +65,7 @@ class CharacterRepository(private val dndApi: DndApi, private val database: SqlD
             int = character.intelligence.toLong(),
             str = character.strength.toLong(),
             wis = character.wisdom.toLong(),
+            picture = character.profilePicture
         )
     }
 

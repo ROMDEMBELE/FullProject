@@ -1,6 +1,6 @@
 package domain.repository
 
-import data.api.DndApi
+import data.api.Dnd5Api
 import data.database.SqlDatabase
 import data.dto.SpellDto
 import domain.model.DamageType
@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.lighthousegames.logging.logging
 
-class SpellRepository(private val spellApi: DndApi, private val dataBase: SqlDatabase) {
+class SpellRepository(private val spellApi: Dnd5Api, private val dataBase: SqlDatabase) {
 
     init {
         loadSpellsDatabase()

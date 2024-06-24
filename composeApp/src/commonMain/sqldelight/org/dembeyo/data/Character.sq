@@ -13,7 +13,8 @@ CREATE TABLE CharacterDbo (
     dex INTEGER NOT NULL,
     int INTEGER NOT NULL,
     str INTEGER NOT NULL,
-    wis INTEGER NOT NULL
+    wis INTEGER NOT NULL,
+    picture TEXT
 );
 
 CREATE INDEX character_id ON CharacterDbo(id);
@@ -24,8 +25,8 @@ FROM CharacterDbo;
 
 insertOrUpdate:
 INSERT OR REPLACE INTO CharacterDbo (
-    id, fullName, player, level, armor, life, spellSave, cha, con, dex, int, str, wis
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    id, fullName, player, level, armor, life, spellSave, cha, con, dex, int, str, wis, picture
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 selectById:
 SELECT *

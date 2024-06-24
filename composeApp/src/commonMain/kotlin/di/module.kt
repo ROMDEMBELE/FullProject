@@ -1,6 +1,6 @@
 package di
 
-import data.api.DndApi
+import data.api.Dnd5Api
 import data.database.RealmDataBase
 import data.database.SqlDatabase
 import domain.repository.CharacterRepository
@@ -12,7 +12,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val dataModule = module {
-    singleOf(::DndApi)
+    singleOf(::Dnd5Api)
     single { RealmDataBase() }
     single { SqlDatabase(get()) }
 }
