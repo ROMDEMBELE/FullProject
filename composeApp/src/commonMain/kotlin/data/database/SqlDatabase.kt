@@ -73,10 +73,9 @@ class SqlDatabase(driverFactory: DriverFactory) {
         int: Long,
         str: Long,
         wis: Long,
-        picture: String?
     ): Long? {
         database.characterQueries.insertOrUpdate(
-            id, fullName, player, level, armor, life, spellSave, cha, con, dex, int, str, wis, picture
+            id, fullName, player, level, armor, life, spellSave, cha, con, dex, int, str, wis
         )
         return database.characterQueries.lastInsertRowId().executeAsOneOrNull()
     }

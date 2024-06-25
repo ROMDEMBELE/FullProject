@@ -12,7 +12,6 @@ data class EditCharacterUiState(
     val hitPoint: Int = 0,
     val spellSave: Int = 0,
     val abilities: Map<Ability, Int> = buildMap { Ability.entries.map { put(it, 10) } },
-    val profilePicture: String? = null,
 ) {
 
     val isValid: Boolean

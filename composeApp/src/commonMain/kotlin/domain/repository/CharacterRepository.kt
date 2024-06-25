@@ -40,7 +40,6 @@ class CharacterRepository(private val dndApi: Dnd5Api, private val database: Sql
         intelligence = int.toInt(),
         strength = str.toInt(),
         wisdom = wis.toInt(),
-        profilePicture = picture
     )
 
     fun getCharacterById(id: Long): Flow<Character?> =
@@ -65,7 +64,6 @@ class CharacterRepository(private val dndApi: Dnd5Api, private val database: Sql
             int = character.intelligence.toLong(),
             str = character.strength.toLong(),
             wis = character.wisdom.toLong(),
-            picture = character.profilePicture
         )
     }
 

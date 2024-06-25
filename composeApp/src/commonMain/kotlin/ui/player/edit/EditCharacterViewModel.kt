@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
-import ui.SharedImage
 
 class EditCharacterViewModel(
     private val characterRepository: CharacterRepository,
@@ -38,7 +37,6 @@ class EditCharacterViewModel(
                         put(Ability.WIS, character.wisdom)
                         put(Ability.CHA, character.charisma)
                     },
-                    profilePicture = character.profilePicture
                 )
             }
         } ?: throw NullPointerException("Character id$id not found")
@@ -62,7 +60,6 @@ class EditCharacterViewModel(
                         put(Ability.WIS, updatedCharacter.wisdom)
                         put(Ability.CHA, updatedCharacter.charisma)
                     },
-                    profilePicture = updatedCharacter.profilePicture
                 )
             }
         } ?: throw Exception("Unable to save character")
@@ -109,14 +106,5 @@ class EditCharacterViewModel(
             val abilities = it.abilities.toMutableMap().apply { put(ability, score) }
             it.copy(abilities = abilities)
         }
-    }
-
-    suspend fun pickProfilePicture(imageBitmap: SharedImage?) {
-        try {
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
     }
 }

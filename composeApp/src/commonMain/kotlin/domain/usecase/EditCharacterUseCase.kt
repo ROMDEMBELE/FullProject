@@ -32,7 +32,6 @@ class EditCharacterUseCase(private val characterRepository: CharacterRepository)
             intelligence = uiState.abilities[Ability.INT] ?: error("Intelligence ability score must not be null"),
             wisdom = uiState.abilities[Ability.WIS] ?: error("Wisdom ability score must not be null"),
             strength = uiState.abilities[Ability.STR] ?: error("Strength ability score must not be null"),
-            profilePicture = uiState.profilePicture
         )
 
         val id = characterRepository.createOrUpdateCharacter(character)

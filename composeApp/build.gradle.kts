@@ -59,7 +59,7 @@ kotlin {
             implementation(libs.native.driver)
         }
         commonMain.dependencies {
-            implementation ("com.google.accompanist:accompanist-permissions:0.35.1-alpha")
+            implementation (libs.accompanist.permissions)
             implementation(libs.kamel.image)
             implementation(compose.runtime)
             implementation(compose.foundation)
