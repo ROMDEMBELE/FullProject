@@ -140,8 +140,8 @@ fun SpellItem(modifier: Modifier, spell: Spell, onClick: () -> Unit, onFavoriteC
 fun Modifier.fadingEdge(
     brush: Brush = Brush.verticalGradient(
         0f to Color.Transparent,
-        0.05f to Color.Red,
-        0.95f to Color.Red,
+        0.03f to Color.Red,
+        0.97f to Color.Red,
         1f to Color.Transparent
     )
 ) = this

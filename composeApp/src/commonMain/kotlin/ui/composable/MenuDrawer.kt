@@ -15,17 +15,17 @@ import cafe.adriel.voyager.navigator.Navigator
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ui.MenuScreen
+import ui.MenuScreen.MenuItem.BATTLE
 import ui.MenuScreen.MenuItem.CHARACTERS
 import ui.MenuScreen.MenuItem.EQUIPMENTS
 import ui.MenuScreen.MenuItem.HOME
 import ui.MenuScreen.MenuItem.MAGIC_ITEMS
 import ui.MenuScreen.MenuItem.MAGIC_SPELLS
 import ui.MenuScreen.MenuItem.MONSTERS
-import ui.MenuScreen.MenuItem.SKILL
+import ui.battle.BattleScreen
 import ui.darkBlue
 import ui.monster.MonsterListScreen
-import ui.player.CharacterListScreen
-import ui.player.edit.EditCharacterScreen
+import ui.character.CharacterListScreen
 import ui.spell.SpellListScreen
 
 @Composable
@@ -39,7 +39,7 @@ fun MenuDrawer(navigator: Navigator, onDismiss: () -> Unit) {
                     MONSTERS -> navigator.replaceAll(listOf(MenuScreen(), MonsterListScreen()))
                     MAGIC_ITEMS -> {}
                     CHARACTERS -> navigator.replaceAll(listOf(MenuScreen(), CharacterListScreen()))
-                    SKILL -> navigator.replaceAll(listOf(MenuScreen(), EditCharacterScreen()))
+                    BATTLE -> navigator.replaceAll(listOf(MenuScreen(), BattleScreen()))
                     EQUIPMENTS -> {}
                 }
                 onDismiss()

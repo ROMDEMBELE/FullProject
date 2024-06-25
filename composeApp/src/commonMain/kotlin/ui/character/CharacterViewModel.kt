@@ -1,4 +1,4 @@
-package ui.player
+package ui.character
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

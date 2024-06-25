@@ -1,24 +1,43 @@
 package data.database
 
+import app.cash.sqldelight.ColumnAdapter
 import app.cash.sqldelight.EnumColumnAdapter
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import app.cash.sqldelight.coroutines.mapToOne
 import domain.model.Level
+import domain.model.character.Skill
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
+import org.dembeyo.data.BackgroundDbo
 import org.dembeyo.data.CharacterDbo
 import org.dembeyo.data.MonsterDbo
 import org.dembeyo.data.MySqlDelightDatabase
+import org.dembeyo.data.RaceDbo
 import org.dembeyo.data.SpellDbo
 
 class SqlDatabase(driverFactory: DriverFactory) {
 
+    private val listOfSkillAdapter = object : ColumnAdapter<List<Skill>, String> {
+        override fun decode(databaseValue: String): List<Skill> =
+            if (databaseValue.isEmpty()) {
+                listOf()
+            } else {
+                databaseValue.split(",").mapNotNull { Skill.fromId(it) }
+            }
+
+        override fun encode(value: List<Skill>): String = value.joinToString(",")
+    }
+
     private val database = MySqlDelightDatabase(
-        driver = driverFactory.createDriver(), CharacterDboAdapter = CharacterDbo.Adapter(
+        driver = driverFactory.createDriver(),
+        CharacterDboAdapter = CharacterDbo.Adapter(
             levelAdapter = EnumColumnAdapter(),
-        )
+        ),
+        BackgroundDboAdapter = BackgroundDbo.Adapter(
+            skillsAdapter = listOfSkillAdapter,
+        ),
     )
 
     fun getMonsterById(id: String): Flow<MonsterDbo?> =
@@ -27,7 +46,7 @@ class SqlDatabase(driverFactory: DriverFactory) {
     fun getAllMonsters(): Flow<List<MonsterDbo>> =
         database.monsterQueries.selectAll().asFlow().mapToList(Dispatchers.IO)
 
-    fun createMonster(index: String, name: String, challenge: Double) {
+    fun insertMonster(index: String, name: String, challenge: Double) {
         database.monsterQueries.insertOrIgnore(
             id = index, name = name, challenge = challenge, isFavorite = 0L
         )
@@ -42,7 +61,7 @@ class SqlDatabase(driverFactory: DriverFactory) {
     fun getAllSpells(): Flow<List<SpellDbo>> =
         database.spellQueries.selectAll().asFlow().mapToList(Dispatchers.IO)
 
-    fun createSpell(index: String, name: String, level: Long) {
+    fun insertSpell(index: String, name: String, level: Long) {
         database.spellQueries.insertOrIgnore(
             id = index, name = name, level = level, isFavorite = 0L
         )
@@ -50,6 +69,8 @@ class SqlDatabase(driverFactory: DriverFactory) {
 
     fun updateSpellFavoriteStatus(index: String, boolean: Boolean) =
         database.spellQueries.setFavorite(id = index, isFavorite = if (boolean) 1L else 0L)
+
+    // section Character
 
     fun getAllCharacter(): Flow<List<CharacterDbo>> =
         database.characterQueries.selectAll().asFlow().mapToList(Dispatchers.IO)
@@ -59,11 +80,14 @@ class SqlDatabase(driverFactory: DriverFactory) {
 
     fun deleteCharacterById(id: Long) = database.characterQueries.deleteById(id)
 
-    fun insertOrUpdate(
+    fun insertOrUpdateCharacter(
         id: Long?,
         fullName: String,
         player: String,
+        speciesId: Long,
+        backgroundId: Long,
         level: Level,
+        _class: String,
         armor: Long,
         life: Long,
         spellSave: Long,
@@ -75,8 +99,37 @@ class SqlDatabase(driverFactory: DriverFactory) {
         wis: Long,
     ): Long? {
         database.characterQueries.insertOrUpdate(
-            id, fullName, player, level, armor, life, spellSave, cha, con, dex, int, str, wis
+            id,
+            fullName,
+            player,
+            speciesId,
+            level,
+            _class,
+            backgroundId,
+            armor,
+            life,
+            spellSave,
+            cha,
+            con,
+            dex,
+            int,
+            str,
+            wis
         )
         return database.characterQueries.lastInsertRowId().executeAsOneOrNull()
     }
+
+    // section Race
+    fun getAllRace(): Flow<List<RaceDbo>> =
+        database.raceQueries.selectAll().asFlow().mapToList(Dispatchers.IO)
+
+    fun getRaceById(id: Long): Flow<RaceDbo?> =
+        database.raceQueries.selectById(id).asFlow().mapToOne(Dispatchers.IO)
+
+    // section Background
+    fun getAllBackground(): Flow<List<BackgroundDbo>> =
+        database.backgroundQueries.selectAll().asFlow().mapToList(Dispatchers.IO)
+
+    fun getBackgroundById(id: Long): Flow<BackgroundDbo?> =
+        database.backgroundQueries.selectById(id).asFlow().mapToOne(Dispatchers.IO)
 }

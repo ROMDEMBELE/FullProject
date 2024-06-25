@@ -6,8 +6,8 @@ import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import ui.monster.MonsterViewModel
-import ui.player.CharacterViewModel
-import ui.player.edit.EditCharacterViewModel
+import ui.character.CharacterViewModel
+import ui.character.edit.EditCharacterViewModel
 import ui.spell.SpellViewModel
 
 actual fun platformModule(): Module = module {

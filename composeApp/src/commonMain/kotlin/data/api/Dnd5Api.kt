@@ -1,7 +1,5 @@
 package data.api
 
-import data.dto.ClassDto
-import data.dto.FeatureDto
 import data.dto.ReferenceDto
 import data.dto.SearchResultDto
 import data.dto.SpellDto
@@ -65,44 +63,6 @@ class Dnd5Api {
         val response = client.get("$BASE_URL/api/monsters/$index")
         return when (response.status) {
             HttpStatusCode.OK -> return response.body() as MonsterDto
-            else -> null
-        }
-    }
-
-    suspend fun getClasses(): SearchResultDto<ClassDto> {
-        val response = client.get("$BASE_URL/api/classes")
-        return when (response.status) {
-            HttpStatusCode.OK -> response.body() as SearchResultDto<ClassDto>
-            else -> throw ServerResponseException(
-                response,
-                "/api/classes failed : status ${response.status}"
-            )
-        }
-    }
-
-    suspend fun getClassByIndex(index: String): ClassDto? {
-        val response = client.get("$BASE_URL/api/classes/$index")
-        return when (response.status) {
-            HttpStatusCode.OK -> response.body() as ClassDto
-            else -> null
-        }
-    }
-
-    suspend fun getFeatures(): SearchResultDto<FeatureDto> {
-        val response = client.get("$BASE_URL/api/features")
-        return when (response.status) {
-            HttpStatusCode.OK -> response.body() as SearchResultDto<FeatureDto>
-            else -> throw ServerResponseException(
-                response,
-                "/api/features failed : status ${response.status}"
-            )
-        }
-    }
-
-    suspend fun getFeature(index: String): FeatureDto? {
-        val response = client.get("$BASE_URL/api/features/$index")
-        return when (response.status) {
-            HttpStatusCode.OK -> response.body() as FeatureDto
             else -> null
         }
     }

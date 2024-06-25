@@ -275,7 +275,7 @@ class MonsterRepository(private val dndApi: Dnd5Api, private val database: SqlDa
         Challenge.entries.forEach {
             val result = dndApi.getMonstersByChallenge(it.rating)
             result.results.forEach { dto ->
-                database.createMonster(
+                database.insertMonster(
                     index = dto.index,
                     name = dto.name,
                     challenge = it.rating,

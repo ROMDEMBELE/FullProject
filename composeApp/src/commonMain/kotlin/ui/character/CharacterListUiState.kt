@@ -1,4 +1,4 @@
-package ui.player
+package ui.character
 
 import domain.model.character.Character
 

@@ -42,17 +42,17 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.ancient
-import org.dembeyo.shared.resources.d20
+import org.dembeyo.shared.resources.battle
 import org.dembeyo.shared.resources.home
 import org.dembeyo.shared.resources.knight
 import org.dembeyo.shared.resources.magic
 import org.dembeyo.shared.resources.magic_item
+import org.dembeyo.shared.resources.menu_battle
 import org.dembeyo.shared.resources.menu_character
 import org.dembeyo.shared.resources.menu_equipment
 import org.dembeyo.shared.resources.menu_home
 import org.dembeyo.shared.resources.menu_magic_item
 import org.dembeyo.shared.resources.menu_monster
-import org.dembeyo.shared.resources.menu_skill
 import org.dembeyo.shared.resources.menu_spell
 import org.dembeyo.shared.resources.monster
 import org.dembeyo.shared.resources.sword_tie
@@ -61,9 +61,9 @@ import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import ui.battle.BattleScreen
 import ui.monster.MonsterListScreen
-import ui.player.CharacterListScreen
-import ui.player.edit.EditCharacterScreen
+import ui.character.CharacterListScreen
 import ui.spell.SpellListScreen
 
 class MenuScreen : Screen {
@@ -88,7 +88,7 @@ class MenuScreen : Screen {
                     MenuItemView(menu) {
                         when (menu) {
                             MenuItem.MAGIC_SPELLS -> navigator.push(SpellListScreen())
-                            MenuItem.SKILL -> navigator.push(EditCharacterScreen())
+                            MenuItem.BATTLE -> navigator.push(BattleScreen())
                             MenuItem.MONSTERS -> navigator.push(MonsterListScreen())
                             MenuItem.MAGIC_ITEMS -> {}
                             MenuItem.CHARACTERS -> navigator.push(CharacterListScreen())
@@ -157,9 +157,9 @@ class MenuScreen : Screen {
         HOME(Res.string.menu_home, Res.drawable.home),
         MAGIC_SPELLS(Res.string.menu_spell, Res.drawable.magic),
         MONSTERS(Res.string.menu_monster, Res.drawable.monster),
+        BATTLE(Res.string.menu_battle, Res.drawable.battle),
         MAGIC_ITEMS(Res.string.menu_magic_item, Res.drawable.magic_item),
         CHARACTERS(Res.string.menu_character, Res.drawable.knight),
-        SKILL(Res.string.menu_skill, Res.drawable.d20),
         EQUIPMENTS(Res.string.menu_equipment, Res.drawable.sword_tie)
     }
 }

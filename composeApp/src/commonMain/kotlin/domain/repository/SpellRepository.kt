@@ -27,7 +27,7 @@ class SpellRepository(private val spellApi: Dnd5Api, private val dataBase: SqlDa
         CoroutineScope(Dispatchers.IO).launch {
             val result = spellApi.getSpellByLevelOrSchool()
             result.results.forEach { dto ->
-                dataBase.createSpell(
+                dataBase.insertSpell(
                     index = dto.index,
                     name = dto.name,
                     level = dto.level.toLong(),

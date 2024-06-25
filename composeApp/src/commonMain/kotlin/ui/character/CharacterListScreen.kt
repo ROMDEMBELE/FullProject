@@ -1,4 +1,4 @@
-package ui.player
+package ui.character
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,11 +44,11 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import ui.MediumBold
 import ui.SmallBold
+import ui.character.edit.EditCharacterScreen
 import ui.composable.CustomButton
 import ui.composable.fadingEdge
 import ui.darkBlue
 import ui.darkPrimary
-import ui.player.edit.EditCharacterScreen
 import ui.secondary
 
 class CharacterListScreen() : Screen {
@@ -75,24 +76,10 @@ class CharacterListScreen() : Screen {
                 thickness = 3.dp
             )
 
-            CustomButton(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    navigator.push(EditCharacterScreen())
-                }
-            ) {
-                Text("Add Character")
-            }
-
-            Divider(
-                modifier = Modifier.padding(vertical = 4.dp),
-                color = darkPrimary,
-                thickness = 3.dp
-            )
-
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .weight(1f)
+                    .fillMaxWidth()
                     .padding(8.dp)
                     .fadingEdge()
             ) {
@@ -108,6 +95,21 @@ class CharacterListScreen() : Screen {
                     )
                 }
             }
+
+            Divider(
+                modifier = Modifier.padding(vertical = 4.dp),
+                color = darkPrimary,
+                thickness = 3.dp
+            )
+
+            CustomButton(
+                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                onClick = {
+                    navigator.push(EditCharacterScreen())
+                }
+            ) {
+                Text("Create a new Character")
+            }
         }
 
     }
@@ -116,9 +118,11 @@ class CharacterListScreen() : Screen {
     @Composable
     fun CharacterItem(character: Character, onClick: () -> Unit, onLongClick: () -> Unit) {
         Surface(
-            shape = RoundedCornerShape(30.dp),
+            shape = RoundedCornerShape(10.dp),
             color = darkBlue,
-            modifier = Modifier.padding(vertical = 4.dp)
+            modifier = Modifier
+                .padding(vertical = 4.dp)
+                .height(60.dp)
                 .fillMaxWidth()
                 .combinedClickable(
                     onClick = onClick,
