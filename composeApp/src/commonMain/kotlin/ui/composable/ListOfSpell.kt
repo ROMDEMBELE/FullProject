@@ -48,6 +48,7 @@ import ui.darkBlue
 import ui.darkGray
 import ui.item
 import ui.primary
+import ui.roundCornerShape
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -100,7 +101,7 @@ fun ListOfSpell(
 @Composable
 fun SpellItem(modifier: Modifier, spell: Spell, onClick: () -> Unit, onFavoriteClick: () -> Unit) {
     Button(
-        shape = RoundedCornerShape(20.dp),
+        shape = roundCornerShape,
         border = BorderStroke(2.dp, primary),
         contentPadding = PaddingValues(),
         modifier = modifier.padding(4.dp).fillMaxWidth(),

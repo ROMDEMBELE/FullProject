@@ -105,7 +105,7 @@ class MenuScreen : Screen {
     fun MenuItemView(menu: MenuItem, onClick: () -> Unit) {
         Button(
             modifier = Modifier.height(240.dp),
-            shape = RoundedCornerShape(20.dp),
+            shape = roundCornerShape,
             border = BorderStroke(4.dp, darkBlue),
             contentPadding = PaddingValues(),
             elevation = ButtonDefaults.elevation(2.dp),

@@ -1,10 +1,8 @@
 package ui.composable
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
@@ -22,14 +20,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import domain.model.monster.Challenge
 import ui.darkPrimary
 import ui.lightGray
+import ui.roundCornerShape
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun <T> DropDownTextField(
     value: T,
+    display: T.() -> String,
     label: String,
     list: List<T>,
     modifier: Modifier = Modifier,
@@ -41,10 +40,10 @@ fun <T> DropDownTextField(
         onExpandedChange = { expanded = it }
     ) {
         TextField(
-            value = value.toString(),
+            value = value.display(),
             onValueChange = { },
             readOnly = true,
-            shape = RoundedCornerShape(10.dp),
+            shape = roundCornerShape,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             label = { Text(text = label) },
             colors = ExposedDropdownMenuDefaults.textFieldColors(
@@ -59,14 +58,13 @@ fun <T> DropDownTextField(
                 placeholderColor = Color.Transparent
             ),
             modifier = modifier.fillMaxWidth()
-                .border(if (expanded) 1.dp else 0.dp, darkPrimary, RoundedCornerShape(10.dp))
         )
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = {
                 expanded = false
             },
-            modifier = Modifier.background(lightGray).fillMaxWidth(0.3f),
+            modifier = Modifier.background(lightGray).fillMaxWidth(0.5f),
             offset = DpOffset(250.dp, 350.dp),
         ) {
             list.forEach {
@@ -78,7 +76,7 @@ fun <T> DropDownTextField(
                     modifier = Modifier.fillMaxWidth().height(20.dp),
                 ) {
                     Text(
-                        text = it.toString(),
+                        text = it.display(),
                         fontSize = 13.sp,
                         modifier = Modifier.fillMaxWidth(),
                     )
@@ -87,5 +85,3 @@ fun <T> DropDownTextField(
         }
     }
 }
-
-fun Pair<Challenge, Int>.toString(): String = "CR ${first.rating} ($second)"

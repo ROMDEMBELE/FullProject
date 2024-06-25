@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import ui.darkGray
 import ui.darkPrimary
 import ui.lightGray
+import ui.roundCornerShape
 import ui.secondary
 
 @Composable
@@ -29,7 +30,7 @@ fun CustomButton(
     Button(
         enabled = enabled,
         onClick = onClick,
-        shape = RoundedCornerShape(10.dp),
+        shape = roundCornerShape,
         colors = colors,
         modifier = modifier,
         content = content

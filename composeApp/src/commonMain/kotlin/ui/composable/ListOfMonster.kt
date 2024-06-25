@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
@@ -43,6 +42,7 @@ import ui.darkBlue
 import ui.darkGray
 import ui.item
 import ui.primary
+import ui.roundCornerShape
 import ui.secondary
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -94,7 +94,7 @@ fun ListOfMonster(
 @Composable
 fun MonsterItem(monster: Monster, onClick: () -> Unit, onFavoriteClick: () -> Unit) {
     Button(
-        shape = RoundedCornerShape(20.dp),
+        shape = roundCornerShape,
         border = BorderStroke(2.dp, primary),
         contentPadding = PaddingValues(),
         modifier = Modifier.padding(4.dp).fillMaxWidth(),

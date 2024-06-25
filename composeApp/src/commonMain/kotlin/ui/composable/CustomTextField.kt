@@ -1,6 +1,5 @@
 package ui.composable
 
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -10,10 +9,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.dp
 import ui.darkBlue
 import ui.darkPrimary
 import ui.lightGray
+import ui.roundCornerShape
 
 @Composable
 fun CustomTextField(
@@ -26,7 +25,7 @@ fun CustomTextField(
     leadingIcon: @Composable (() -> Unit)? = null
 ) {
     TextField(
-        shape = RoundedCornerShape(20.dp),
+        shape = roundCornerShape,
         value = textFieldValue,
         enabled = enabled,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),

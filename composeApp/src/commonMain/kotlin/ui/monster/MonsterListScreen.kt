@@ -91,6 +91,7 @@ class MonsterListScreen() : Screen {
                     ) {
                         DropDownTextField(
                             label = "Min Challenge",
+                            display = { "CR $rating" },
                             value = uiState.minChallenge,
                             list = Challenge.entries,
                             modifier = Modifier.weight(.5f)
@@ -102,6 +103,7 @@ class MonsterListScreen() : Screen {
 
                         DropDownTextField(
                             label = "Max Challenge",
+                            display = { "CR $rating" },
                             value = uiState.maxChallenge,
                             list = Challenge.entries,
                             modifier = Modifier.weight(.5f)

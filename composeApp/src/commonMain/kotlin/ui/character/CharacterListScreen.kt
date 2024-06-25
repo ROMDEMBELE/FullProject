@@ -49,6 +49,7 @@ import ui.composable.CustomButton
 import ui.composable.fadingEdge
 import ui.darkBlue
 import ui.darkPrimary
+import ui.roundCornerShape
 import ui.secondary
 
 class CharacterListScreen() : Screen {
@@ -118,7 +119,7 @@ class CharacterListScreen() : Screen {
     @Composable
     fun CharacterItem(character: Character, onClick: () -> Unit, onLongClick: () -> Unit) {
         Surface(
-            shape = RoundedCornerShape(10.dp),
+            shape = roundCornerShape,
             color = darkBlue,
             modifier = Modifier
                 .padding(vertical = 4.dp)

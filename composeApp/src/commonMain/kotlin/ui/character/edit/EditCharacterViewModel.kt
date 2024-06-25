@@ -13,7 +13,6 @@ import domain.usecase.DeleteCharacterUseCase
 import domain.usecase.EditCharacterUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -31,15 +30,24 @@ class EditCharacterViewModel(
 
     init {
         viewModelScope.launch {
-            backgroundRepository.getListOfBackground().collectLatest { backgrounds ->
-                _uiState.update {
-                    it.copy(backgrounds = backgrounds.associateBy(Background::id))
-                }
+            loadBackground()
+            loadSpecies()
+            _uiState.update { it.copy(isReady = true) }
+        }
+    }
+
+    private suspend fun loadBackground() {
+        backgroundRepository.getListOfBackground().firstOrNull()?.let { backgrounds ->
+            _uiState.update {
+                it.copy(backgrounds = backgrounds.associateBy(Background::id))
             }
-            speciesRepository.getListOfSpecies().collectLatest { species ->
-                _uiState.update {
-                    it.copy(species = species.associateBy(Species::id))
-                }
+        }
+    }
+
+    private suspend fun loadSpecies() {
+        speciesRepository.getListOfSpecies().firstOrNull()?.let { species ->
+            _uiState.update {
+                it.copy(species = species.associateBy(Species::id))
             }
         }
     }
@@ -47,7 +55,7 @@ class EditCharacterViewModel(
     suspend fun loadCharacterToEdit(id: Long) {
         characterRepository.getCharacterById(id).firstOrNull()?.let { character ->
             _uiState.update {
-                EditCharacterUiState(
+                it.copy(
                     id = character.id,
                     level = character.level.level,
                     playerName = TextFieldValue(character.player),
@@ -63,6 +71,7 @@ class EditCharacterViewModel(
                         put(Ability.WIS, character.wisdom)
                         put(Ability.CHA, character.charisma)
                     },
+                    characterClass = TextFieldValue(character.characterClass),
                     characterBackground = it.backgrounds[character.backgroundId],
                     characterSpecies = it.species[character.speciesId]
                 )
@@ -73,7 +82,7 @@ class EditCharacterViewModel(
     suspend fun saveCharacter() {
         createOrUpdateCharacter.execute(_uiState.value).firstOrNull()?.let { updatedCharacter ->
             _uiState.update {
-                EditCharacterUiState(
+                it.copy(
                     id = updatedCharacter.id,
                     playerName = TextFieldValue(updatedCharacter.player),
                     characterName = TextFieldValue(updatedCharacter.fullName),
@@ -147,6 +156,24 @@ class EditCharacterViewModel(
             } catch (e: IllegalArgumentException) {
                 e.printStackTrace()
             }
+        }
+    }
+
+    fun updateCharacterBackground(background: Background) {
+        _uiState.update {
+            it.copy(characterBackground = background)
+        }
+    }
+
+    fun updateCharacterSpecies(species: Species) {
+        _uiState.update {
+            it.copy(characterSpecies = species)
+        }
+    }
+
+    fun updateCharacterClass(textFieldValue: TextFieldValue) {
+        _uiState.update {
+            it.copy(characterClass = textFieldValue)
         }
     }
 }

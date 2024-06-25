@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
@@ -50,14 +49,17 @@ import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
+import ui.BigBold
 import ui.MediumBold
 import ui.SmallBold
 import ui.composable.CustomButton
 import ui.composable.CustomTextField
+import ui.composable.DropDownTextField
 import ui.darkBlue
 import ui.darkPrimary
 import ui.lightGray
 import ui.primary
+import ui.roundCornerShape
 import ui.secondary
 
 class EditCharacterScreen(val id: Long? = null) : Screen {
@@ -91,16 +93,15 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
                 },
                 backgroundColor = secondary,
                 contentColor = darkPrimary,
-                shape = RoundedCornerShape(20.dp)
+                shape = roundCornerShape
             )
         }
 
-        LaunchedEffect(id) {
-            if (id != null) {
+        LaunchedEffect(uiState.isReady) {
+            if (id != null && uiState.isReady) {
                 viewModel.loadCharacterToEdit(id)
             }
         }
-
 
         LazyColumn(
             modifier = Modifier.padding(8.dp),
@@ -122,11 +123,15 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
                     thickness = 3.dp
                 )
 
+                Text("Character Information", style = BigBold)
+
+                Spacer(Modifier.height(8.dp))
+
                 CustomTextField(
                     textFieldValue = uiState.playerName,
                     onTextChange = { viewModel.updatePlayerName(it) },
                     placeholder = "Player Name",
-                    modifier = Modifier.padding(top = 8.dp).fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                 )
 
                 Spacer(Modifier.height(8.dp))
@@ -138,11 +143,50 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
                     modifier = Modifier.fillMaxWidth()
                 )
 
+                Spacer(Modifier.height(8.dp))
+
+                CustomTextField(
+                    textFieldValue = uiState.characterClass,
+                    onTextChange = { viewModel.updateCharacterClass(it) },
+                    placeholder = "Character Class",
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                DropDownTextField(
+                    value = uiState.characterBackground,
+                    display = { this?.name ?: "" },
+                    label = "Background",
+                    list = uiState.backgrounds.values.toList()
+                ) {
+                    if (it != null) {
+                        viewModel.updateCharacterBackground(it)
+                    }
+                }
+
+                Spacer(Modifier.height(8.dp))
+
+                DropDownTextField(
+                    value = uiState.characterSpecies,
+                    display = { this?.fullName ?: "" },
+                    label = "Species",
+                    list = uiState.species.values.toList()
+                ) {
+                    if (it != null) {
+                        viewModel.updateCharacterSpecies(it)
+                    }
+                }
+
                 Divider(
                     modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp),
                     color = darkPrimary,
                     thickness = 3.dp
                 )
+
+                Text("Character Statistics", style = BigBold)
+
+                Spacer(Modifier.height(8.dp))
 
                 CounterSelector("Level", minimum = 1, maximum = 20, value = uiState.level) {
                     viewModel.updateLevel(it)
@@ -173,6 +217,10 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
                     color = darkPrimary,
                     thickness = 3.dp
                 )
+
+                Text("Character Abilities", style = BigBold)
+
+                Spacer(Modifier.height(8.dp))
 
                 uiState.abilities.forEach { (ability, value) ->
                     CounterSelector(ability.fullName, value = value) {
@@ -225,7 +273,7 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
         step: Int = 1,
         onChange: (Int) -> Unit,
     ) {
-        Surface(shape = RoundedCornerShape(10.dp), color = darkBlue) {
+        Surface(shape = roundCornerShape, color = darkBlue) {
             Row(
                 Modifier.fillMaxWidth().padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically,

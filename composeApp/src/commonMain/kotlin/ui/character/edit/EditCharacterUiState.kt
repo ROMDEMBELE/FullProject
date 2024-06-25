@@ -17,6 +17,7 @@ data class EditCharacterUiState(
     val hitPoint: Int = 1,
     val spellSave: Int = 0,
     val abilities: Map<Ability, Int> = buildMap { Ability.entries.map { put(it, 10) } },
+    val isReady: Boolean = false,
     val backgrounds: Map<Long, Background> = emptyMap(),
     val species: Map<Long, Species> = emptyMap()
 ) {
