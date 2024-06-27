@@ -59,6 +59,7 @@ kotlin {
             implementation(libs.native.driver)
         }
         commonMain.dependencies {
+            implementation(libs.kvault)
             implementation (libs.accompanist.permissions)
             implementation(libs.kamel.image)
             implementation(compose.runtime)

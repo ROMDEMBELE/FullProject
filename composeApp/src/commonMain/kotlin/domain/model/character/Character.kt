@@ -3,7 +3,8 @@ package domain.model.character
 import domain.model.Level
 
 data class Character(
-    val id: Long? = null,  // ID can be null if it's not assigned yet
+    val id: Long,
+    val campaignId: Long,
     val fullName: String,
     val player: String,
     val level: Level,

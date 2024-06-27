@@ -1,4 +1,4 @@
-package ui
+package ui.home
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
@@ -62,8 +61,13 @@ import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ui.battle.BattleScreen
-import ui.monster.MonsterListScreen
 import ui.character.CharacterListScreen
+import ui.darkBlue
+import ui.darkPrimary
+import ui.monster.MonsterListScreen
+import ui.primary
+import ui.roundCornerShape
+import ui.secondary
 import ui.spell.SpellListScreen
 
 class MenuScreen : Screen {

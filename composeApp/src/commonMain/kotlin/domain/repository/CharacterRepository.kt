@@ -1,17 +1,18 @@
 package domain.repository
 
 import data.database.SqlDatabase
+import domain.model.Level
 import domain.model.character.Character
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.dembeyo.data.CharacterDbo
-import org.lighthousegames.logging.logging
 
 class CharacterRepository(private val database: SqlDatabase) {
 
     private fun CharacterDbo.toDomain() = Character(
         id = id,
         fullName = fullName,
+        campaignId = campaign_id,
         player = player,
         level = level,
         characterClass = class_,
@@ -31,7 +32,6 @@ class CharacterRepository(private val database: SqlDatabase) {
     fun getCharacterById(id: Long): Flow<Character?> =
         database.getCharacterById(id).map { it?.toDomain() }
 
-
     fun deleteCharacter(id: Long) {
         database.deleteCharacterById(id)
     }
@@ -40,29 +40,41 @@ class CharacterRepository(private val database: SqlDatabase) {
         it.map { dbo -> dbo.toDomain() }
     }
 
-    fun createOrUpdateCharacter(character: Character): Long? {
-        return database.insertOrUpdateCharacter(
-            id = character.id,
-            fullName = character.fullName,
-            player = character.player,
-            level = character.level,
-            armor = character.armorClass.toLong(),
-            life = character.hitPoint.toLong(),
-            spellSave = character.spellSavingThrow.toLong(),
-            cha = character.charisma.toLong(),
-            con = character.constitution.toLong(),
-            dex = character.dexterity.toLong(),
-            int = character.intelligence.toLong(),
-            str = character.strength.toLong(),
-            wis = character.wisdom.toLong(),
-            backgroundId = character.backgroundId,
-            speciesId = character.speciesId,
-            _class = character.characterClass
-        )
-    }
-
-    companion object {
-        val Log = logging("CharacterRepository")
-    }
-
+    fun createOrUpdateCharacter(
+        id: Long?,
+        campaignId: Long,
+        fullName: String,
+        player: String,
+        level: Level,
+        speciesId: Long,
+        characterClass: String,
+        backgroundId: Long,
+        armorClass: Int,
+        spellSavingThrow: Int,
+        hitPoint: Int,
+        charisma: Int,
+        dexterity: Int,
+        constitution: Int,
+        intelligence: Int,
+        strength: Int,
+        wisdom: Int,
+    ): Long? = database.insertOrUpdateCharacter(
+        id = id,
+        campaignId = campaignId,
+        fullName = fullName,
+        player = player,
+        level = level,
+        armor = armorClass.toLong(),
+        life = hitPoint.toLong(),
+        spellSave = spellSavingThrow.toLong(),
+        cha = charisma.toLong(),
+        con = constitution.toLong(),
+        dex = dexterity.toLong(),
+        int = intelligence.toLong(),
+        str = strength.toLong(),
+        wis = wisdom.toLong(),
+        backgroundId = backgroundId,
+        speciesId = speciesId,
+        _class = characterClass,
+    )
 }

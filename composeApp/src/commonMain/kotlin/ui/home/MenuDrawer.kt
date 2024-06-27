@@ -1,4 +1,4 @@
-package ui.composable
+package ui.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
@@ -14,14 +14,13 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import ui.MenuScreen
-import ui.MenuScreen.MenuItem.BATTLE
-import ui.MenuScreen.MenuItem.CHARACTERS
-import ui.MenuScreen.MenuItem.EQUIPMENTS
-import ui.MenuScreen.MenuItem.HOME
-import ui.MenuScreen.MenuItem.MAGIC_ITEMS
-import ui.MenuScreen.MenuItem.MAGIC_SPELLS
-import ui.MenuScreen.MenuItem.MONSTERS
+import ui.home.MenuScreen.MenuItem.BATTLE
+import ui.home.MenuScreen.MenuItem.CHARACTERS
+import ui.home.MenuScreen.MenuItem.EQUIPMENTS
+import ui.home.MenuScreen.MenuItem.HOME
+import ui.home.MenuScreen.MenuItem.MAGIC_ITEMS
+import ui.home.MenuScreen.MenuItem.MAGIC_SPELLS
+import ui.home.MenuScreen.MenuItem.MONSTERS
 import ui.battle.BattleScreen
 import ui.darkBlue
 import ui.monster.MonsterListScreen

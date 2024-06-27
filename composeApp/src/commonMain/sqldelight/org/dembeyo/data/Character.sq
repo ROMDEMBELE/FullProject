@@ -4,6 +4,7 @@ CREATE TABLE CharacterDbo (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     fullName TEXT NOT NULL,
     player TEXT NOT NULL,
+    campaign_id INTEGER NOT NULL,
     species_id INTEGER NOT NULL,
     level TEXT AS Level NOT NULL,
     class TEXT NOT NULL,
@@ -18,7 +19,8 @@ CREATE TABLE CharacterDbo (
     str INTEGER NOT NULL,
     wis INTEGER NOT NULL,
     FOREIGN KEY (species_id) REFERENCES RaceDbo (id),
-    FOREIGN KEY (background_id) REFERENCES BackgroundDbo(id)
+    FOREIGN KEY (background_id) REFERENCES BackgroundDbo(id),
+    FOREIGN KEY (campaign_id) REFERENCES CampaingnDbo(id)
 );
 
 CREATE INDEX character_id ON CharacterDbo(id);
@@ -29,8 +31,8 @@ FROM CharacterDbo;
 
 insertOrUpdate:
 INSERT OR REPLACE INTO CharacterDbo (
-    id, fullName, player, species_id, level, class, background_id, armor, life, spellSave, cha, con, dex, int, str, wis
-) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    id, fullName, player, campaign_id, species_id, level, class, background_id, armor, life, spellSave, cha, con, dex, int, str, wis
+) VALUES (?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 selectById:
 SELECT *

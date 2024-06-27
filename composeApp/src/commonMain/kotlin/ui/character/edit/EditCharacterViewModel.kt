@@ -10,7 +10,7 @@ import domain.repository.BackgroundRepository
 import domain.repository.CharacterRepository
 import domain.repository.SpeciesRepository
 import domain.usecase.DeleteCharacterUseCase
-import domain.usecase.EditCharacterUseCase
+import domain.usecase.SaveCharacterUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
@@ -21,7 +21,7 @@ class EditCharacterViewModel(
     private val characterRepository: CharacterRepository,
     private val speciesRepository: SpeciesRepository,
     private val backgroundRepository: BackgroundRepository,
-    private val createOrUpdateCharacter: EditCharacterUseCase,
+    private val createOrUpdateCharacter: SaveCharacterUseCase,
     private val deleteCharacter: DeleteCharacterUseCase
 ) : ViewModel() {
 

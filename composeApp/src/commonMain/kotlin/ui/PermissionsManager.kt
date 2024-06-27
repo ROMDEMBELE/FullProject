@@ -2,7 +2,7 @@ package ui
 
 import androidx.compose.runtime.Composable
 
-expect class PermissionsManager(callback: PermissionCallback) : PermissionHandler
+expect class PermissionsManager(callback: PermissionCallback)
 
 interface PermissionCallback {
     fun onPermissionStatus(permissionType: PermissionType, status: PermissionStatus)

@@ -11,7 +11,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import org.dembeyo.data.BackgroundDbo
+import org.dembeyo.data.CampaingnDbo
 import org.dembeyo.data.CharacterDbo
+import org.dembeyo.data.ConditionDbo
 import org.dembeyo.data.MonsterDbo
 import org.dembeyo.data.MySqlDelightDatabase
 import org.dembeyo.data.RaceDbo
@@ -84,6 +86,7 @@ class SqlDatabase(driverFactory: DriverFactory) {
         id: Long?,
         fullName: String,
         player: String,
+        campaignId: Long,
         speciesId: Long,
         backgroundId: Long,
         level: Level,
@@ -96,12 +99,13 @@ class SqlDatabase(driverFactory: DriverFactory) {
         dex: Long,
         int: Long,
         str: Long,
-        wis: Long,
+        wis: Long
     ): Long? {
         database.characterQueries.insertOrUpdate(
             id,
             fullName,
             player,
+            campaignId,
             speciesId,
             level,
             _class,
@@ -119,6 +123,25 @@ class SqlDatabase(driverFactory: DriverFactory) {
         return database.characterQueries.lastInsertRowId().executeAsOneOrNull()
     }
 
+    // Section Campaign
+    fun getAllCampaign(): Flow<List<CampaingnDbo>> =
+        database.campaignQueries.selectAll().asFlow().mapToList(Dispatchers.IO)
+
+    fun getCampaignById(id: Long): Flow<CampaingnDbo?> =
+        database.campaignQueries.selectById(id).asFlow().mapToOne(Dispatchers.IO)
+
+    fun insertOrUpdateCampaign(
+        id: Long?,
+        fullName: String,
+        description: String,
+        progress: Long
+    ): Long? {
+        database.campaignQueries.insertOrUpdate(id, fullName, description, progress)
+        return database.campaignQueries.lastInsertRowId().executeAsOneOrNull()
+    }
+
+    fun deleteCampaignById(id: Long) = database.campaignQueries.deleteById(id)
+
     // section Race
     fun getAllRace(): Flow<List<RaceDbo>> =
         database.raceQueries.selectAll().asFlow().mapToList(Dispatchers.IO)
@@ -132,4 +155,11 @@ class SqlDatabase(driverFactory: DriverFactory) {
 
     fun getBackgroundById(id: Long): Flow<BackgroundDbo?> =
         database.backgroundQueries.selectById(id).asFlow().mapToOne(Dispatchers.IO)
+
+    // section Condition
+    fun getAllCondition(): Flow<List<ConditionDbo>> =
+        database.conditionQueries.selectAll().asFlow().mapToList(Dispatchers.IO)
+
+    fun getConditionById(id: String): Flow<ConditionDbo?> =
+        database.conditionQueries.selectById(id).asFlow().mapToOne(Dispatchers.IO)
 }

@@ -19,8 +19,4 @@ class BackgroundRepository(private val database: SqlDatabase) {
     fun getListOfBackground(): Flow<List<Background>> = database.getAllBackground().map { list ->
         list.map { it.toDomain() }
     }
-
-    fun getBackgroundById(id: Long): Flow<Background?> =
-        database.getBackgroundById(id).map { it?.toDomain() }
-
 }

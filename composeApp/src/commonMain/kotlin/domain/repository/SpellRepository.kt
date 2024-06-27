@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.dembeyo.data.SpellDbo
 import org.lighthousegames.logging.logging
 
 class SpellRepository(private val spellApi: Dnd5Api, private val dataBase: SqlDatabase) {
@@ -40,17 +41,15 @@ class SpellRepository(private val spellApi: Dnd5Api, private val dataBase: SqlDa
         dataBase.updateSpellFavoriteStatus(index, isFavorite)
     }
 
-    fun getListOfSpells(): Flow<List<Spell>> {
-        return dataBase.getAllSpells().map {
-            it.map { dbo ->
-                Spell(
-                    index = dbo.id,
-                    name = dbo.name,
-                    isFavorite = dbo.isFavorite == 1L,
-                    level = Level.fromInt(dbo.level.toInt()),
-                )
-            }
-        }
+    private fun SpellDbo.toDomain() = Spell(
+        index = id,
+        name = name,
+        isFavorite = isFavorite == 1L,
+        level = Level.fromInt(level.toInt()),
+    )
+
+    fun getListOfSpells(): Flow<List<Spell>> = dataBase.getAllSpells().map {
+        it.map { dbo -> dbo.toDomain() }
     }
 
     private fun SpellDto.getDamageByLevel(): Map<Level, Spell.SpellDamage> {

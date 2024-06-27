@@ -23,7 +23,4 @@ class SpeciesRepository(private val database: SqlDatabase) {
 
     fun getListOfSpecies(): Flow<List<Species>> =
         database.getAllRace().map { it.map { dbo -> dbo.toDomain() } }
-
-    fun getSpeciesById(id: Long): Flow<Species?> = database.getRaceById(id).map { it?.toDomain() }
-
 }

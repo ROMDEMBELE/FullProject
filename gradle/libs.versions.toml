@@ -13,6 +13,7 @@ kotlin = "2.0.0"
 kotlinxSerializationJson = "1.7.0-RC"
 ktor = "2.3.11"
 coroutines = "1.8.0"
+kvault = "1.12.0"
 libraryBase = "2.0.0"
 lifecycleViewmodel = "2.8.2"
 logging = "1.4.2"
@@ -38,6 +39,7 @@ ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "kto
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+kvault = { module = "com.liftric:kvault", version.ref = "kvault" }
 library-base = { module = "io.realm.kotlin:library-base", version.ref = "libraryBase" }
 logging = { module = "org.lighthousegames:logging", version.ref = "logging" }
 native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" }

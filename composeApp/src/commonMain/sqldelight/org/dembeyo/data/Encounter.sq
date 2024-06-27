@@ -1,0 +1,6 @@
+CREATE TABLE EncounterDbo (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    campaign_id INTEGER NOT NULL,
+    FOREIGN KEY (campaign_id) REFERENCES CampaingnDbo(id)
+);
