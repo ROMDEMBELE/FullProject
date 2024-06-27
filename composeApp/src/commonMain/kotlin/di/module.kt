@@ -13,7 +13,7 @@ import domain.repository.SpeciesRepository
 import domain.repository.SpellRepository
 import domain.usecase.DeleteCampaignUseCase
 import domain.usecase.DeleteCharacterUseCase
-import domain.usecase.GetCurrentCampaignUseCase
+import domain.usecase.GetCampaignsUseCase
 import domain.usecase.SaveCampaignUseCase
 import domain.usecase.SaveCharacterUseCase
 import org.koin.core.module.Module
@@ -39,7 +39,7 @@ val repositoryModule = module {
 
     factoryOf(::SaveCharacterUseCase)
     factoryOf(::DeleteCharacterUseCase)
-    factoryOf(::GetCurrentCampaignUseCase)
+    factoryOf(::GetCampaignsUseCase)
     factoryOf(::DeleteCampaignUseCase)
     factoryOf(::SaveCampaignUseCase)
 }

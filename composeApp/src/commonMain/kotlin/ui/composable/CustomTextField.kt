@@ -9,10 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import ui.darkBlue
-import ui.darkPrimary
-import ui.lightGray
-import ui.roundCornerShape
 
 @Composable
 fun CustomTextField(

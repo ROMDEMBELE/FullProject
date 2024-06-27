@@ -6,7 +6,6 @@ import domain.model.character.Character
 import domain.repository.CharacterRepository
 import domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
 import ui.character.edit.EditCharacterUiState
 
 class SaveCharacterUseCase(
@@ -14,7 +13,7 @@ class SaveCharacterUseCase(
     private val settingsRepository: SettingsRepository
 ) {
 
-    suspend fun execute(uiState: EditCharacterUiState): Flow<Character?> {
+    fun execute(uiState: EditCharacterUiState): Flow<Character?> {
         require(uiState.playerName.text.isNotEmpty()) { "Player name cannot be empty" }
         require(uiState.characterName.text.isNotEmpty()) { "Character name cannot be empty" }
         require(uiState.level in 1..20) { "Level must be between 1 and 20" }
@@ -22,7 +21,7 @@ class SaveCharacterUseCase(
         require(uiState.hitPoint >= 0) { "Hit point must be non-negative" }
         require(uiState.abilities.all { it.value >= 0 }) { "Ability scores must be non-negative" }
 
-        val campaignId = settingsRepository.getCurrentCampaignId().firstOrNull()
+        val campaignId = settingsRepository.getCurrentCampaignId()
             ?: throw IllegalStateException("Character cannot be created without a campaign")
 
         val id = characterRepository.createOrUpdateCharacter(

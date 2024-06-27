@@ -132,11 +132,10 @@ class SqlDatabase(driverFactory: DriverFactory) {
 
     fun insertOrUpdateCampaign(
         id: Long?,
-        fullName: String,
+        title: String,
         description: String,
-        progress: Long
     ): Long? {
-        database.campaignQueries.insertOrUpdate(id, fullName, description, progress)
+        database.campaignQueries.insertOrUpdate(id, title, description)
         return database.campaignQueries.lastInsertRowId().executeAsOneOrNull()
     }
 

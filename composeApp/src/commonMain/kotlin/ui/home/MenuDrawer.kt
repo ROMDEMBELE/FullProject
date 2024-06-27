@@ -22,7 +22,7 @@ import ui.home.MenuScreen.MenuItem.MAGIC_ITEMS
 import ui.home.MenuScreen.MenuItem.MAGIC_SPELLS
 import ui.home.MenuScreen.MenuItem.MONSTERS
 import ui.battle.BattleScreen
-import ui.darkBlue
+import ui.composable.darkBlue
 import ui.monster.MonsterListScreen
 import ui.character.CharacterListScreen
 import ui.spell.SpellListScreen

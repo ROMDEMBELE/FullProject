@@ -37,13 +37,6 @@ import domain.model.monster.Monster
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.monster
 import org.jetbrains.compose.resources.painterResource
-import ui.MediumBold
-import ui.darkBlue
-import ui.darkGray
-import ui.item
-import ui.primary
-import ui.roundCornerShape
-import ui.secondary
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

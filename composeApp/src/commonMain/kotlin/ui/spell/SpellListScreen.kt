@@ -38,11 +38,11 @@ import org.dembeyo.shared.resources.menu_spell
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
-import ui.MediumBold
+import ui.composable.MediumBold
 import ui.composable.ListOfSpell
 import ui.composable.SearchMenu
-import ui.darkBlue
-import ui.darkPrimary
+import ui.composable.darkBlue
+import ui.composable.darkPrimary
 
 
 class SpellListScreen() : Screen {

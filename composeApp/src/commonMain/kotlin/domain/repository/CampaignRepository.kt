@@ -8,7 +8,7 @@ import org.dembeyo.data.CampaingnDbo
 
 class CampaignRepository(private val database: SqlDatabase) {
 
-    private fun CampaingnDbo.toDomain() = Campaign(id, fullName, description, progress.toInt())
+    private fun CampaingnDbo.toDomain() = Campaign(id, fullName, description)
 
     fun getListOfCampaign(): Flow<List<Campaign>> = database.getAllCampaign().map {
         it.map { dbo -> dbo.toDomain() }
@@ -21,12 +21,9 @@ class CampaignRepository(private val database: SqlDatabase) {
         id: Long?,
         name: String,
         description: String,
-        progress: Int
-    ): Long? = database.insertOrUpdateCampaign(id, name, description, progress.toLong())
+    ): Long? = database.insertOrUpdateCampaign(id, name, description)
 
     fun deleteCampaign(id: Long) {
         database.deleteCampaignById(id)
     }
-
-
 }

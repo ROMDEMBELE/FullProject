@@ -6,14 +6,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.DrawerValue
-import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
@@ -33,18 +30,19 @@ import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.adventure
 import org.dembeyo.shared.resources.ancient
+import org.dembeyo.shared.resources.castle_empty
 import org.dembeyo.shared.resources.menu_screen_title
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import ui.home.MenuScreen
+import ui.campaign.main.CampaignMainScreen
+import ui.composable.darkBlue
+import ui.composable.darkGray
+import ui.composable.primary
+import ui.composable.secondary
 import ui.home.MenuDrawer
-import ui.darkBlue
-import ui.darkGray
-import ui.primary
-import ui.secondary
-import ui.settings.CampaignSettingsScreen
+import ui.home.MenuScreen
 
 @Composable
 @Preview
@@ -73,7 +71,12 @@ fun App() {
                                         scaffoldState.drawerState.open()
                                     }
                                 }) {
-                                Icon(Icons.Filled.Menu, null, tint = primary)
+                                Image(
+                                    painter = painterResource(Res.drawable.adventure),
+                                    contentDescription = null,
+                                    colorFilter = ColorFilter.tint(primary),
+                                    modifier = Modifier.size(24.dp).aspectRatio(1f)
+                                )
                             }
                             Text(
                                 stringResource(Res.string.menu_screen_title),
@@ -88,11 +91,11 @@ fun App() {
                                 modifier = Modifier.align(Alignment.CenterEnd),
                                 onClick = {
                                     scope.launch {
-                                        navigator.push(CampaignSettingsScreen())
+                                        navigator.push(CampaignMainScreen())
                                     }
                                 }) {
                                 Image(
-                                    painter = painterResource(Res.drawable.adventure),
+                                    painter = painterResource(Res.drawable.castle_empty),
                                     contentDescription = null,
                                     colorFilter = ColorFilter.tint(primary),
                                     modifier = Modifier.size(24.dp).aspectRatio(1f)

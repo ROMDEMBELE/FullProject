@@ -1,8 +1,7 @@
 CREATE TABLE CampaingnDbo (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     fullName TEXT NOT NULL,
-    description TEXT NOT NULL,
-    progress INTEGER NOT NULL
+    description TEXT NOT NULL
 );
 
 selectAll:
@@ -11,8 +10,8 @@ FROM CampaingnDbo;
 
 insertOrUpdate:
 INSERT OR REPLACE INTO CampaingnDbo (
-    id, fullName, description, progress
-) VALUES (?, ?, ?, ?);
+    id, fullName, description
+) VALUES (?, ?, ?);
 
 selectById:
 SELECT *

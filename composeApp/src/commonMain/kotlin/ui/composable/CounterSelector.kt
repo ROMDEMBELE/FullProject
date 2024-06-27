@@ -22,11 +22,6 @@ import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.minus_circle
 import org.dembeyo.shared.resources.plus_circle
 import org.jetbrains.compose.resources.painterResource
-import ui.MediumBold
-import ui.SmallBold
-import ui.darkBlue
-import ui.lightGray
-import ui.roundCornerShape
 
 
 @Composable

@@ -9,8 +9,8 @@ import org.koin.dsl.module
 import ui.character.CharacterViewModel
 import ui.character.edit.EditCharacterViewModel
 import ui.monster.MonsterViewModel
-import ui.settings.CampaignSettingsViewModel
-import ui.settings.edit.EditCampaignViewModel
+import ui.campaign.main.CampaignMainViewModel
+import ui.campaign.edit.EditCampaignViewModel
 import ui.spell.SpellViewModel
 
 actual fun platformModule(): Module = module {
@@ -19,7 +19,7 @@ actual fun platformModule(): Module = module {
     viewModelOf(::MonsterViewModel)
     viewModelOf(::CharacterViewModel)
     viewModelOf(::EditCampaignViewModel)
-    viewModelOf(::CampaignSettingsViewModel)
+    viewModelOf(::CampaignMainViewModel)
 
     single { DriverFactory(androidContext()) }
     single { SettingsStorage(androidContext()) }

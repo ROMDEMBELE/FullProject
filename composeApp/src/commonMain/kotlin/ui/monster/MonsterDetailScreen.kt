@@ -70,19 +70,19 @@ import org.dembeyo.shared.resources.monster_speed
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import ui.MediumBold
-import ui.SmallBold
-import ui.darkBlue
-import ui.darkGray
-import ui.darkPrimary
-import ui.lightGray
-import ui.monsterPropertyText
-import ui.monsterPropertyTitle
-import ui.monsterSubTitle
-import ui.monsterTitle
-import ui.orange
-import ui.primary
-import ui.secondary
+import ui.composable.MediumBold
+import ui.composable.SmallBold
+import ui.composable.darkBlue
+import ui.composable.darkGray
+import ui.composable.darkPrimary
+import ui.composable.lightGray
+import ui.composable.monsterPropertyText
+import ui.composable.monsterPropertyTitle
+import ui.composable.monsterSubTitle
+import ui.composable.monsterTitle
+import ui.composable.orange
+import ui.composable.primary
+import ui.composable.secondary
 
 class MonsterDetailScreen(private val monster: Monster.MonsterDetails) : Screen {
 

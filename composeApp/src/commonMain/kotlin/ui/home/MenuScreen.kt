@@ -62,12 +62,12 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ui.battle.BattleScreen
 import ui.character.CharacterListScreen
-import ui.darkBlue
-import ui.darkPrimary
+import ui.composable.darkBlue
+import ui.composable.darkPrimary
 import ui.monster.MonsterListScreen
-import ui.primary
-import ui.roundCornerShape
-import ui.secondary
+import ui.composable.primary
+import ui.composable.roundCornerShape
+import ui.composable.secondary
 import ui.spell.SpellListScreen
 
 class MenuScreen : Screen {

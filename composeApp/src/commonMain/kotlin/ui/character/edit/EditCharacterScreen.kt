@@ -35,15 +35,15 @@ import org.dembeyo.shared.resources.menu_character
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
-import ui.BigBold
+import ui.composable.BigBold
 import ui.composable.CounterSelector
 import ui.composable.CustomButton
 import ui.composable.CustomTextField
 import ui.composable.DropDownTextField
-import ui.darkPrimary
-import ui.primary
-import ui.roundCornerShape
-import ui.secondary
+import ui.composable.darkPrimary
+import ui.composable.primary
+import ui.composable.roundCornerShape
+import ui.composable.secondary
 
 class EditCharacterScreen(val id: Long? = null) : Screen {
 

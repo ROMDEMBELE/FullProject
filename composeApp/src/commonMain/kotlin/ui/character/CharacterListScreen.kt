@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -42,15 +41,15 @@ import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
-import ui.MediumBold
-import ui.SmallBold
+import ui.composable.MediumBold
+import ui.composable.SmallBold
 import ui.character.edit.EditCharacterScreen
 import ui.composable.CustomButton
 import ui.composable.fadingEdge
-import ui.darkBlue
-import ui.darkPrimary
-import ui.roundCornerShape
-import ui.secondary
+import ui.composable.darkBlue
+import ui.composable.darkPrimary
+import ui.composable.roundCornerShape
+import ui.composable.secondary
 
 class CharacterListScreen() : Screen {
 

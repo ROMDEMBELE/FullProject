@@ -51,16 +51,16 @@ import org.dembeyo.shared.resources.magic
 import org.dembeyo.shared.resources.minus_circle
 import org.dembeyo.shared.resources.plus_circle
 import org.jetbrains.compose.resources.painterResource
-import ui.MediumBold
-import ui.clip
+import ui.composable.MediumBold
+import ui.composable.clip
 import ui.composable.generateView
-import ui.darkBlue
-import ui.darkPrimary
-import ui.lightBlue
-import ui.lightGray
-import ui.primary
-import ui.secondary
-import ui.spellDetailsText
+import ui.composable.darkBlue
+import ui.composable.darkPrimary
+import ui.composable.lightBlue
+import ui.composable.lightGray
+import ui.composable.primary
+import ui.composable.secondary
+import ui.composable.spellDetailsText
 
 
 class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {

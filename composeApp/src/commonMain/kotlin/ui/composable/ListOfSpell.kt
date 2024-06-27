@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
@@ -43,12 +42,6 @@ import domain.model.spell.Spell
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.magic
 import org.jetbrains.compose.resources.painterResource
-import ui.MediumBold
-import ui.darkBlue
-import ui.darkGray
-import ui.item
-import ui.primary
-import ui.roundCornerShape
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

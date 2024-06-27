@@ -23,8 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import domain.model.DamageType
 import org.jetbrains.compose.resources.painterResource
-import ui.darkBlue
-import ui.secondary
 
 @Composable
 fun DamageType.generateView(modifier: Modifier = Modifier) {

@@ -36,7 +36,7 @@ import org.koin.compose.koinInject
 import ui.composable.DropDownTextField
 import ui.composable.ListOfMonster
 import ui.composable.SearchMenu
-import ui.darkPrimary
+import ui.composable.darkPrimary
 
 
 class MonsterListScreen() : Screen {

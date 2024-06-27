@@ -1,6 +1,7 @@
-package ui
+package ui.composable
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -9,6 +10,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.dembeyo.shared.resources.Res
+import org.dembeyo.shared.resources.ancient
+import org.jetbrains.compose.resources.Font
 
 val primary = Color(205, 97, 85)
 val darkPrimary = Color(123, 36, 28)
@@ -20,6 +24,14 @@ val secondary = Color(255, 248, 219)
 val orange = Color(0xFFE69A28)
 
 val roundCornerShape = RoundedCornerShape(18.dp)
+
+@Composable
+fun screenTitle(color: Color = darkPrimary) = TextStyle(
+    fontSize = 40.sp,
+    textAlign = TextAlign.Center,
+    fontFamily = FontFamily(Font(Res.font.ancient)),
+    color = color
+)
 
 val BigBold = TextStyle(
     color = darkPrimary,
