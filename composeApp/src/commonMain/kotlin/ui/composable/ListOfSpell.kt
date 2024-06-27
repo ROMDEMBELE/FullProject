@@ -29,13 +29,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.CompositingStrategy
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import domain.model.Level
 import domain.model.spell.Spell
@@ -130,17 +126,3 @@ fun SpellItem(modifier: Modifier, spell: Spell, onClick: () -> Unit, onFavoriteC
         }
     }
 }
-
-fun Modifier.fadingEdge(
-    brush: Brush = Brush.verticalGradient(
-        0f to Color.Transparent,
-        0.03f to Color.Red,
-        0.97f to Color.Red,
-        1f to Color.Transparent
-    )
-) = this
-    .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
-    .drawWithContent {
-        drawContent()
-        drawRect(brush = brush, blendMode = BlendMode.DstIn)
-    }
