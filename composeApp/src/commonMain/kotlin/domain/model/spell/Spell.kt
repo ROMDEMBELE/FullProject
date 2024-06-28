@@ -9,13 +9,10 @@ open class Spell(
     open val name: String,
     open val level: Level,
     open var isFavorite: Boolean = false,
+    open val details: Details? = null,
 ) {
 
-    data class SpellDetails(
-        override val index: String,
-        override val name: String,
-        override val level: Level,
-        override var isFavorite: Boolean,
+    data class Details(
         val text: String,
         val range: String,
         val components: String,
@@ -29,10 +26,12 @@ open class Spell(
         val damageByLevel: Map<Level, SpellDamage> = emptyMap(),
         val savingThrow: String? = null,
         val school: MagicSchool,
-    ) : Spell(index, name, level, isFavorite)
+    ) {
 
-    data class SpellDamage(
-        val type: DamageType,
-        val dice: String,
-    )
+        data class SpellDamage(
+            val type: DamageType,
+            val dice: String,
+        )
+    }
+
 }

@@ -11,13 +11,11 @@ import data.dto.monster.PolymorphicUsageLimitDto
 import domain.model.Ability
 import domain.model.DamageType
 import domain.model.Level
+import domain.model.monster.Action
 import domain.model.monster.Challenge
 import domain.model.monster.Monster
-import domain.model.monster.Monster.InnateSpellCastingAbility
-import domain.model.monster.Monster.SavingThrow
-import domain.model.monster.Monster.SavingThrowAbility
-import domain.model.monster.Monster.SpecialAbility
-import domain.model.monster.Monster.SpellCasting
+import domain.model.monster.SavingThrow
+import domain.model.monster.SpecialAbility
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -60,7 +58,7 @@ class MonsterRepository(private val dndApi: Dnd5Api, private val database: SqlDa
     private fun PolymorphicAbility.toDomain(): SpecialAbility? {
         return when (this) {
             is PolymorphicAbility.SpecialAbilityDto -> SpecialAbility(name, desc)
-            is PolymorphicAbility.SavingThrowAbilityDto -> SavingThrowAbility(
+            is PolymorphicAbility.SavingThrowAbilityDto -> SpecialAbility.SavingThrowAbility(
                 name = name,
                 desc = desc,
                 savingThrow = SavingThrow(
@@ -72,7 +70,7 @@ class MonsterRepository(private val dndApi: Dnd5Api, private val database: SqlDa
 
             is PolymorphicAbility.SpellCastingAbilityDto -> when (val details = spellCasting) {
                 is PolymorphicSpellCastingAbilityDetails.InnateSpellCasting -> {
-                    InnateSpellCastingAbility(
+                    SpecialAbility.InnateSpellCastingAbility(
                         name = name,
                         desc = desc,
                         savingThrow = SavingThrow(
@@ -81,7 +79,7 @@ class MonsterRepository(private val dndApi: Dnd5Api, private val database: SqlDa
                         ),
                         components = details.componentsRequired,
                         spellByUsage = details.spells.map { sp ->
-                            SpellCasting(
+                            SpecialAbility.SpellCasting(
                                 level = Level.fromInt(sp.level),
                                 name = sp.name,
                                 notes = sp.notes,
@@ -93,7 +91,7 @@ class MonsterRepository(private val dndApi: Dnd5Api, private val database: SqlDa
                 }
 
                 is PolymorphicSpellCastingAbilityDetails.MagicianSpellActing -> {
-                    Monster.SpellCastingAbility(
+                    SpecialAbility.SpellCastingAbility(
                         name = name,
                         desc = desc,
                         savingThrow = SavingThrow(
@@ -112,7 +110,7 @@ class MonsterRepository(private val dndApi: Dnd5Api, private val database: SqlDa
                         dc = details.dc,
                         ability = Ability.valueOf(details.ability.name),
                         spellByLevel = details.spells.map { sp ->
-                            SpellCasting(
+                            SpecialAbility.SpellCasting(
                                 level = Level.fromInt(sp.level),
                                 name = sp.name,
                                 index = sp.url.split("/").last(),
@@ -128,11 +126,11 @@ class MonsterRepository(private val dndApi: Dnd5Api, private val database: SqlDa
         }
     }
 
-    private fun PolymorphicDamage.toDomain(): List<Monster.Damage> {
+    private fun PolymorphicDamage.toDomain(): List<Action.Damage> {
         return when (this) {
             is PolymorphicDamage.DamageDto -> {
                 listOf(
-                    Monster.Damage(
+                    Action.Damage(
                         type = DamageType.fromIndex(damageType.index),
                         dice = damageDice,
                         notes = notes
@@ -148,11 +146,11 @@ class MonsterRepository(private val dndApi: Dnd5Api, private val database: SqlDa
         }
     }
 
-    private fun PolymorphicAction.toDomain(): Monster.Action {
+    private fun PolymorphicAction.toDomain(): Action {
         return when (this) {
 
             is PolymorphicAction.SimpleActionDto -> {
-                Monster.Action(
+                Action(
                     name = name,
                     desc = desc,
                     usage = usage?.toDomain()
@@ -160,7 +158,7 @@ class MonsterRepository(private val dndApi: Dnd5Api, private val database: SqlDa
             }
 
             is PolymorphicAction.AttackActionDto -> {
-                Monster.AttackAction(
+                Action.AttackAction(
                     name = name,
                     attackBonus = attackBonus,
                     desc = desc,
@@ -179,7 +177,7 @@ class MonsterRepository(private val dndApi: Dnd5Api, private val database: SqlDa
                         }
                     }
                 }
-                Monster.MultiAttackAction(
+                Action.MultiAttackAction(
                     name = name,
                     desc = desc,
                     choose = attackOption?.choose ?: 0,
@@ -188,7 +186,7 @@ class MonsterRepository(private val dndApi: Dnd5Api, private val database: SqlDa
             }
 
             is PolymorphicAction.SavingThrowActionDto -> {
-                Monster.SavingThrowAction(
+                Action.SavingThrowAction(
                     name = name,
                     desc = desc,
                     savingThrow = SavingThrow(
@@ -204,7 +202,7 @@ class MonsterRepository(private val dndApi: Dnd5Api, private val database: SqlDa
         }
     }
 
-    suspend fun getMonsterByIndex(index: String): Monster.MonsterDetails? {
+    suspend fun getMonsterByIndex(index: String): Monster? {
         try {
             return dndApi.getMonsterByIndex(index)?.let { monsterDto ->
                 val savingThrows = mutableListOf<SavingThrow>()
@@ -231,39 +229,40 @@ class MonsterRepository(private val dndApi: Dnd5Api, private val database: SqlDa
                         dto.toDomain()
                     }
 
-                return Monster.MonsterDetails(
+                return Monster(
                     index = monsterDto.index,
                     name = monsterDto.name,
                     isFavorite = isFavorite,
-                    size = monsterDto.size,
-                    type = monsterDto.type,
-                    alignment = monsterDto.alignment,
-                    armorsClass = buildMap {
-                        monsterDto.armorClass.forEach { put(it.type, it.value) }
-                    },
-                    hitPoints = monsterDto.hitPoints,
-                    hitPointsRoll = monsterDto.hitPointsRoll,
-                    strength = monsterDto.strength,
-                    dexterity = monsterDto.dexterity,
-                    constitution = monsterDto.constitution,
-                    intelligence = monsterDto.intelligence,
-                    wisdom = monsterDto.wisdom,
-                    charisma = monsterDto.charisma, speedByMovements = monsterDto.speed,
-                    skills = skills,
-                    savingThrows = savingThrows,
-                    damageVulnerabilities = monsterDto.damageVulnerabilities,
-                    damageResistances = monsterDto.damageResistances,
-                    damageImmunities = monsterDto.damageImmunities,
-                    conditionImmunities = monsterDto.conditionImmunities.map { it.name },
-                    senses = monsterDto.senses,
-                    languages = monsterDto.languages,
                     challenge = Challenge.fromDouble(monsterDto.challengeRating),
-                    xp = monsterDto.xp,
-                    image = monsterDto.image,
-                    specialAbilities = specialAbilities,
-                    actions = monsterDto.actions.map { it.toDomain() },
-                    legendaryActions = monsterDto.legendaryActions.map { it.toDomain() }
-                )
+                    details = Monster.Details(
+                        size = monsterDto.size,
+                        type = monsterDto.type,
+                        alignment = monsterDto.alignment,
+                        armorsClass = buildMap {
+                            monsterDto.armorClass.forEach { put(it.type, it.value) }
+                        },
+                        hitPoints = monsterDto.hitPoints,
+                        hitPointsRoll = monsterDto.hitPointsRoll,
+                        strength = monsterDto.strength,
+                        dexterity = monsterDto.dexterity,
+                        constitution = monsterDto.constitution,
+                        intelligence = monsterDto.intelligence,
+                        wisdom = monsterDto.wisdom,
+                        charisma = monsterDto.charisma, speedByMovements = monsterDto.speed,
+                        skills = skills,
+                        savingThrows = savingThrows,
+                        damageVulnerabilities = monsterDto.damageVulnerabilities,
+                        damageResistances = monsterDto.damageResistances,
+                        damageImmunities = monsterDto.damageImmunities,
+                        conditionImmunities = monsterDto.conditionImmunities.map { it.name },
+                        senses = monsterDto.senses,
+                        languages = monsterDto.languages,
+                        xp = monsterDto.xp,
+                        image = monsterDto.image,
+                        specialAbilities = specialAbilities,
+                        actions = monsterDto.actions.map { it.toDomain() },
+                        legendaryActions = monsterDto.legendaryActions.map { it.toDomain() }
+                    ))
             }
         } catch (e: Exception) {
             Log.e { e.message.toString() }

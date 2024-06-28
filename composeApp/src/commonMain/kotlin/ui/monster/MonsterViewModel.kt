@@ -5,13 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import domain.model.monster.Challenge
 import domain.model.monster.Monster
+import domain.repository.MonsterRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import domain.repository.MonsterRepository
 
 class MonsterViewModel(private val monsterRepository: MonsterRepository) : ViewModel() {
 
@@ -67,9 +67,7 @@ class MonsterViewModel(private val monsterRepository: MonsterRepository) : ViewM
         refreshUiState()
     }
 
-    suspend fun getMonster(index: String): Monster.MonsterDetails? {
-        return monsterRepository.getMonsterByIndex(index)
-    }
+    suspend fun getMonster(index: String): Monster? = monsterRepository.getMonsterByIndex(index)
 
     fun toggleMonsterFavorite(monster: Monster) {
         monsterRepository.setMonsterIsFavorite(monster.index, !monster.isFavorite)

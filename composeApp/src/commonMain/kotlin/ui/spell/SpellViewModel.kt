@@ -21,11 +21,11 @@ class SpellViewModel(private val spellRepository: SpellRepository) : ViewModel()
         refreshUiState()
     }
 
-    suspend fun getSpellDetailsByIndex(index: String): Spell.SpellDetails? =
+    suspend fun getSpellDetailsByIndex(index: String): Spell? =
         spellRepository.getSpellByIndex(index)
 
     fun toggleSpellIsFavorite(spell: Spell) {
-        spellRepository.setSpellIsFavorite(spell.index, !spell.isFavorite)
+        spellRepository.setFavorite(spell.index, !spell.isFavorite)
         refreshUiState()
     }
 

@@ -37,7 +37,7 @@ class SpellRepository(private val spellApi: Dnd5Api, private val dataBase: SqlDa
         }
     }
 
-    fun setSpellIsFavorite(index: String, isFavorite: Boolean) {
+    fun setFavorite(index: String, isFavorite: Boolean) {
         dataBase.updateSpellFavoriteStatus(index, isFavorite)
     }
 
@@ -48,50 +48,56 @@ class SpellRepository(private val spellApi: Dnd5Api, private val dataBase: SqlDa
         level = Level.fromInt(level.toInt()),
     )
 
+    private fun SpellDto.toDomain(isFavorite: Boolean): Spell {
+        val school = MagicSchool.fromIndex(school.index)
+            ?: throw IllegalArgumentException("Unknown school index")
+
+        val damageByLevels: Map<Level, Spell.Details.SpellDamage> = damage?.let {
+            val values = it.damageAtSlotLevel ?: it.damageAtCharacterLevel
+            values?.getDamageByLevel(DamageType.fromIndex(it.damageType.index)) ?: emptyMap()
+        } ?: emptyMap()
+
+        return Spell(
+            index = index,
+            name = name,
+            level = Level.fromInt(level),
+            isFavorite = isFavorite,
+            details = Spell.Details(
+                text = desc.joinToString() + higherLevel.joinToString(),
+                range = range,
+                components = components.joinToString(),
+                material = material,
+                ritual = ritual,
+                duration = duration,
+                concentration = concentration,
+                castingTime = castingTime,
+                attackType = attackType,
+                damageByLevel = damageByLevels,
+                savingThrow = dc?.let { "${it.dcType.name} saving throw for ${it.dcSuccess} damage" },
+                school = school
+            )
+        )
+    }
+
     fun getListOfSpells(): Flow<List<Spell>> = dataBase.getAllSpells().map {
         it.map { dbo -> dbo.toDomain() }
     }
 
-    private fun SpellDto.getDamageByLevel(): Map<Level, Spell.SpellDamage> {
-        val damageLevels = damage?.damageAtSlotLevel ?: damage?.damageAtCharacterLevel
-        return damageLevels?.let { levels ->
-            levels.mapKeys { (level, _) -> Level.fromInt(level) }
-                .mapValues { (_, dice) ->
-                    Spell.SpellDamage(
-                        type = DamageType.fromIndex(damage?.damageType?.index.toString()),
-                        dice = dice
-                    )
-                }
-        } ?: emptyMap()
+    private fun Map<Int, String>.getDamageByLevel(damageType: DamageType): Map<Level, Spell.Details.SpellDamage> {
+        return this.mapKeys { (level, _) -> Level.fromInt(level) }
+            .mapValues { (_, dice) ->
+                Spell.Details.SpellDamage(
+                    type = damageType,
+                    dice = dice
+                )
+            }
     }
 
-    suspend fun getSpellByIndex(index: String): Spell.SpellDetails? {
+    suspend fun getSpellByIndex(index: String): Spell? {
         try {
             return spellApi.getSpellByIndex(index)?.let { dto ->
-                val isFavorite: Boolean =
-                    dataBase.getSpellById(index).firstOrNull()?.isFavorite == 1L
-
-                val school = MagicSchool.fromIndex(dto.school.index)
-                    ?: throw IllegalArgumentException("Unknown school index")
-
-                Spell.SpellDetails(
-                    index = dto.index,
-                    name = dto.name,
-                    level = Level.fromInt(dto.level),
-                    isFavorite = isFavorite,
-                    text = dto.desc.joinToString() + dto.higherLevel.joinToString(),
-                    range = dto.range,
-                    components = dto.components.joinToString(),
-                    material = dto.material,
-                    ritual = dto.ritual,
-                    duration = dto.duration,
-                    concentration = dto.concentration,
-                    castingTime = dto.castingTime,
-                    attackType = dto.attackType,
-                    damageByLevel = dto.getDamageByLevel(),
-                    savingThrow = dto.dc?.let { "${it.dcType.name} saving throw for ${it.dcSuccess} damage" },
-                    school = school
-                )
+                val isFavorite = dataBase.getSpellById(index).firstOrNull()?.isFavorite == 1L
+                return dto.toDomain(isFavorite)
             }
         } catch (e: ServerResponseException) {
             Log.e { e.message }

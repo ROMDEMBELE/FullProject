@@ -53,9 +53,9 @@ import org.dembeyo.shared.resources.plus_circle
 import org.jetbrains.compose.resources.painterResource
 import ui.composable.MediumBold
 import ui.composable.clip
-import ui.composable.generateView
 import ui.composable.darkBlue
 import ui.composable.darkPrimary
+import ui.composable.generateView
 import ui.composable.lightBlue
 import ui.composable.lightGray
 import ui.composable.primary
@@ -63,7 +63,9 @@ import ui.composable.secondary
 import ui.composable.spellDetailsText
 
 
-class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {
+class SpellDetailsScreen(private val spell: Spell) : Screen {
+
+    private val details = spell.details ?: throw IllegalStateException("Spell Details is null")
 
     override val key: ScreenKey
         get() = uniqueScreenKey
@@ -72,7 +74,7 @@ class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {
     @Composable
     override fun Content() {
         val scope = rememberCoroutineScope()
-        val pagerState = rememberPagerState(pageCount = { spell.damageByLevel.size })
+        val pagerState = rememberPagerState(pageCount = { details.damageByLevel.size })
         val screenBackgroundGradientBrush = Brush.linearGradient(
             listOf(
                 lightGray,
@@ -86,7 +88,7 @@ class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {
                     .background(screenBackgroundGradientBrush)
                     .height(150.dp)
             ) {
-                TextClip(spell.school.displayName, spell.school.color, Alignment.TopStart)
+                TextClip(details.school.displayName, details.school.color, Alignment.TopStart)
 
                 Image(
                     painterResource(Res.drawable.magic),
@@ -105,14 +107,14 @@ class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {
 
                 TextClip(" Level ${spell.level.level}", spell.level.color, Alignment.TopEnd)
 
-                if (spell.ritual == true) {
+                if (details.ritual == true) {
                     TextClip(
                         text = "Ritual",
                         lightBlue,
                         Alignment.BottomEnd
                     )
                 }
-                if (spell.concentration == true) {
+                if (details.concentration == true) {
                     TextClip(
                         text = "Concentration",
                         primary,
@@ -137,10 +139,10 @@ class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(spell.range, style = spellDetailsText)
-                    Text(spell.duration, style = spellDetailsText)
-                    Text(spell.components, style = spellDetailsText)
-                    Text(spell.castingTime, style = spellDetailsText)
+                    Text(details.range, style = spellDetailsText)
+                    Text(details.duration, style = spellDetailsText)
+                    Text(details.components, style = spellDetailsText)
+                    Text(details.castingTime, style = spellDetailsText)
                 }
             }
 
@@ -148,7 +150,7 @@ class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {
                 LazyColumn {
                     item {
                         Text(
-                            spell.text,
+                            details.text,
                             Modifier.padding(8.dp),
                             fontSize = 16.sp,
                             style = TextStyle.Default.copy(lineBreak = LineBreak.Paragraph),
@@ -162,11 +164,11 @@ class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {
             val animatedColorMinus by animateColorAsState(if (pagerState.canScrollBackward) secondary else lightGray)
             val animatedColorPlus by animateColorAsState(if (pagerState.canScrollForward) secondary else lightGray)
 
-            if (spell.savingThrow != null) {
+            if (details.savingThrow != null) {
                 Surface(color = primary) {
                     Text(
                         modifier = Modifier.fillMaxWidth().padding(12.dp),
-                        text = "${spell.savingThrow}",
+                        text = "${details.savingThrow}",
                         color = secondary,
                         fontWeight = FontWeight.Bold,
                         fontFamily = FontFamily.Monospace,
@@ -176,7 +178,7 @@ class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {
                 }
             }
 
-            if (spell.damageByLevel.isNotEmpty()) {
+            if (details.damageByLevel.isNotEmpty()) {
                 Box(Modifier.fillMaxWidth().background(darkBlue)) {
                     Row(
                         Modifier.fillMaxWidth().height(60.dp).padding(12.dp),
@@ -195,7 +197,7 @@ class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {
                             )
                         }
                         Text(
-                            "Level " + spell.damageByLevel.toList()[pagerState.currentPage].first.level,
+                            "Level " + details.damageByLevel.toList()[pagerState.currentPage].first.level,
                             style = MediumBold.copy(color = secondary)
                         )
                         IconButton(onClick = {
@@ -212,11 +214,18 @@ class SpellDetailsScreen(private val spell: Spell.SpellDetails) : Screen {
                     }
                 }
                 HorizontalPager(pagerState) { pageIndex ->
-                    val (level, damage) = spell.damageByLevel.toList()[pageIndex]
+                    val (level, damage) = details.damageByLevel.toList()[pageIndex]
                     Column(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.background(Brush.linearGradient(listOf(secondary, level.color))).fillMaxWidth()
+                        modifier = Modifier.background(
+                            Brush.linearGradient(
+                                listOf(
+                                    secondary,
+                                    level.color
+                                )
+                            )
+                        ).fillMaxWidth()
                             .padding(16.dp),
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
