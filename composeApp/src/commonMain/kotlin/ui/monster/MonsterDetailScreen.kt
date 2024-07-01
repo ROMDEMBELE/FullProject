@@ -2,6 +2,11 @@ package ui.monster
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,9 +39,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -109,6 +117,14 @@ class MonsterDetailScreen(private val index: String) : Screen {
         var innateSpellDialogDisplayed by rememberSaveable { mutableStateOf(false) }
         val viewModel: MonsterDetailsViewModel = koinInject()
         var uiState by remember { mutableStateOf<Monster?>(null) }
+
+        val infiniteTransition = rememberInfiniteTransition()
+        val scale by infiniteTransition.animateFloat(
+            0.8f, 1f, infiniteRepeatable(
+                animation = tween(1000),
+                repeatMode = RepeatMode.Reverse
+            )
+        )
 
         LaunchedEffect(index) {
             uiState = viewModel.loadMonster(index)
@@ -263,7 +279,10 @@ class MonsterDetailScreen(private val index: String) : Screen {
                             details.specialAbilities.forEach {
                                 when (it) {
                                     is InnateSpellCastingAbility, is SpellCastingAbility -> {
-                                        SpellCastingAbilityItem(monster, it) { spellDialogDisplayed = true }
+                                        SpellCastingAbilityItem(
+                                            monster,
+                                            it
+                                        ) { spellDialogDisplayed = true }
                                     }
 
                                     else -> SpecialAbilityItem(it)
@@ -308,7 +327,14 @@ class MonsterDetailScreen(private val index: String) : Screen {
                         painter = painterResource(Res.drawable.monster),
                         colorFilter = ColorFilter.tint(darkPrimary),
                         contentDescription = "monster",
-                        modifier = Modifier.align(Alignment.Center).size(200.dp).aspectRatio(1f)
+                        modifier = Modifier.align(Alignment.Center)
+                            .alpha(scale)
+                            .size(200.dp)
+                            .graphicsLayer {
+                                scaleX = scale
+                                scaleY = scale
+                                transformOrigin = TransformOrigin.Center
+                            }
                     )
                 }
             }
