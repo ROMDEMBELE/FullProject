@@ -1,6 +1,8 @@
 package domain.model
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.intl.Locale
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.dembeyo.shared.resources.Res
@@ -59,6 +61,10 @@ enum class DamageType(val index: String, val color: Color, val icon: DrawableRes
 
     @SerialName("thunder")
     THUNDER("thunder", Color(30, 144, 255), Res.drawable.damage_thunder);  // Bleu dodger
+
+    override fun toString(): String {
+        return index.capitalize(Locale.current)
+    }
 
     companion object {
         fun fromIndex(index: String) = entries.find { it.index == index }

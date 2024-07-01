@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -25,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -46,7 +44,6 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import domain.model.monster.Challenge
 import domain.model.monster.Monster
-import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.ancient
 import org.dembeyo.shared.resources.menu_monster
@@ -59,6 +56,7 @@ import ui.composable.CustomLazyHeaderList
 import ui.composable.DropDownTextField
 import ui.composable.MediumBold
 import ui.composable.SearchMenu
+import ui.composable.TaperedRule
 import ui.composable.bounceClick
 import ui.composable.darkBlue
 import ui.composable.darkGray
@@ -76,10 +74,8 @@ class MonsterListScreen() : Screen {
 
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        val viewModel: MonsterViewModel = koinInject()
+        val viewModel: MonsterListViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
-        val scope = rememberCoroutineScope()
         var favoriteEnabled by rememberSaveable { mutableStateOf(false) }
         Column {
             AnimatedContent(favoriteEnabled) { fav ->
@@ -103,11 +99,8 @@ class MonsterListScreen() : Screen {
                     )
                 }
             }
-            Divider(
-                modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
-                color = darkPrimary,
-                thickness = 3.dp
-            )
+            TaperedRule()
+
             SearchMenu(
                 searchTextPlaceholder = "Search by name",
                 searchTextFieldValue = uiState.textField,
@@ -143,11 +136,9 @@ class MonsterListScreen() : Screen {
                     }
                 },
             )
-            Divider(
-                modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
-                color = darkPrimary,
-                thickness = 3.dp
-            )
+
+            TaperedRule()
+
             AnimatedContent(favoriteEnabled) { favorite ->
                 if (favorite) {
                     ListOfMonster(uiState.favoriteMonsterByChallenge, viewModel)
@@ -161,10 +152,9 @@ class MonsterListScreen() : Screen {
     @Composable
     fun ListOfMonster(
         monsterByChallenge: Map<Challenge, List<Monster>>,
-        viewModel: MonsterViewModel
+        viewModel: MonsterListViewModel
     ) {
         val navigator = LocalNavigator.currentOrThrow
-        val scope = rememberCoroutineScope()
         CustomLazyHeaderList(
             mapOfValue = monsterByChallenge,
             stickyMode = false,
@@ -183,11 +173,7 @@ class MonsterListScreen() : Screen {
                 MonsterItem(
                     monster = monster,
                     onClick = {
-                        scope.launch {
-                            viewModel.getMonster(monster.index)?.let {
-                                navigator.push(MonsterDetailScreen(it))
-                            }
-                        }
+                        navigator.push(MonsterDetailScreen(monster.index))
                     },
                     onFavoriteClick = {
                         viewModel.toggleMonsterFavorite(monster)

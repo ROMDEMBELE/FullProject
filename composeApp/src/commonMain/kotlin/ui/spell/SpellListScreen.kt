@@ -20,7 +20,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
-import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -62,6 +61,7 @@ import org.koin.compose.koinInject
 import ui.composable.CustomLazyHeaderList
 import ui.composable.MediumBold
 import ui.composable.SearchMenu
+import ui.composable.TaperedRule
 import ui.composable.bounceClick
 import ui.composable.darkBlue
 import ui.composable.darkGray
@@ -105,11 +105,7 @@ class SpellListScreen() : Screen {
                     )
                 }
             }
-            Divider(
-                modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
-                color = darkPrimary,
-                thickness = 3.dp
-            )
+            TaperedRule()
             SearchMenu(
                 searchTextPlaceholder = "Search by name",
                 searchTextFieldValue = uiState.textField,
@@ -146,11 +142,7 @@ class SpellListScreen() : Screen {
                     }
                 }
             }
-            Divider(
-                modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
-                color = darkPrimary,
-                thickness = 3.dp
-            )
+            TaperedRule()
             AnimatedContent(favoriteEnabled) { fav ->
                 if (fav) {
                     ListOfSpell(uiState.favoriteByLevel, viewModel)

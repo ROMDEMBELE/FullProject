@@ -33,6 +33,19 @@ class MonsterRepository(private val dndApi: Dnd5Api, private val database: SqlDa
         }
     }
 
+    private suspend fun loadMonsterDatabaseByChallenge() {
+        Challenge.entries.forEach {
+            val result = dndApi.getMonstersByChallenge(it.rating)
+            result.results.forEach { dto ->
+                database.insertMonster(
+                    index = dto.index,
+                    name = dto.name,
+                    challenge = it.rating,
+                )
+            }
+        }
+    }
+
     fun setMonsterIsFavorite(index: String, isFavorite: Boolean) {
         database.updateMonsterFavoriteStatus(index, isFavorite)
     }
@@ -267,19 +280,6 @@ class MonsterRepository(private val dndApi: Dnd5Api, private val database: SqlDa
         } catch (e: Exception) {
             Log.e { e.message.toString() }
             return null
-        }
-    }
-
-    private suspend fun loadMonsterDatabaseByChallenge() {
-        Challenge.entries.forEach {
-            val result = dndApi.getMonstersByChallenge(it.rating)
-            result.results.forEach { dto ->
-                database.insertMonster(
-                    index = dto.index,
-                    name = dto.name,
-                    challenge = it.rating,
-                )
-            }
         }
     }
 

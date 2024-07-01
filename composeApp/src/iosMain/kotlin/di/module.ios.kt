@@ -9,11 +9,12 @@ import org.koin.core.component.get
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
+import ui.campaign.edit.EditCampaignViewModel
+import ui.campaign.main.CampaignMainViewModel
 import ui.character.CharacterViewModel
 import ui.character.edit.EditCharacterViewModel
-import ui.monster.MonsterViewModel
-import ui.campaign.main.CampaignMainViewModel
-import ui.campaign.edit.EditCampaignViewModel
+import ui.monster.MonsterDetailsViewModel
+import ui.monster.MonsterListViewModel
 import ui.spell.SpellViewModel
 
 actual fun platformModule(): Module = module {
@@ -24,7 +25,8 @@ actual fun platformModule(): Module = module {
     factory { SpellViewModel(get()) }
     factoryOf(::EditCharacterViewModel)
     factoryOf(::CharacterViewModel)
-    factoryOf(::MonsterViewModel)
+    factoryOf(::MonsterListViewModel)
+    factoryOf(::MonsterDetailsViewModel)
     factoryOf(::EditCampaignViewModel)
     factoryOf(::CampaignMainViewModel)
 
@@ -36,5 +38,6 @@ object ViewModelProvider : KoinComponent {
     fun getSpellScreenViewModel() = SpellViewModel(get())
     fun getEditCharacterViewModel() = EditCharacterViewModel(get(), get(), get(), get(), get())
     fun getCharacterViewModel() = CharacterViewModel(get())
-    fun getMonsterViewModel() = MonsterViewModel(get())
+    fun getMonsterListViewModel() = MonsterListViewModel(get())
+    fun getMonsterDetailsViewModel() = MonsterDetailsViewModel(get())
 }

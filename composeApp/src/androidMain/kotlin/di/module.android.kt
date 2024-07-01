@@ -6,17 +6,19 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.Module
 import org.koin.dsl.module
+import ui.campaign.edit.EditCampaignViewModel
+import ui.campaign.main.CampaignMainViewModel
 import ui.character.CharacterViewModel
 import ui.character.edit.EditCharacterViewModel
-import ui.monster.MonsterViewModel
-import ui.campaign.main.CampaignMainViewModel
-import ui.campaign.edit.EditCampaignViewModel
+import ui.monster.MonsterDetailsViewModel
+import ui.monster.MonsterListViewModel
 import ui.spell.SpellViewModel
 
 actual fun platformModule(): Module = module {
     viewModelOf(::SpellViewModel)
     viewModelOf(::EditCharacterViewModel)
-    viewModelOf(::MonsterViewModel)
+    viewModelOf(::MonsterListViewModel)
+    viewModelOf(::MonsterDetailsViewModel)
     viewModelOf(::CharacterViewModel)
     viewModelOf(::EditCampaignViewModel)
     viewModelOf(::CampaignMainViewModel)

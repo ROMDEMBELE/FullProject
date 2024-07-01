@@ -9,6 +9,8 @@
     <string name="menu_equipment">Equipments</string>
     <string name="menu_battle">Battle</string>
 
+    <string name="monster_not_found">Monster %1$s not found</string>
+
     <string name="monster_armor_class">Armor Class</string>
     <string name="monster_hit_points">Hit Points</string>
     <string name="monster_speed">Speed</string>

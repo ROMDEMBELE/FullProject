@@ -13,7 +13,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MonsterViewModel(private val monsterRepository: MonsterRepository) : ViewModel() {
+class MonsterListViewModel(
+    private val monsterRepository: MonsterRepository,
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MonsterListUiState())
     val uiState: StateFlow<MonsterListUiState> = _uiState.asStateFlow()
@@ -31,7 +33,12 @@ class MonsterViewModel(private val monsterRepository: MonsterRepository) : ViewM
                 val challengeRange =
                     _uiState.value.minChallenge.rating.._uiState.value.maxChallenge.rating
                 val monsterByChallenge = list
-                    .filter { it.name.contains(text, true) && it.challenge.rating in challengeRange }
+                    .filter {
+                        it.name.contains(
+                            text,
+                            true
+                        ) && it.challenge.rating in challengeRange
+                    }
                     .sortedBy { it.challenge }
                     .groupBy { it.challenge }
                 _uiState.update {
@@ -66,8 +73,6 @@ class MonsterViewModel(private val monsterRepository: MonsterRepository) : ViewM
         _uiState.update { it.copy(textField = textField) }
         refreshUiState()
     }
-
-    suspend fun getMonster(index: String): Monster? = monsterRepository.getMonsterByIndex(index)
 
     fun toggleMonsterFavorite(monster: Monster) {
         monsterRepository.setMonsterIsFavorite(monster.index, !monster.isFavorite)
