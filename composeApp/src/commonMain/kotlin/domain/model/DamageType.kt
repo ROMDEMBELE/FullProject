@@ -24,7 +24,7 @@ import org.jetbrains.compose.resources.DrawableResource
 @Serializable
 enum class DamageType(val index: String, val color: Color, val icon: DrawableResource) {
     @SerialName("acid")
-    ACID("acid", Color(0, 255, 0), Res.drawable.damage_acid),  // Vert
+    ACID("acid", Color(79, 214, 43), Res.drawable.damage_acid),  // Vert
 
     @SerialName("bludgeoning")
     BLUDGEONING("bludgeoning", Color(139, 69, 19), Res.drawable.damage_bludgeoning),  // Marron
