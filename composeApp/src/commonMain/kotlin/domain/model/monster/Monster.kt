@@ -1,6 +1,7 @@
 package domain.model.monster
 
 import domain.model.Alignment
+import domain.model.SavingThrow
 
 data class Monster(
     val index: String,

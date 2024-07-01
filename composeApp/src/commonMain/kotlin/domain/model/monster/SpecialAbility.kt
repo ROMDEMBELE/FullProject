@@ -2,6 +2,7 @@ package domain.model.monster
 
 import domain.model.Ability
 import domain.model.Level
+import domain.model.SavingThrow
 import domain.model.spell.Spell
 
 open class SpecialAbility(

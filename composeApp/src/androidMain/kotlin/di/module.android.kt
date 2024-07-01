@@ -12,10 +12,12 @@ import ui.character.CharacterViewModel
 import ui.character.edit.EditCharacterViewModel
 import ui.monster.MonsterDetailsViewModel
 import ui.monster.MonsterListViewModel
-import ui.spell.SpellViewModel
+import ui.spell.SpellDetailsViewModel
+import ui.spell.SpellListViewModel
 
 actual fun platformModule(): Module = module {
-    viewModelOf(::SpellViewModel)
+    viewModelOf(::SpellListViewModel)
+    viewModelOf(::SpellDetailsViewModel)
     viewModelOf(::EditCharacterViewModel)
     viewModelOf(::MonsterListViewModel)
     viewModelOf(::MonsterDetailsViewModel)

@@ -95,8 +95,8 @@ import ui.composable.darkBlue
 import ui.composable.darkGray
 import ui.composable.darkPrimary
 import ui.composable.lightGray
-import ui.composable.monsterPropertyText
-import ui.composable.monsterPropertyTitle
+import ui.composable.propertyText
+import ui.composable.propertyTitle
 import ui.composable.monsterSubTitle
 import ui.composable.monsterTitle
 import ui.composable.orange
@@ -180,7 +180,7 @@ class MonsterDetailScreen(private val index: String) : Screen {
                         ) {
                             Text(
                                 text = stringResource(Res.string.monster_speed),
-                                style = monsterPropertyTitle,
+                                style = propertyTitle,
                                 modifier = Modifier.padding(4.dp).weight(1f)
                             )
                             details.speedByMovements.entries.forEach { (movement, value) ->
@@ -195,7 +195,7 @@ class MonsterDetailScreen(private val index: String) : Screen {
                                     text = "${movement.fullName} $value",
                                     modifier = Modifier.padding(4.dp),
                                     textAlign = TextAlign.End,
-                                    style = monsterPropertyText,
+                                    style = propertyText,
                                 )
                             }
                         }
@@ -392,14 +392,14 @@ class MonsterDetailScreen(private val index: String) : Screen {
         ) {
             Text(
                 text = stringResource(title),
-                style = monsterPropertyTitle,
+                style = propertyTitle,
                 modifier = Modifier.padding(4.dp)
             )
             Text(
                 text = value.capitalize(Locale.current),
                 modifier = Modifier.padding(4.dp),
                 textAlign = TextAlign.End,
-                style = monsterPropertyText,
+                style = propertyText,
             )
         }
     }
@@ -423,7 +423,7 @@ class MonsterDetailScreen(private val index: String) : Screen {
             Text(
                 text = ability.desc.capitalize(Locale.current),
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
-                style = monsterPropertyText.copy(textAlign = TextAlign.Center)
+                style = propertyText.copy(textAlign = TextAlign.Center)
             )
         }
     }
@@ -456,7 +456,7 @@ class MonsterDetailScreen(private val index: String) : Screen {
             Text(
                 text = description.capitalize(Locale.current),
                 modifier = Modifier.padding(8.dp),
-                style = monsterPropertyText.copy(textAlign = TextAlign.Center)
+                style = propertyText.copy(textAlign = TextAlign.Center)
             )
 
             TextButton(
@@ -513,7 +513,7 @@ class MonsterDetailScreen(private val index: String) : Screen {
             Text(
                 text = action.desc.capitalize(Locale.current),
                 modifier = Modifier.padding(8.dp),
-                style = monsterPropertyText.copy(textAlign = TextAlign.Center)
+                style = propertyText.copy(textAlign = TextAlign.Center)
             )
 
             when (action) {
@@ -638,7 +638,7 @@ class MonsterDetailScreen(private val index: String) : Screen {
                                             .fillMaxWidth(),
                                         colors = ButtonDefaults.textButtonColors(darkPrimary),
                                         onClick = {
-                                            navigator.push(SpellDetailsScreen(spell))
+                                            navigator.push(SpellDetailsScreen(spell.index))
                                         })
                                     {
                                         Text(text = spell.name.capitalize(Locale.current))

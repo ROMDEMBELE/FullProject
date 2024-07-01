@@ -65,27 +65,14 @@ val monsterSubTitle = TextStyle(
     color = Color.Black,
 )
 
-val monsterPropertyText = TextStyle(
+val propertyText = TextStyle(
     color = darkPrimary,
     fontSize = 13.5.sp,
     lineHeight = 16.sp
 )
 
-val monsterPropertyTitle = monsterPropertyText.copy(
+val propertyTitle = propertyText.copy(
     fontWeight = FontWeight.Bold
-)
-
-val spellDetailsText = TextStyle(
-    color = secondary,
-    fontSize = 18.sp,
-    fontWeight = FontWeight.Bold,
-    textAlign = TextAlign.Center,
-)
-
-val clip = TextStyle(
-    fontWeight = FontWeight.Bold,
-    textAlign = TextAlign.Center,
-    fontSize = 14.sp
 )
 
 val item = TextStyle(

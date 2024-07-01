@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class SpellViewModel(private val spellRepository: SpellRepository) : ViewModel() {
+class SpellListViewModel(private val spellRepository: SpellRepository) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SpellListUiState())
     val uiState = _uiState.asStateFlow()
@@ -20,9 +20,6 @@ class SpellViewModel(private val spellRepository: SpellRepository) : ViewModel()
     init {
         refreshUiState()
     }
-
-    suspend fun getSpellDetailsByIndex(index: String): Spell? =
-        spellRepository.getSpellByIndex(index)
 
     fun toggleSpellIsFavorite(spell: Spell) {
         spellRepository.setFavorite(spell.index, !spell.isFavorite)

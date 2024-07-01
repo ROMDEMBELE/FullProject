@@ -42,7 +42,7 @@ data class SpellDto(
     @Serializable
     data class SpellDamageDto(
         @SerialName("damage_type")
-        val damageType: ReferenceDto,
+        val damageType: ReferenceDto? = null,
         @SerialName("damage_at_slot_level")
         val damageAtSlotLevel: Map<Int, String>? = null,
         @SerialName("damage_at_character_level")

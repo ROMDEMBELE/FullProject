@@ -2,6 +2,7 @@ package domain.model.spell
 
 import domain.model.DamageType
 import domain.model.Level
+import domain.model.SavingThrow
 
 
 open class Spell(
@@ -13,7 +14,7 @@ open class Spell(
 ) {
 
     data class Details(
-        val text: String,
+        val description: List<String>,
         val range: String,
         val components: String,
         val material: String? = null,
@@ -24,12 +25,12 @@ open class Spell(
         val attackType: String? = null,
         val areaOfEffect: String? = null,
         val damageByLevel: Map<Level, SpellDamage> = emptyMap(),
-        val savingThrow: String? = null,
+        val savingThrow: SavingThrow? = null,
         val school: MagicSchool,
     ) {
 
         data class SpellDamage(
-            val type: DamageType,
+            val type: DamageType? = null,
             val dice: String,
         )
     }

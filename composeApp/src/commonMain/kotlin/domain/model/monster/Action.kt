@@ -1,6 +1,7 @@
 package domain.model.monster
 
 import domain.model.DamageType
+import domain.model.SavingThrow
 
 open class Action(
     override val name: String,

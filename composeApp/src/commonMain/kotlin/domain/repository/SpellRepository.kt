@@ -3,10 +3,15 @@ package domain.repository
 import data.api.Dnd5Api
 import data.database.SqlDatabase
 import data.dto.SpellDto
+import data.dto.SpellDto.SpellDamageDto
+import data.dto.SpellDto.SpellDcDto
+import domain.model.Ability
 import domain.model.DamageType
 import domain.model.Level
+import domain.model.SavingThrow
 import domain.model.spell.MagicSchool
 import domain.model.spell.Spell
+import domain.model.spell.Spell.Details.SpellDamage
 import io.ktor.client.plugins.ServerResponseException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,14 +53,22 @@ class SpellRepository(private val spellApi: Dnd5Api, private val dataBase: SqlDa
         level = Level.fromInt(level.toInt()),
     )
 
-    private fun SpellDto.toDomain(isFavorite: Boolean): Spell {
-        val school = MagicSchool.fromIndex(school.index)
-            ?: throw IllegalArgumentException("Unknown school index")
+    private fun SpellDamageDto.toDomain(): Map<Level, SpellDamage> {
+        val mapOfDamageByInt = damageAtSlotLevel ?: damageAtCharacterLevel ?: emptyMap()
+        val type = damageType?.let { type -> DamageType.fromIndex(type.index) }
+        return mapOfDamageByInt
+            .mapKeys { (level, _) -> Level.fromInt(level) }
+            .mapValues { (_, dice) -> SpellDamage(type = type, dice = dice) }
+    }
 
-        val damageByLevels: Map<Level, Spell.Details.SpellDamage> = damage?.let {
-            val values = it.damageAtSlotLevel ?: it.damageAtCharacterLevel
-            values?.getDamageByLevel(DamageType.fromIndex(it.damageType.index)) ?: emptyMap()
-        } ?: emptyMap()
+    private fun SpellDcDto.toDomain() = SavingThrow(
+        value = null,
+        success = dcSuccess,
+        ability = Ability.valueOf(dcType.name)
+    )
+
+    private fun SpellDto.toDomain(isFavorite: Boolean): Spell {
+        val school = MagicSchool.fromIndex(school.index) ?: throw IllegalArgumentException("Unknown school index")
 
         return Spell(
             index = index,
@@ -63,17 +76,18 @@ class SpellRepository(private val spellApi: Dnd5Api, private val dataBase: SqlDa
             level = Level.fromInt(level),
             isFavorite = isFavorite,
             details = Spell.Details(
-                text = desc.joinToString() + higherLevel.joinToString(),
+                description = desc + higherLevel,
                 range = range,
                 components = components.joinToString(),
                 material = material,
                 ritual = ritual,
                 duration = duration,
                 concentration = concentration,
+                areaOfEffect = areaOfEffect?.let { "${it.type} ${it.size}" },
                 castingTime = castingTime,
                 attackType = attackType,
-                damageByLevel = damageByLevels,
-                savingThrow = dc?.let { "${it.dcType.name} saving throw for ${it.dcSuccess} damage" },
+                damageByLevel = damage?.toDomain().orEmpty(),
+                savingThrow = dc?.toDomain(),
                 school = school
             )
         )
@@ -81,16 +95,6 @@ class SpellRepository(private val spellApi: Dnd5Api, private val dataBase: SqlDa
 
     fun getListOfSpells(): Flow<List<Spell>> = dataBase.getAllSpells().map {
         it.map { dbo -> dbo.toDomain() }
-    }
-
-    private fun Map<Int, String>.getDamageByLevel(damageType: DamageType): Map<Level, Spell.Details.SpellDamage> {
-        return this.mapKeys { (level, _) -> Level.fromInt(level) }
-            .mapValues { (_, dice) ->
-                Spell.Details.SpellDamage(
-                    type = damageType,
-                    dice = dice
-                )
-            }
     }
 
     suspend fun getSpellByIndex(index: String): Spell? {

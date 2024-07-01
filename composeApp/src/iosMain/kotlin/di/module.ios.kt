@@ -15,14 +15,16 @@ import ui.character.CharacterViewModel
 import ui.character.edit.EditCharacterViewModel
 import ui.monster.MonsterDetailsViewModel
 import ui.monster.MonsterListViewModel
-import ui.spell.SpellViewModel
+import ui.spell.SpellDetailsViewModel
+import ui.spell.SpellListViewModel
 
 actual fun platformModule(): Module = module {
     single {
         Darwin.create()
     }
     single { DriverFactory() }
-    factory { SpellViewModel(get()) }
+    factoryOf(::SpellListViewModel)
+    factoryOf(::SpellDetailsViewModel)
     factoryOf(::EditCharacterViewModel)
     factoryOf(::CharacterViewModel)
     factoryOf(::MonsterListViewModel)
@@ -35,7 +37,8 @@ actual fun platformModule(): Module = module {
 }
 
 object ViewModelProvider : KoinComponent {
-    fun getSpellScreenViewModel() = SpellViewModel(get())
+    fun getSpellScreenListViewModel() = SpellListViewModel(get())
+    fun getSpellScreenDetailsViewModel() = SpellDetailsViewModel(get())
     fun getEditCharacterViewModel() = EditCharacterViewModel(get(), get(), get(), get(), get())
     fun getCharacterViewModel() = CharacterViewModel(get())
     fun getMonsterListViewModel() = MonsterListViewModel(get())

@@ -31,6 +31,12 @@
     <string name="monster_senses_passive_perception">Passive perception</string>
     <string name="monster_senses_true_sight">Truesight</string>
 
+    <string name="spell_range">Range</string>
+    <string name="spell_duration">Duration</string>
+    <string name="spell_components">Components</string>
+    <string name="spell_casting_time">Casting Time</string>
+    <string name="spell_area_of_effect">Area of Effect</string>
+
     <string name="save_button">Save</string>
     <string name="confirm_button">Ok</string>
     <string name="cancel_button">Cancel</string>

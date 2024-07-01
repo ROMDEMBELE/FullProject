@@ -11,10 +11,10 @@ import data.dto.monster.PolymorphicUsageLimitDto
 import domain.model.Ability
 import domain.model.DamageType
 import domain.model.Level
+import domain.model.SavingThrow
 import domain.model.monster.Action
 import domain.model.monster.Challenge
 import domain.model.monster.Monster
-import domain.model.monster.SavingThrow
 import domain.model.monster.SpecialAbility
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

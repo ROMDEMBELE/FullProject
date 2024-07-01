@@ -79,7 +79,7 @@ class SpellListScreen() : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel: SpellViewModel = koinInject()
+        val viewModel: SpellListViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
         var favoriteEnabled by rememberSaveable { mutableStateOf(false) }
         val scope = rememberCoroutineScope()
@@ -154,7 +154,7 @@ class SpellListScreen() : Screen {
     }
 
     @Composable
-    fun ListOfSpell(spellByLevel: Map<Level, List<Spell>>, viewModel: SpellViewModel) {
+    fun ListOfSpell(spellByLevel: Map<Level, List<Spell>>, viewModel: SpellListViewModel) {
         val navigator = LocalNavigator.currentOrThrow
         val scope = rememberCoroutineScope()
         CustomLazyHeaderList(
@@ -173,12 +173,7 @@ class SpellListScreen() : Screen {
             },
             item = { spell ->
                 SpellItem(spell, onClick = {
-                    scope.launch {
-                        viewModel.getSpellDetailsByIndex(spell.index)
-                            ?.let { completeSpell ->
-                                navigator.push(SpellDetailsScreen(completeSpell))
-                            }
-                    }
+                    navigator.push(SpellDetailsScreen(spell.index))
                 },
                     onFavoriteClick = {
                         scope.launch {
