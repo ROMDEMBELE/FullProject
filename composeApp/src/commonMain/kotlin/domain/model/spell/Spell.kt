@@ -9,7 +9,7 @@ open class Spell(
     open val index: String,
     open val name: String,
     open val level: Level,
-    open var isFavorite: Boolean = false,
+    open val isFavorite: Boolean = false,
     open val details: Details? = null,
 ) {
 

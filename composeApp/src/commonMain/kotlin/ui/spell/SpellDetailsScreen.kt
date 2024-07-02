@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -49,7 +50,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.capitalize
@@ -68,7 +68,6 @@ import domain.model.Level
 import domain.model.spell.Spell
 import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
-import org.dembeyo.shared.resources.magic
 import org.dembeyo.shared.resources.minus_circle
 import org.dembeyo.shared.resources.ornament
 import org.dembeyo.shared.resources.plus_circle
@@ -82,10 +81,10 @@ import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
+import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.MediumBold
 import ui.composable.TaperedRule
 import ui.composable.darkBlue
-import ui.composable.darkPrimary
 import ui.composable.generateIcon
 import ui.composable.lightBlue
 import ui.composable.lightGray
@@ -104,16 +103,9 @@ class SpellDetailsScreen(private val index: String) : Screen {
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
+        val infiniteTransition = rememberInfiniteTransition()
         val viewModel: SpellDetailsViewModel = koinInject()
         var uiState by remember { mutableStateOf<Spell?>(null) }
-
-        val infiniteTransition = rememberInfiniteTransition()
-        val scale by infiniteTransition.animateFloat(
-            0.8f, 1f, infiniteRepeatable(
-                animation = tween(1000),
-                repeatMode = RepeatMode.Reverse
-            )
-        )
 
         val rotation by infiniteTransition.animateFloat(
             0f, 360f, infiniteRepeatable(tween(50000, easing = LinearEasing), RepeatMode.Restart)
@@ -280,21 +272,7 @@ class SpellDetailsScreen(private val index: String) : Screen {
 
                 }
             } else {
-                Box(Modifier.fillMaxSize()) {
-                    Image(
-                        painter = painterResource(Res.drawable.magic),
-                        colorFilter = ColorFilter.tint(darkPrimary),
-                        contentDescription = "monster",
-                        modifier = Modifier.align(Alignment.Center)
-                            .alpha(scale)
-                            .size(200.dp)
-                            .graphicsLayer {
-                                scaleX = scale
-                                scaleY = scale
-                                transformOrigin = TransformOrigin.Center
-                            }
-                    )
-                }
+                CustomAnimatedPlaceHolder(true, infiniteTransition)
             }
         }
     }
@@ -302,13 +280,37 @@ class SpellDetailsScreen(private val index: String) : Screen {
     @Composable
     fun DamageItem(level: Level, dice: String, type: DamageType?) {
         val damageBrush = Brush.linearGradient(listOf(darkBlue, darkBlue, level.color))
-        Box(Modifier.height(70.dp).fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(damageBrush).padding(4.dp)) {
+        Row(
+            Modifier.height(70.dp).fillMaxWidth()
+                .clip(RoundedCornerShape(8.dp))
+                .background(damageBrush)
+                .padding(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
             Text(
                 text = "Lv${level.level}",
-                style = MediumBold.copy(color = secondary, fontSize = 10.sp),
-                modifier = Modifier.align(Alignment.TopCenter)
+                style = MediumBold.copy(color = darkBlue, fontSize = 14.sp),
+                modifier = Modifier.clip(RoundedCornerShape(8.dp))
+                    .background(level.color)
+                    .padding(8.dp)
+
             )
-            type?.generateIcon(dice, Modifier.align(Alignment.Center))
+
+            Spacer(Modifier.width(4.dp))
+
+            Text(
+                text = dice,
+                style = MediumBold.copy(color = darkBlue, fontSize = 14.sp),
+                modifier = Modifier.clip(RoundedCornerShape(8.dp))
+                    .background(secondary)
+                    .padding(8.dp)
+            )
+
+            if (type != null) {
+                Spacer(Modifier.width(4.dp))
+                type.generateIcon()
+            }
         }
     }
 
@@ -342,15 +344,14 @@ class SpellDetailsScreen(private val index: String) : Screen {
             text = text,
             modifier = Modifier
                 .width(140.dp)
-                .padding(8.dp)
                 .border(2.dp, darkBlue, CircleShape)
                 .clip(CircleShape)
                 .background(color = color)
-                .padding(4.dp)
+                .padding(2.dp)
                 .align(alignment),
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
-            fontSize = 14.sp
+            fontSize = 12.sp
         )
     }
 

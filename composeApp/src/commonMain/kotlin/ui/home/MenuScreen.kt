@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -136,11 +135,11 @@ class MenuScreen : Screen {
     @Composable
     fun MenuItemView(menu: MenuItem, onClick: () -> Unit) {
         val infiniteTransition = rememberInfiniteTransition()
-        val colorAnimation by infiniteTransition.animateColor(primary, darkPrimary, infiniteRepeatable(tween(5000), RepeatMode.Reverse))
-        val scalingAnimation by infiniteTransition.animateFloat(1f, 0.8f, infiniteRepeatable(tween(5000), RepeatMode.Reverse))
+        val colorAnimation by infiniteTransition.animateColor(primary, darkPrimary, infiniteRepeatable(tween(10000), RepeatMode.Reverse))
+        val scalingAnimation by infiniteTransition.animateFloat(.8f, 1f, infiniteRepeatable(tween(10000), RepeatMode.Reverse))
         val interactionSource = remember { NoRippleInteractionSource() }
         Button(
-            modifier = Modifier.height(240.dp).bounceClick(),
+            modifier = Modifier.height(220.dp).bounceClick(),
             shape = roundCornerShape,
             interactionSource = interactionSource,
             border = BorderStroke(2.dp, secondary),
@@ -162,9 +161,9 @@ class MenuScreen : Screen {
                     Image(
                         painter = painterResource(menu.icon),
                         contentDescription = menu.icon.toString(),
-                        modifier = Modifier.size(130.dp)
-                            .scale(scalingAnimation)
+                        modifier = Modifier.padding(8.dp).fillMaxSize()
                             .aspectRatio(1f)
+                            .scale(scalingAnimation)
                             .alpha(0.6f)
                             .drawWithContent {
                                 drawContent()
@@ -178,7 +177,7 @@ class MenuScreen : Screen {
                         modifier = Modifier.align(Alignment.Center).fillMaxWidth(),
                         color = secondary,
                         textAlign = TextAlign.Center,
-                        fontSize = 35.sp,
+                        fontSize = 30.sp,
                         fontFamily = FontFamily(Font(Res.font.ancient)),
                         style = TextStyle(
                             shadow = Shadow(

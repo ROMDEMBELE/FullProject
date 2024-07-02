@@ -1,3 +1,4 @@
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,32 +18,39 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.FadeTransition
 import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.adventure
 import org.dembeyo.shared.resources.ancient
 import org.dembeyo.shared.resources.castle_empty
+import org.dembeyo.shared.resources.menu_character
+import org.dembeyo.shared.resources.menu_monster
 import org.dembeyo.shared.resources.menu_screen_title
+import org.dembeyo.shared.resources.menu_spell
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ui.campaign.main.CampaignMainScreen
+import ui.character.CharacterListScreen
+import ui.character.edit.EditCharacterScreen
 import ui.composable.darkBlue
-import ui.composable.darkGray
 import ui.composable.primary
 import ui.composable.secondary
 import ui.home.MenuDrawer
 import ui.home.MenuScreen
+import ui.monster.MonsterDetailScreen
+import ui.monster.MonsterListScreen
+import ui.spell.SpellDetailsScreen
+import ui.spell.SpellListScreen
 
 @Composable
 @Preview
@@ -78,15 +86,26 @@ fun App() {
                                     modifier = Modifier.size(24.dp).aspectRatio(1f)
                                 )
                             }
-                            Text(
-                                stringResource(Res.string.menu_screen_title),
-                                Modifier.fillMaxWidth().align(Alignment.Center),
-                                fontSize = 30.sp,
-                                textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = FontFamily(Font(Res.font.ancient)),
-                                color = primary,
-                            )
+                            AnimatedContent(
+                                navigator.lastItem,
+                                Modifier.fillMaxWidth().align(Alignment.Center)
+                            ) { currentScreen ->
+                                val title = when (currentScreen) {
+                                    is SpellListScreen, is SpellDetailsScreen -> Res.string.menu_spell
+                                    is MonsterListScreen, is MonsterDetailScreen -> Res.string.menu_monster
+                                    is CharacterListScreen, is EditCharacterScreen -> Res.string.menu_character
+                                    else -> Res.string.menu_screen_title
+                                }
+                                Text(
+                                    stringResource(title),
+                                    fontSize = 30.sp,
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = FontFamily(Font(Res.font.ancient)),
+                                    color = primary,
+                                )
+                            }
+
                             IconButton(
                                 modifier = Modifier.align(Alignment.CenterEnd),
                                 onClick = {
@@ -106,11 +125,8 @@ fun App() {
                     }
                 }
             ) { _ ->
-                Box(
-                    Modifier.fillMaxSize()
-                        .background(Brush.verticalGradient(listOf(secondary, secondary, darkGray)))
-                ) {
-                    CurrentScreen()
+                Box(Modifier.background(secondary)) {
+                    FadeTransition(navigator)
                 }
             }
         }

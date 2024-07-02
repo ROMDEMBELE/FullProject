@@ -26,19 +26,22 @@ import org.lighthousegames.logging.logging
 class SpellRepository(private val spellApi: Dnd5Api, private val dataBase: SqlDatabase) {
 
     init {
-        loadSpellsDatabase()
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                fetchSpellDatabase()
+            } catch (e: Exception) {
+                Log.w { "Unable to update the spell database" }
+            }
+        }
     }
 
-    private fun loadSpellsDatabase() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val result = spellApi.getSpellByLevelOrSchool()
-            result.results.forEach { dto ->
-                dataBase.insertSpell(
-                    index = dto.index,
-                    name = dto.name,
-                    level = dto.level.toLong(),
-                )
-            }
+    suspend fun fetchSpellDatabase() {
+        spellApi.getSpellByLevelOrSchool().results.forEach { dto ->
+            dataBase.insertSpell(
+                index = dto.index,
+                name = dto.name,
+                level = dto.level.toLong(),
+            )
         }
     }
 
@@ -68,7 +71,8 @@ class SpellRepository(private val spellApi: Dnd5Api, private val dataBase: SqlDa
     )
 
     private fun SpellDto.toDomain(isFavorite: Boolean): Spell {
-        val school = MagicSchool.fromIndex(school.index) ?: throw IllegalArgumentException("Unknown school index")
+        val school = MagicSchool.fromIndex(school.index)
+            ?: throw IllegalArgumentException("Unknown school index")
 
         return Spell(
             index = index,

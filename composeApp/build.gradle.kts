@@ -77,6 +77,8 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.voyager.navigator)
+            implementation("cafe.adriel.voyager:voyager-transitions:1.1.0-beta02")
+            implementation("cafe.adriel.voyager:voyager-koin:1.1.0-beta02")
             implementation(libs.library.base)
             implementation(libs.runtime)
             implementation(libs.coroutines.extensions)

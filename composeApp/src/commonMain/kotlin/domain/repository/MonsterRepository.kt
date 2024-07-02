@@ -35,13 +35,16 @@ class MonsterRepository(private val dndApi: Dnd5Api, private val database: SqlDa
 
     private suspend fun loadMonsterDatabaseByChallenge() {
         Challenge.entries.forEach {
-            val result = dndApi.getMonstersByChallenge(it.rating)
-            result.results.forEach { dto ->
-                database.insertMonster(
-                    index = dto.index,
-                    name = dto.name,
-                    challenge = it.rating,
-                )
+            try {
+                dndApi.getMonstersByChallenge(it.rating).results.forEach { dto ->
+                    database.insertMonster(
+                        index = dto.index,
+                        name = dto.name,
+                        challenge = it.rating,
+                    )
+                }
+            } catch (e: Exception) {
+                Log.w { "Unable to update the monster database" }
             }
         }
     }

@@ -36,7 +36,7 @@ fun Modifier.fadingEdge(
 
 fun Modifier.bounceClick() = composed {
     var buttonPressed by remember { mutableStateOf(false) }
-    val scale by animateFloatAsState(if (buttonPressed) 0.80f else 1f)
+    val scale by animateFloatAsState(if (buttonPressed) 0.90f else 1f)
 
     this
         .graphicsLayer {

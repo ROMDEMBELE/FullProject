@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import domain.model.Level
 import domain.model.spell.Spell
 import domain.repository.SpellRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -18,12 +19,16 @@ class SpellListViewModel(private val spellRepository: SpellRepository) : ViewMod
     val uiState = _uiState.asStateFlow()
 
     init {
-        refreshUiState()
+        viewModelScope.launch {
+            spellRepository.getListOfSpells().collectLatest { list ->
+                delay(500)
+                _uiState.update { it.copy(spellByLevel = list, isReady = true) }
+            }
+        }
     }
 
     fun toggleSpellIsFavorite(spell: Spell) {
         spellRepository.setFavorite(spell.index, !spell.isFavorite)
-        refreshUiState()
     }
 
     fun filterByLevel(filter: Level, enable: Boolean) {
@@ -33,41 +38,26 @@ class SpellListViewModel(private val spellRepository: SpellRepository) : ViewMod
             }
             it.copy(filterByLevel = updatedList)
         }
-        refreshUiState()
     }
 
     fun filterByText(textFieldValue: TextFieldValue) {
         _uiState.update {
             it.copy(textField = textFieldValue)
         }
-        refreshUiState()
     }
 
-    private fun refreshUiState() {
+    fun acknowledgeError() {
+        _uiState.update { it.copy(error = null) }
+    }
+
+    fun refresh() {
         viewModelScope.launch {
-            val level = _uiState.value.filterByLevel
-            val text = _uiState.value.textField.text
-            spellRepository.getListOfSpells().collectLatest { list ->
-                val favoriteByLevel =
-                    list.filter { spell -> spell.isFavorite }
-                        .sortedBy { spell -> spell.level }
-                        .groupBy { spell -> spell.level }
-
-
-                val spellsByLevel = list.asSequence().sortedBy { spell -> spell.level }
-                    .filter { spell -> level.isEmpty() || level.contains(spell.level) }
-                    .filter { spell -> spell.name.contains(text, true) }
-                    .sortedBy { spell -> spell.level }
-                    .groupBy { spell -> spell.level }
-
-                _uiState.update {
-                    it.copy(
-                        filteredSpellsByLevel = spellsByLevel,
-                        favoriteByLevel = favoriteByLevel
-                    )
-                }
+            _uiState.update { it.copy(isReady = false) }
+            try {
+                spellRepository.fetchSpellDatabase()
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isReady = true, error = e.message) }
             }
-
         }
     }
 }

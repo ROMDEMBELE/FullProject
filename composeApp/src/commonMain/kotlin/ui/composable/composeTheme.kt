@@ -22,12 +22,13 @@ val lightBlue = Color(95, 99, 175)
 val lightGray = Color(174, 182, 191)
 val secondary = Color(255, 248, 219)
 val orange = Color(0xFFE69A28)
+val yellow = Color(0xFFFDD534)
 
 val roundCornerShape = RoundedCornerShape(18.dp)
 
 @Composable
 fun screenTitle(color: Color = darkPrimary) = TextStyle(
-    fontSize = 40.sp,
+    fontSize = 32.sp,
     textAlign = TextAlign.Center,
     fontFamily = FontFamily(Font(Res.font.ancient)),
     color = color

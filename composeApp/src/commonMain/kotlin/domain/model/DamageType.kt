@@ -33,16 +33,16 @@ enum class DamageType(val index: String, val color: Color, val icon: DrawableRes
     COLD("cold", Color(173, 216, 230), Res.drawable.damage_cold),  // Bleu clair
 
     @SerialName("fire")
-    FIRE("fire", Color(255, 69, 0), Res.drawable.damage_fire),  // Orange/rouge
+    FIRE("fire", Color(234, 77, 53), Res.drawable.damage_fire),  // Orange/rouge
 
     @SerialName("force")
-    FORCE("force", Color(148, 0, 211), Res.drawable.damage_force),  // Violet foncé
+    FORCE("force", Color(232, 64, 151), Res.drawable.damage_force),  // Violet foncé
 
     @SerialName("lightning")
     LIGHTNING("lightning", Color(255, 255, 0), Res.drawable.damage_lightning),  // Jaune
 
     @SerialName("necrotic")
-    NECROTIC("necrotic", Color(171, 67, 231), Res.drawable.damage_necrotic),  // Indigo
+    NECROTIC("necrotic", Color(49, 232, 182), Res.drawable.damage_necrotic),  // Indigo
 
     @SerialName("piercing")
     PIERCING("piercing", Color(165, 42, 42), Res.drawable.damage_piercing),  // Marron/rouge foncé
@@ -51,7 +51,7 @@ enum class DamageType(val index: String, val color: Color, val icon: DrawableRes
     POISON("poison", Color(50, 205, 50), Res.drawable.damage_poison),  // Vert lime
 
     @SerialName("psychic")
-    PSYCHIC("psychic", Color(255, 20, 147), Res.drawable.damage_psychic),  // Rose vif
+    PSYCHIC("psychic", Color(232, 59, 177), Res.drawable.damage_psychic),  // Rose vif
 
     @SerialName("radiant")
     RADIANT("radiant", Color(255, 255, 224), Res.drawable.damage_radiant),  // Jaune clair

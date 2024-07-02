@@ -2,7 +2,7 @@
     <string name="app_name">My Dungeon</string>
     <string name="menu_screen_title">Dungeon &amp; Dragon</string>
     <string name="menu_home">Home</string>
-    <string name="menu_spell">Spells</string>
+    <string name="menu_spell">Magic Spells</string>
     <string name="menu_monster">Monsters</string>
     <string name="menu_magic_item">Magic Items</string>
     <string name="menu_character">Character</string>
@@ -37,6 +37,8 @@
     <string name="spell_components">Components</string>
     <string name="spell_casting_time">Casting Time</string>
     <string name="spell_area_of_effect">Area of Effect</string>
+
+    <string name="loading">Loading...</string>
 
     <string name="save_button">Save</string>
     <string name="confirm_button">Ok</string>

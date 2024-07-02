@@ -38,6 +38,11 @@ class Dnd5Api {
         }
     }
 
+    @Throws(
+        ServerResponseException::class,
+        CancellationException::class,
+        JsonConvertException::class
+    )
     suspend fun getMonstersByChallenge(challengeRatings: Double): SearchResultDto<ReferenceDto> {
         val response = client.get("$BASE_URL/api/monsters") {
             url {
@@ -57,7 +62,6 @@ class Dnd5Api {
         ServerResponseException::class,
         CancellationException::class,
         JsonConvertException::class,
-        ServerResponseException::class
     )
     suspend fun getMonsterByIndex(index: String): MonsterDto? {
         val response = client.get("$BASE_URL/api/monsters/$index")
@@ -67,6 +71,11 @@ class Dnd5Api {
         }
     }
 
+    @Throws(
+        ServerResponseException::class,
+        CancellationException::class,
+        JsonConvertException::class
+    )
     suspend fun getSpellByLevelOrSchool(
         levelList: List<String> = emptyList(),
         schoolList: List<String> = emptyList()
@@ -90,6 +99,11 @@ class Dnd5Api {
         }
     }
 
+    @Throws(
+        ServerResponseException::class,
+        CancellationException::class,
+        JsonConvertException::class
+    )
     suspend fun getSpellByIndex(index: String): SpellDto? {
         val response = client.get("$BASE_URL/api/spells/$index")
         return when (response.status) {
