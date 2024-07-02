@@ -47,7 +47,7 @@ import ui.composable.primary
 import ui.composable.secondary
 import ui.home.MenuDrawer
 import ui.home.MenuScreen
-import ui.monster.MonsterDetailScreen
+import ui.monster.details.MonsterDetailScreen
 import ui.monster.list.MonsterListScreen
 import ui.spell.details.SpellDetailsScreen
 import ui.spell.list.SpellListScreen

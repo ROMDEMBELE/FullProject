@@ -124,7 +124,7 @@ class SpellDetailsScreen(private val index: String) : Screen {
             }
         }
 
-        AnimatedVisibility(!uiState.isReady) {
+        AnimatedVisibility(uiState.isReady) {
             CustomAnimatedPlaceHolder()
         }
 

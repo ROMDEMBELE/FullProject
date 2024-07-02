@@ -1,8 +1,10 @@
-package ui.monster
+package ui.monster.details
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +28,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -102,31 +105,33 @@ class MonsterDetailScreen(private val index: String) : Screen {
 
     @Composable
     override fun Content() {
-        val infiniteTransition = rememberInfiniteTransition()
         val navigator = LocalNavigator.currentOrThrow
         var spellDialogDisplayed by rememberSaveable { mutableStateOf(false) }
         var innateSpellDialogDisplayed by rememberSaveable { mutableStateOf(false) }
         val viewModel: MonsterDetailsViewModel = koinInject()
-        var uiState by remember { mutableStateOf<Monster?>(null) }
+        val uiState by viewModel.uiState.collectAsState()
 
         LaunchedEffect(index) {
-            uiState = viewModel.loadMonster(index)
+            viewModel.fetchMonster(index)
         }
 
-        uiState?.details?.specialAbilities?.find { it is SpellCastingAbility }?.let {
+        uiState.monster?.details?.specialAbilities?.find { it is SpellCastingAbility }?.let {
             AnimatedVisibility(spellDialogDisplayed) {
                 SpellDialog(it, navigator) { spellDialogDisplayed = false }
             }
         }
-        uiState?.details?.specialAbilities?.find { it is InnateSpellCastingAbility }?.let {
+        uiState.monster?.details?.specialAbilities?.find { it is InnateSpellCastingAbility }?.let {
             AnimatedVisibility(innateSpellDialogDisplayed) {
                 SpellDialog(it, navigator) { innateSpellDialogDisplayed = false }
             }
         }
 
-        AnimatedContent(uiState) { monster ->
-            val details = uiState?.details
-            if (monster != null && details != null) {
+        AnimatedContent(uiState, transitionSpec = { fadeIn().togetherWith(fadeOut()) }) { state ->
+            val monster = state.monster
+            val details = monster?.details
+            if (!state.isReady) {
+                CustomAnimatedPlaceHolder()
+            } else if (monster != null && details != null) {
                 val brush =
                     Brush.linearGradient(listOf(lightGray, secondary, monster.challenge.color))
                 LazyColumn(
@@ -304,8 +309,6 @@ class MonsterDetailScreen(private val index: String) : Screen {
                         CustomDivider()
                     }
                 }
-            } else {
-                CustomAnimatedPlaceHolder()
             }
         }
     }

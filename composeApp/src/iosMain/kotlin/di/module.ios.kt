@@ -13,7 +13,7 @@ import ui.campaign.edit.EditCampaignViewModel
 import ui.campaign.main.CampaignMainViewModel
 import ui.character.CharacterViewModel
 import ui.character.edit.EditCharacterViewModel
-import ui.monster.MonsterDetailsViewModel
+import ui.monster.details.MonsterDetailsViewModel
 import ui.monster.list.MonsterListViewModel
 import ui.spell.details.SpellDetailsViewModel
 import ui.spell.list.SpellListViewModel

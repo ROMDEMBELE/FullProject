@@ -70,7 +70,7 @@ import ui.composable.item
 import ui.composable.primary
 import ui.composable.roundCornerShape
 import ui.composable.secondary
-import ui.monster.MonsterDetailScreen
+import ui.monster.details.MonsterDetailScreen
 
 
 class MonsterListScreen() : Screen {
