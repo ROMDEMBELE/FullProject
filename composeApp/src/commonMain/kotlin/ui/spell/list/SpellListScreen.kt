@@ -2,6 +2,7 @@ package ui.spell.list
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -39,10 +41,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -54,7 +56,7 @@ import domain.model.Level
 import domain.model.spell.Spell
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.error_dialog_title
-import org.dembeyo.shared.resources.ornament
+import org.dembeyo.shared.resources.magic
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
@@ -72,6 +74,7 @@ import ui.composable.darkGray
 import ui.composable.item
 import ui.composable.primary
 import ui.composable.roundCornerShape
+import ui.composable.secondary
 import ui.composable.yellow
 import ui.spell.details.SpellDetailsScreen
 
@@ -96,68 +99,72 @@ class SpellListScreen() : Screen {
             }
         }
 
-        Column(
-            Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            if (uiState.spellByLevel.isEmpty()) {
-                Text("The spells database is empty...", style = BigBold)
-                Spacer(Modifier.height(8.dp))
-                CustomButton(onClick = { viewModel.refresh() }) {
-                    Text("Refresh", style = MediumBold)
-                }
-            } else {
-                SearchMenu(
-                    searchTextPlaceholder = "Search by name",
-                    searchTextFieldValue = uiState.textField,
-                    onTextChange = { viewModel.filterByText(it) },
-                    favoriteCounter = uiState.favoritesCounter,
-                    filterCounter = uiState.filterCounter,
-                    favoriteEnabled = showFavorite,
-                    onFavoritesClick = { showFavorite = !showFavorite },
-                ) {
-                    LazyVerticalGrid(
-                        modifier = Modifier.padding(8.dp),
-                        columns = GridCells.Fixed(2),
+        CustomAnimatedPlaceHolder()
+
+        AnimatedVisibility(uiState.isReady, enter = fadeIn()) {
+            Column(
+                Modifier.fillMaxSize().background(secondary),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (uiState.spellList.isEmpty()) {
+                    Text("The spells database is empty...", style = BigBold)
+                    Spacer(Modifier.height(8.dp))
+                    CustomButton(onClick = { viewModel.refresh() }) {
+                        Text("Refresh", style = MediumBold)
+                    }
+                } else {
+                    SearchMenu(
+                        searchTextPlaceholder = "Search by name",
+                        searchTextFieldValue = uiState.textField,
+                        onTextChange = { viewModel.filterByText(it) },
+                        favoriteCounter = uiState.favoritesCounter,
+                        filterCounter = uiState.filterCounter,
+                        favoriteEnabled = showFavorite,
+                        onFavoritesClick = { showFavorite = !showFavorite },
                     ) {
-                        items(Level.entries.subList(0, 10)) { level ->
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.height(30.dp)
-                            ) {
-                                Checkbox(
-                                    colors = CheckboxDefaults.colors(darkBlue),
-                                    checked = uiState.filterByLevel.contains(level),
-                                    onCheckedChange = { checked ->
-                                        viewModel.filterByLevel(level, checked)
-                                    })
-                                Text(
-                                    text = "Level ${level.level}",
-                                    modifier = Modifier.weight(1f),
-                                    style = MediumBold.copy(
-                                        color = darkBlue,
-                                        textAlign = TextAlign.Start
+                        LazyVerticalGrid(
+                            modifier = Modifier.padding(8.dp),
+                            columns = GridCells.Fixed(2),
+                        ) {
+                            items(Level.entries.subList(0, 10)) { level ->
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.height(30.dp)
+                                ) {
+                                    Checkbox(
+                                        colors = CheckboxDefaults.colors(darkBlue),
+                                        checked = uiState.filterByLevel.contains(level),
+                                        onCheckedChange = { checked ->
+                                            viewModel.filterByLevel(level, checked)
+                                        })
+                                    Text(
+                                        text = "Level ${level.level}",
+                                        modifier = Modifier.weight(1f),
+                                        style = MediumBold.copy(
+                                            color = darkBlue,
+                                            textAlign = TextAlign.Start
+                                        )
                                     )
-                                )
+                                }
                             }
                         }
                     }
-                }
-                TaperedRule()
+                    TaperedRule()
 
-                AnimatedContent(showFavorite) { showFavorite ->
-                    val list = if (showFavorite) {
-                        uiState.favoriteByLevel
-                    } else {
-                        uiState.filteredSpellsByLevel
+                    AnimatedContent(showFavorite) { showFavorite ->
+                        val list = if (showFavorite) {
+                            uiState.favoriteByLevel
+                        } else {
+                            uiState.filteredSpellsByLevel
+                        }
+                        ListOfSpell(list, viewModel)
                     }
-                    ListOfSpell(list, viewModel)
                 }
             }
         }
 
-        CustomAnimatedPlaceHolder(!uiState.isReady)
+
     }
 
     @Composable
@@ -200,12 +207,14 @@ class SpellListScreen() : Screen {
             val brush = Brush.linearGradient(listOf(darkBlue, darkBlue, spell.level.color))
             Box(Modifier.background(brush)) {
                 Image(
-                    painterResource(Res.drawable.ornament),
+                    painterResource(Res.drawable.magic),
                     null,
-                    contentScale = ContentScale.Crop,
                     colorFilter = ColorFilter.tint(primary),
-                    modifier = Modifier.fillMaxWidth().scale(1.2f).align(Alignment.Center)
-                        .alpha(.3f)
+                    modifier = Modifier.fillMaxHeight()
+                        .rotate(20f)
+                        .scale(1.5f)
+                        .align(Alignment.Center)
+                        .alpha(.5f)
                 )
                 Text(
                     spell.name,

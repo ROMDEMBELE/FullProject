@@ -1,14 +1,19 @@
-package ui.monster
+package ui.monster.list
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,13 +35,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
@@ -45,13 +49,15 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import domain.model.monster.Challenge
 import domain.model.monster.Monster
 import org.dembeyo.shared.resources.Res
-import org.dembeyo.shared.resources.ancient
-import org.dembeyo.shared.resources.menu_monster
+import org.dembeyo.shared.resources.error_dialog_title
 import org.dembeyo.shared.resources.monster
-import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
+import ui.composable.BigBold
+import ui.composable.CustomAnimatedPlaceHolder
+import ui.composable.CustomButton
+import ui.composable.CustomErrorDialog
 import ui.composable.CustomLazyHeaderList
 import ui.composable.DropDownTextField
 import ui.composable.MediumBold
@@ -60,11 +66,11 @@ import ui.composable.TaperedRule
 import ui.composable.bounceClick
 import ui.composable.darkBlue
 import ui.composable.darkGray
-import ui.composable.darkPrimary
 import ui.composable.item
 import ui.composable.primary
 import ui.composable.roundCornerShape
 import ui.composable.secondary
+import ui.monster.MonsterDetailScreen
 
 
 class MonsterListScreen() : Screen {
@@ -77,73 +83,75 @@ class MonsterListScreen() : Screen {
         val viewModel: MonsterListViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
         var favoriteEnabled by rememberSaveable { mutableStateOf(false) }
-        Column {
-            AnimatedContent(favoriteEnabled) { fav ->
-                if (fav) {
-                    Text(
-                        "${uiState.favoriteCounter} Favorite Monsters",
-                        modifier = Modifier.fillMaxWidth(),
-                        fontSize = 40.sp,
-                        textAlign = TextAlign.Center,
-                        fontFamily = FontFamily(Font(Res.font.ancient)),
-                        color = darkPrimary
-                    )
-                } else {
-                    Text(
-                        stringResource(Res.string.menu_monster),
-                        modifier = Modifier.fillMaxWidth(),
-                        fontSize = 40.sp,
-                        textAlign = TextAlign.Center,
-                        fontFamily = FontFamily(Font(Res.font.ancient)),
-                        color = darkPrimary
-                    )
-                }
+        AnimatedVisibility(uiState.hasError) {
+            CustomErrorDialog(
+                stringResource(Res.string.error_dialog_title),
+                uiState.error.orEmpty()
+            ) {
+                viewModel.acknowledgeError()
             }
-            TaperedRule()
+        }
 
-            SearchMenu(
-                searchTextPlaceholder = "Search by name",
-                searchTextFieldValue = uiState.textField,
-                onTextChange = { viewModel.filterByText(it) },
-                favoriteCounter = uiState.favoriteCounter,
-                favoriteEnabled = favoriteEnabled,
-                onFavoritesClick = { favoriteEnabled = !favoriteEnabled },
-                filterContent = {
-                    Column(
-                        modifier = Modifier.padding(12.dp),
-                    ) {
-                        DropDownTextField(
-                            label = "Min Challenge",
-                            display = { "CR $rating" },
-                            value = uiState.minChallenge,
-                            list = Challenge.entries,
-                            modifier = Modifier.weight(.5f)
-                        ) {
-                            viewModel.setMinChallenge(it)
-                        }
+        CustomAnimatedPlaceHolder()
 
-                        Spacer(Modifier.height(12.dp))
+        AnimatedVisibility(uiState.isReady, enter = fadeIn()) {
+            Column(
+                Modifier.fillMaxSize().background(secondary),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (uiState.monsterList.isEmpty()) {
+                    Text("The spells database is empty...", style = BigBold)
+                    Spacer(Modifier.height(8.dp))
+                    CustomButton(onClick = { viewModel.refresh() }) {
+                        Text("Refresh", style = MediumBold)
+                    }
+                } else {
+                    SearchMenu(
+                        searchTextPlaceholder = "Search by name",
+                        searchTextFieldValue = uiState.textField,
+                        onTextChange = { viewModel.filterByText(it) },
+                        favoriteCounter = uiState.favoriteCounter,
+                        favoriteEnabled = favoriteEnabled,
+                        onFavoritesClick = { favoriteEnabled = !favoriteEnabled },
+                        filterContent = {
+                            Column(
+                                modifier = Modifier.padding(12.dp),
+                            ) {
+                                DropDownTextField(
+                                    label = "Min Challenge",
+                                    display = { "CR $rating" },
+                                    value = uiState.minChallenge,
+                                    list = Challenge.entries,
+                                    modifier = Modifier.weight(.5f)
+                                ) {
+                                    viewModel.setMinChallenge(it)
+                                }
 
-                        DropDownTextField(
-                            label = "Max Challenge",
-                            display = { "CR $rating" },
-                            value = uiState.maxChallenge,
-                            list = Challenge.entries,
-                            modifier = Modifier.weight(.5f)
-                        ) {
-                            viewModel.setMaxChallenge(it)
+                                Spacer(Modifier.height(12.dp))
+
+                                DropDownTextField(
+                                    label = "Max Challenge",
+                                    display = { "CR $rating" },
+                                    value = uiState.maxChallenge,
+                                    list = Challenge.entries,
+                                    modifier = Modifier.weight(.5f)
+                                ) {
+                                    viewModel.setMaxChallenge(it)
+                                }
+                            }
+                        },
+                    )
+
+                    TaperedRule()
+
+                    AnimatedContent(favoriteEnabled) { favorite ->
+                        if (favorite) {
+                            ListOfMonster(uiState.favoriteMonsterByChallenge, viewModel)
+                        } else {
+                            ListOfMonster(uiState.monsterByChallenge, viewModel)
                         }
                     }
-                },
-            )
-
-            TaperedRule()
-
-            AnimatedContent(favoriteEnabled) { favorite ->
-                if (favorite) {
-                    ListOfMonster(uiState.favoriteMonsterByChallenge, viewModel)
-                } else {
-                    ListOfMonster(uiState.monsterByChallenge, viewModel)
                 }
             }
         }
@@ -189,12 +197,17 @@ class MonsterListScreen() : Screen {
             shape = roundCornerShape,
             border = BorderStroke(2.dp, primary),
             contentPadding = PaddingValues(),
-            modifier = Modifier.padding(4.dp).fillMaxWidth().bounceClick(),
+            modifier = Modifier.padding(4.dp).fillMaxWidth().height(66.dp).bounceClick(),
             colors = ButtonDefaults.buttonColors(Color.Transparent),
             onClick = onClick
         ) {
             val boxMonsterBrush =
-                Brush.linearGradient(listOf(darkBlue, darkBlue, darkBlue, monster.challenge.color))
+                Brush.linearGradient(
+                    listOf(
+                        darkBlue,
+                        monster.challenge.color
+                    )
+                )
             Box(
                 Modifier.background(boxMonsterBrush)
             ) {
@@ -202,7 +215,11 @@ class MonsterListScreen() : Screen {
                     painterResource(Res.drawable.monster),
                     null,
                     colorFilter = ColorFilter.tint(primary),
-                    modifier = Modifier.align(Alignment.Center).height(50.dp).alpha(.5f)
+                    modifier = Modifier.fillMaxHeight()
+                        .rotate(-20f)
+                        .scale(1.5f)
+                        .align(Alignment.Center)
+                        .alpha(.5f)
                 )
                 Text(
                     monster.name,

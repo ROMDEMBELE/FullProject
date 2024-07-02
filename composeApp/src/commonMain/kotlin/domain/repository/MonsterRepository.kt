@@ -29,11 +29,11 @@ class MonsterRepository(private val dndApi: Dnd5Api, private val database: SqlDa
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            loadMonsterDatabaseByChallenge()
+            fetchMonsterDatabaseByChallenge()
         }
     }
 
-    private suspend fun loadMonsterDatabaseByChallenge() {
+    suspend fun fetchMonsterDatabaseByChallenge() {
         Challenge.entries.forEach {
             try {
                 dndApi.getMonstersByChallenge(it.rating).results.forEach { dto ->

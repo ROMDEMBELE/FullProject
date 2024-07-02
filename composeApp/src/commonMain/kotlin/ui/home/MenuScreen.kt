@@ -84,7 +84,7 @@ import ui.composable.darkPrimary
 import ui.composable.primary
 import ui.composable.roundCornerShape
 import ui.composable.secondary
-import ui.monster.MonsterListScreen
+import ui.monster.list.MonsterListScreen
 import ui.spell.list.SpellListScreen
 
 class MenuScreen : Screen {
@@ -97,7 +97,7 @@ class MenuScreen : Screen {
         val scope = rememberCoroutineScope()
         val navigator = LocalNavigator.currentOrThrow
         LazyVerticalGrid(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
+            modifier = Modifier.background(secondary).fillMaxSize().padding(16.dp),
             columns = GridCells.Fixed(2),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)

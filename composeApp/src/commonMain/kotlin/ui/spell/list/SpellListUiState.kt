@@ -5,7 +5,7 @@ import domain.model.Level
 import domain.model.spell.Spell
 
 data class SpellListUiState(
-    val spellByLevel: List<Spell> = emptyList(),
+    val spellList: List<Spell> = emptyList(),
     val filterByLevel: List<Level> = emptyList(),
     val textField: TextFieldValue = TextFieldValue(),
     val isReady: Boolean = false,
@@ -15,12 +15,12 @@ data class SpellListUiState(
         get() = !error.isNullOrEmpty()
 
     val favoriteByLevel: Map<Level, List<Spell>>
-        get() = spellByLevel.filter { spell -> spell.isFavorite }
+        get() = spellList.filter { spell -> spell.isFavorite }
             .sortedBy { spell -> spell.level }
             .groupBy { spell -> spell.level }
 
     val filteredSpellsByLevel: Map<Level, List<Spell>>
-        get() = spellByLevel.asSequence().sortedBy { spell -> spell.level }
+        get() = spellList.asSequence().sortedBy { spell -> spell.level }
             .filter { spell -> filterByLevel.isEmpty() || filterByLevel.contains(spell.level) }
             .filter { spell -> spell.name.contains(textField.text, true) }
             .sortedBy { spell -> spell.level }

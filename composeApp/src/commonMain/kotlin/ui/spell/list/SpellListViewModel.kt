@@ -26,7 +26,7 @@ class SpellListViewModel(private val spellRepository: SpellRepository) : ViewMod
             withContext(Dispatchers.IO) {
                 spellRepository.getListOfSpells().collectLatest { list ->
                     delay(500)
-                    _uiState.update { it.copy(spellByLevel = list, isReady = true) }
+                    _uiState.update { it.copy(spellList = list, isReady = true) }
                 }
             }
         }

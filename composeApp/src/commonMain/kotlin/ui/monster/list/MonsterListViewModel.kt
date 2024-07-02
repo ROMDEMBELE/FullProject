@@ -1,4 +1,4 @@
-package ui.monster
+package ui.monster.list
 
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
@@ -6,12 +6,16 @@ import androidx.lifecycle.viewModelScope
 import domain.model.monster.Challenge
 import domain.model.monster.Monster
 import domain.repository.MonsterRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MonsterListViewModel(
     private val monsterRepository: MonsterRepository,
@@ -21,31 +25,13 @@ class MonsterListViewModel(
     val uiState: StateFlow<MonsterListUiState> = _uiState.asStateFlow()
 
     init {
-        refreshUiState()
-    }
-
-    private fun refreshUiState() {
         viewModelScope.launch {
-            monsterRepository.getListOfMonsters().collectLatest { list ->
-                val favorites =
-                    list.filter { it.isFavorite }.sortedBy { it.challenge }.groupBy { it.challenge }
-                val text = _uiState.value.textField.text
-                val challengeRange =
-                    _uiState.value.minChallenge.rating.._uiState.value.maxChallenge.rating
-                val monsterByChallenge = list
-                    .filter {
-                        it.name.contains(
-                            text,
-                            true
-                        ) && it.challenge.rating in challengeRange
+            withContext(Dispatchers.IO) {
+                monsterRepository.getListOfMonsters().collectLatest { list ->
+                    delay(500)
+                    _uiState.update {
+                        it.copy(monsterList = list, isReady = true)
                     }
-                    .sortedBy { it.challenge }
-                    .groupBy { it.challenge }
-                _uiState.update {
-                    it.copy(
-                        monsterByChallenge = monsterByChallenge,
-                        favoriteMonsterByChallenge = favorites
-                    )
                 }
             }
         }
@@ -57,7 +43,6 @@ class MonsterListViewModel(
         _uiState.update {
             it.copy(minChallenge = challenge, maxChallenge = max)
         }
-        refreshUiState()
     }
 
     fun setMaxChallenge(challenge: Challenge) {
@@ -66,17 +51,31 @@ class MonsterListViewModel(
         _uiState.update {
             it.copy(minChallenge = min, maxChallenge = challenge)
         }
-        refreshUiState()
     }
 
     fun filterByText(textField: TextFieldValue) {
         _uiState.update { it.copy(textField = textField) }
-        refreshUiState()
     }
 
     fun toggleMonsterFavorite(monster: Monster) {
         monsterRepository.setMonsterIsFavorite(monster.index, !monster.isFavorite)
-        refreshUiState()
+    }
+
+    fun acknowledgeError() {
+        _uiState.update { it.copy(error = null) }
+    }
+
+    fun refresh() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                _uiState.update { it.copy(isReady = false) }
+                try {
+                    monsterRepository.fetchMonsterDatabaseByChallenge()
+                } catch (e: Exception) {
+                    _uiState.update { it.copy(isReady = true, error = e.message) }
+                }
+            }
+        }
     }
 
 }

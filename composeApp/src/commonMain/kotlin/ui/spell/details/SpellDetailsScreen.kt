@@ -123,6 +123,11 @@ class SpellDetailsScreen(private val index: String) : Screen {
                 viewModel.acknowledgeError()
             }
         }
+
+        AnimatedVisibility(!uiState.isReady) {
+            CustomAnimatedPlaceHolder()
+        }
+
         val spell = uiState.spell
         val details = spell?.details
         if (spell != null && details != null) {
@@ -203,6 +208,7 @@ class SpellDetailsScreen(private val index: String) : Screen {
                     Modifier.clip(RoundedCornerShape(8.dp))
                         .background(darkBlue)
                         .padding(8.dp)
+                        .fillMaxWidth()
                         .weight(.6f)
                 ) {
                     items(details.description) { text ->
@@ -276,7 +282,6 @@ class SpellDetailsScreen(private val index: String) : Screen {
                 }
             }
         }
-        CustomAnimatedPlaceHolder(!uiState.isReady)
     }
 
     @Composable

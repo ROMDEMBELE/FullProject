@@ -1,6 +1,6 @@
+
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,8 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.Navigator
-import cafe.adriel.voyager.transitions.FadeTransition
 import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.adventure
@@ -48,7 +48,7 @@ import ui.composable.secondary
 import ui.home.MenuDrawer
 import ui.home.MenuScreen
 import ui.monster.MonsterDetailScreen
-import ui.monster.MonsterListScreen
+import ui.monster.list.MonsterListScreen
 import ui.spell.details.SpellDetailsScreen
 import ui.spell.list.SpellListScreen
 
@@ -125,8 +125,8 @@ fun App() {
                     }
                 }
             ) { _ ->
-                Box(Modifier.background(secondary)) {
-                    FadeTransition(navigator)
+                Box {
+                    CurrentScreen()
                 }
             }
         }

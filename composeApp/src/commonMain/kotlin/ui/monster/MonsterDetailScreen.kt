@@ -305,7 +305,7 @@ class MonsterDetailScreen(private val index: String) : Screen {
                     }
                 }
             } else {
-                CustomAnimatedPlaceHolder(true)
+                CustomAnimatedPlaceHolder()
             }
         }
     }
