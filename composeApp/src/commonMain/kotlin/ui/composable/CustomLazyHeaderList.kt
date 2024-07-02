@@ -2,9 +2,11 @@ package ui.composable
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -17,8 +19,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun <T, V> CustomLazyHeaderList(
     mapOfValue: Map<T, List<V>>,
-    header: @Composable (T) -> Unit,
-    item: @Composable (V) -> Unit,
+    header: @Composable LazyItemScope.(T) -> Unit,
+    item: @Composable LazyItemScope.(V) -> Unit,
     stickyMode: Boolean = false,
 ) {
     val listState = rememberSaveable(saver = LazyListState.Saver) { LazyListState(0, 0) }
@@ -44,7 +46,9 @@ fun <T, V> CustomLazyHeaderList(
                 }
             }
             items(items = listOfValue) { value ->
-                item(value)
+                Row(Modifier.animateItemPlacement()) {
+                    item(value)
+                }
             }
         }
     }

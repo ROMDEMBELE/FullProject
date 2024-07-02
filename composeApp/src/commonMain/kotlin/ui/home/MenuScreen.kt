@@ -2,7 +2,6 @@ package ui.home
 
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
@@ -36,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
@@ -87,7 +85,7 @@ import ui.composable.primary
 import ui.composable.roundCornerShape
 import ui.composable.secondary
 import ui.monster.MonsterListScreen
-import ui.spell.SpellListScreen
+import ui.spell.list.SpellListScreen
 
 class MenuScreen : Screen {
 
@@ -136,7 +134,6 @@ class MenuScreen : Screen {
     fun MenuItemView(menu: MenuItem, onClick: () -> Unit) {
         val infiniteTransition = rememberInfiniteTransition()
         val colorAnimation by infiniteTransition.animateColor(primary, darkPrimary, infiniteRepeatable(tween(10000), RepeatMode.Reverse))
-        val scalingAnimation by infiniteTransition.animateFloat(.8f, 1f, infiniteRepeatable(tween(10000), RepeatMode.Reverse))
         val interactionSource = remember { NoRippleInteractionSource() }
         Button(
             modifier = Modifier.height(220.dp).bounceClick(),
@@ -161,9 +158,8 @@ class MenuScreen : Screen {
                     Image(
                         painter = painterResource(menu.icon),
                         contentDescription = menu.icon.toString(),
-                        modifier = Modifier.padding(8.dp).fillMaxSize()
+                        modifier = Modifier.padding(16.dp).fillMaxSize()
                             .aspectRatio(1f)
-                            .scale(scalingAnimation)
                             .alpha(0.6f)
                             .drawWithContent {
                                 drawContent()

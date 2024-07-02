@@ -49,8 +49,8 @@ import ui.home.MenuDrawer
 import ui.home.MenuScreen
 import ui.monster.MonsterDetailScreen
 import ui.monster.MonsterListScreen
-import ui.spell.SpellDetailsScreen
-import ui.spell.SpellListScreen
+import ui.spell.details.SpellDetailsScreen
+import ui.spell.list.SpellListScreen
 
 @Composable
 @Preview

@@ -25,7 +25,7 @@ import ui.battle.BattleScreen
 import ui.composable.darkBlue
 import ui.monster.MonsterListScreen
 import ui.character.CharacterListScreen
-import ui.spell.SpellListScreen
+import ui.spell.list.SpellListScreen
 
 @Composable
 fun MenuDrawer(navigator: Navigator, onDismiss: () -> Unit) {

@@ -93,7 +93,7 @@ import ui.composable.propertyText
 import ui.composable.propertyTitle
 import ui.composable.roundCornerShape
 import ui.composable.secondary
-import ui.spell.SpellDetailsScreen
+import ui.spell.details.SpellDetailsScreen
 
 class MonsterDetailScreen(private val index: String) : Screen {
 
@@ -305,7 +305,7 @@ class MonsterDetailScreen(private val index: String) : Screen {
                     }
                 }
             } else {
-                CustomAnimatedPlaceHolder(true, infiniteTransition)
+                CustomAnimatedPlaceHolder(true)
             }
         }
     }

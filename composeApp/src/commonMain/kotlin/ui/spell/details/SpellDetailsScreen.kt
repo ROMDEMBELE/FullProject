@@ -1,6 +1,6 @@
-package ui.spell
+package ui.spell.details
 
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -35,11 +35,9 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -65,9 +63,9 @@ import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import domain.model.DamageType
 import domain.model.Level
-import domain.model.spell.Spell
 import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
+import org.dembeyo.shared.resources.error_dialog_title
 import org.dembeyo.shared.resources.minus_circle
 import org.dembeyo.shared.resources.ornament
 import org.dembeyo.shared.resources.plus_circle
@@ -82,6 +80,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import ui.composable.CustomAnimatedPlaceHolder
+import ui.composable.CustomErrorDialog
 import ui.composable.MediumBold
 import ui.composable.TaperedRule
 import ui.composable.darkBlue
@@ -103,178 +102,181 @@ class SpellDetailsScreen(private val index: String) : Screen {
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
+        val scope = rememberCoroutineScope()
         val infiniteTransition = rememberInfiniteTransition()
         val viewModel: SpellDetailsViewModel = koinInject()
-        var uiState by remember { mutableStateOf<Spell?>(null) }
+        val uiState by viewModel.uiState.collectAsState()
 
         val rotation by infiniteTransition.animateFloat(
             0f, 360f, infiniteRepeatable(tween(50000, easing = LinearEasing), RepeatMode.Restart)
         )
 
         LaunchedEffect(index) {
-            uiState = viewModel.getSpellDetailsByIndex(index)
+            viewModel.fetchSpell(index)
         }
 
-        AnimatedContent(uiState) { spell ->
-            val details = uiState?.details
-            if (spell != null && details != null) {
-                val scope = rememberCoroutineScope()
-                val pagerState = rememberPagerState(pageCount = { details.damageByLevel.size })
-                val brush =
-                    Brush.horizontalGradient(listOf(details.school.color, spell.level.color))
-                Column(Modifier.fillMaxSize().background(brush).padding(8.dp)) {
-                    Box(Modifier.weight(0.2f)) {
-                        Image(
-                            painterResource(Res.drawable.ornament),
-                            null,
-                            modifier = Modifier
-                                .wrapContentSize(unbounded = true, align = Alignment.Center)
-                                .alpha(.2f)
-                                .scale(0.5f)
-                                .graphicsLayer {
-                                    rotationZ = rotation
-                                },
-                            colorFilter = ColorFilter.tint(darkBlue)
-                        )
-
-                        TextClip(
-                            details.school.displayName,
-                            details.school.color,
-                            Alignment.TopStart
-                        )
-
-                        TextClip(" Level ${spell.level.level}", spell.level.color, Alignment.TopEnd)
-
-                        if (details.ritual) {
-                            TextClip(
-                                text = "Ritual",
-                                lightBlue,
-                                Alignment.BottomEnd
-                            )
-                        }
-                        if (details.concentration) {
-                            TextClip(
-                                text = "Concentration",
-                                primary,
-                                Alignment.BottomStart
-                            )
-                        }
-
-                        Text(
-                            spell.name,
-                            Modifier.align(Alignment.Center),
-                            style = monsterTitle.copy(
-                                color = darkBlue, shadow = Shadow(
-                                    color = details.school.color,
-                                    offset = Offset(5f, 5f),
-                                    blurRadius = 12f
-                                )
-                            )
-                        )
-                    }
-
-                    TaperedRule(Modifier.padding(vertical = 8.dp), darkBlue)
-
-                    PropertyLine(Res.string.spell_range, details.range)
-
-                    PropertyLine(Res.string.spell_duration, details.duration)
-
-                    PropertyLine(Res.string.spell_components, details.components)
-
-                    PropertyLine(Res.string.spell_casting_time, details.castingTime)
-
-                    if (details.material != null) {
-                        PropertyLine(Res.string.spell_materials, details.material)
-                    }
-
-                    if (details.areaOfEffect != null) {
-                        PropertyLine(Res.string.spell_area_of_effect, details.areaOfEffect)
-                    }
-
-                    TaperedRule(Modifier.padding(vertical = 8.dp), darkBlue)
-
-                    LazyColumn(
-                        Modifier.clip(RoundedCornerShape(8.dp))
-                            .background(darkBlue)
-                            .padding(8.dp)
-                            .weight(.6f)
-                    ) {
-                        items(details.description) { text ->
-                            Text(
-                                text,
-                                fontSize = 14.sp,
-                                style = TextStyle.Default.copy(lineBreak = LineBreak.Paragraph),
-                                fontFamily = FontFamily.Serif,
-                                color = secondary
-                            )
-                        }
-                    }
-
-
-                    if (details.savingThrow != null) {
-                        TaperedRule(Modifier.padding(vertical = 8.dp), darkBlue)
-
-                        Text(
-                            modifier = Modifier.fillMaxWidth()
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(primary)
-                                .padding(4.dp),
-                            text = "${details.savingThrow} of...",
-                            color = darkBlue,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Monospace,
-                            textAlign = TextAlign.Center,
-                            fontSize = 14.sp
-                        )
-                    }
-
-                    if (details.damageByLevel.isNotEmpty()) {
-                        TaperedRule(Modifier.padding(vertical = 8.dp), darkBlue)
-
-                        val animatedColorMinus by animateColorAsState(if (pagerState.canScrollBackward) secondary else lightGray)
-                        val animatedColorPlus by animateColorAsState(if (pagerState.canScrollForward) darkBlue else lightGray)
-
-                        Box(Modifier.fillMaxWidth()) {
-                            HorizontalPager(state = pagerState) { pageIndex ->
-                                val (level, damage) = details.damageByLevel.toList()[pageIndex]
-                                DamageItem(level, damage.dice, damage.type)
-                            }
-
-                            IconButton(
-                                onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } },
-                                enabled = pagerState.canScrollBackward,
-                                modifier = Modifier.align(Alignment.CenterStart).padding(16.dp)
-                                    .size(25.dp)
-                            ) {
-                                Image(
-                                    painterResource(Res.drawable.minus_circle),
-                                    null,
-                                    colorFilter = ColorFilter.tint(animatedColorMinus)
-                                )
-                            }
-
-                            IconButton(
-                                onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
-                                enabled = pagerState.canScrollForward,
-                                modifier = Modifier.align(Alignment.CenterEnd).padding(16.dp)
-                                    .size(25.dp)
-
-                            ) {
-                                Image(
-                                    painterResource(Res.drawable.plus_circle),
-                                    null,
-                                    colorFilter = ColorFilter.tint(animatedColorPlus)
-                                )
-                            }
-                        }
-                    }
-
-
-                }
-            } else {
-                CustomAnimatedPlaceHolder(true, infiniteTransition)
+        AnimatedVisibility(!uiState.error.isNullOrEmpty()) {
+            CustomErrorDialog(
+                stringResource(Res.string.error_dialog_title),
+                uiState.error.orEmpty()
+            ) {
+                viewModel.acknowledgeError()
             }
         }
+        val spell = uiState.spell
+        val details = spell?.details
+        if (spell != null && details != null) {
+            val pagerState = rememberPagerState(pageCount = { details.damageByLevel.size })
+            val brush = Brush.horizontalGradient(listOf(details.school.color, spell.level.color))
+            Column(Modifier.fillMaxSize().background(brush).padding(8.dp)) {
+                Box(Modifier.weight(0.2f)) {
+                    Image(
+                        painterResource(Res.drawable.ornament),
+                        null,
+                        modifier = Modifier
+                            .wrapContentSize(unbounded = true, align = Alignment.Center)
+                            .alpha(.2f)
+                            .scale(0.5f)
+                            .graphicsLayer {
+                                rotationZ = rotation
+                            },
+                        colorFilter = ColorFilter.tint(darkBlue)
+                    )
+
+                    TextClip(
+                        details.school.displayName,
+                        details.school.color,
+                        Alignment.TopStart
+                    )
+
+                    TextClip(" Level ${spell.level.level}", spell.level.color, Alignment.TopEnd)
+
+                    if (details.ritual) {
+                        TextClip(
+                            text = "Ritual",
+                            lightBlue,
+                            Alignment.BottomEnd
+                        )
+                    }
+                    if (details.concentration) {
+                        TextClip(
+                            text = "Concentration",
+                            primary,
+                            Alignment.BottomStart
+                        )
+                    }
+
+                    Text(
+                        spell.name,
+                        Modifier.align(Alignment.Center),
+                        style = monsterTitle.copy(
+                            color = darkBlue, shadow = Shadow(
+                                color = details.school.color,
+                                offset = Offset(5f, 5f),
+                                blurRadius = 12f
+                            )
+                        )
+                    )
+                }
+
+                TaperedRule(Modifier.padding(vertical = 8.dp), darkBlue)
+
+                PropertyLine(Res.string.spell_range, details.range)
+
+                PropertyLine(Res.string.spell_duration, details.duration)
+
+                PropertyLine(Res.string.spell_components, details.components)
+
+                PropertyLine(Res.string.spell_casting_time, details.castingTime)
+
+                if (details.material != null) {
+                    PropertyLine(Res.string.spell_materials, details.material)
+                }
+
+                if (details.areaOfEffect != null) {
+                    PropertyLine(Res.string.spell_area_of_effect, details.areaOfEffect)
+                }
+
+                TaperedRule(Modifier.padding(vertical = 8.dp), darkBlue)
+
+                LazyColumn(
+                    Modifier.clip(RoundedCornerShape(8.dp))
+                        .background(darkBlue)
+                        .padding(8.dp)
+                        .weight(.6f)
+                ) {
+                    items(details.description) { text ->
+                        Text(
+                            text,
+                            fontSize = 14.sp,
+                            style = TextStyle.Default.copy(lineBreak = LineBreak.Paragraph),
+                            fontFamily = FontFamily.Serif,
+                            color = secondary
+                        )
+                    }
+                }
+
+
+                if (details.savingThrow != null) {
+                    TaperedRule(Modifier.padding(vertical = 8.dp), darkBlue)
+
+                    Text(
+                        modifier = Modifier.fillMaxWidth()
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(primary)
+                            .padding(4.dp),
+                        text = "${details.savingThrow} of...",
+                        color = darkBlue,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Monospace,
+                        textAlign = TextAlign.Center,
+                        fontSize = 14.sp
+                    )
+                }
+
+                if (details.damageByLevel.isNotEmpty()) {
+                    TaperedRule(Modifier.padding(vertical = 8.dp), darkBlue)
+
+                    val animatedColorMinus by animateColorAsState(if (pagerState.canScrollBackward) secondary else lightGray)
+                    val animatedColorPlus by animateColorAsState(if (pagerState.canScrollForward) darkBlue else lightGray)
+
+                    Box(Modifier.fillMaxWidth()) {
+                        HorizontalPager(state = pagerState) { pageIndex ->
+                            val (level, damage) = details.damageByLevel.toList()[pageIndex]
+                            DamageItem(level, damage.dice, damage.type)
+                        }
+
+                        IconButton(
+                            onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } },
+                            enabled = pagerState.canScrollBackward,
+                            modifier = Modifier.align(Alignment.CenterStart).padding(16.dp)
+                                .size(25.dp)
+                        ) {
+                            Image(
+                                painterResource(Res.drawable.minus_circle),
+                                null,
+                                colorFilter = ColorFilter.tint(animatedColorMinus)
+                            )
+                        }
+
+                        IconButton(
+                            onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
+                            enabled = pagerState.canScrollForward,
+                            modifier = Modifier.align(Alignment.CenterEnd).padding(16.dp)
+                                .size(25.dp)
+
+                        ) {
+                            Image(
+                                painterResource(Res.drawable.plus_circle),
+                                null,
+                                colorFilter = ColorFilter.tint(animatedColorPlus)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        CustomAnimatedPlaceHolder(!uiState.isReady)
     }
 
     @Composable

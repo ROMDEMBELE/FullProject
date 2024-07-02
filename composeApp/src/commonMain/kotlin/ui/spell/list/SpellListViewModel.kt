@@ -1,4 +1,4 @@
-package ui.spell
+package ui.spell.list
 
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
@@ -6,12 +6,15 @@ import androidx.lifecycle.viewModelScope
 import domain.model.Level
 import domain.model.spell.Spell
 import domain.repository.SpellRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SpellListViewModel(private val spellRepository: SpellRepository) : ViewModel() {
 
@@ -20,9 +23,11 @@ class SpellListViewModel(private val spellRepository: SpellRepository) : ViewMod
 
     init {
         viewModelScope.launch {
-            spellRepository.getListOfSpells().collectLatest { list ->
-                delay(500)
-                _uiState.update { it.copy(spellByLevel = list, isReady = true) }
+            withContext(Dispatchers.IO) {
+                spellRepository.getListOfSpells().collectLatest { list ->
+                    delay(500)
+                    _uiState.update { it.copy(spellByLevel = list, isReady = true) }
+                }
             }
         }
     }
@@ -52,11 +57,13 @@ class SpellListViewModel(private val spellRepository: SpellRepository) : ViewMod
 
     fun refresh() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isReady = false) }
-            try {
-                spellRepository.fetchSpellDatabase()
-            } catch (e: Exception) {
-                _uiState.update { it.copy(isReady = true, error = e.message) }
+            withContext(Dispatchers.IO) {
+                _uiState.update { it.copy(isReady = false) }
+                try {
+                    spellRepository.fetchSpellDatabase()
+                } catch (e: Exception) {
+                    _uiState.update { it.copy(isReady = true, error = e.message) }
+                }
             }
         }
     }

@@ -1,4 +1,4 @@
-package ui.spell
+package ui.spell.list
 
 import androidx.compose.ui.text.input.TextFieldValue
 import domain.model.Level
@@ -11,6 +11,9 @@ data class SpellListUiState(
     val isReady: Boolean = false,
     val error: String? = null
 ) {
+    val hasError: Boolean
+        get() = !error.isNullOrEmpty()
+
     val favoriteByLevel: Map<Level, List<Spell>>
         get() = spellByLevel.filter { spell -> spell.isFavorite }
             .sortedBy { spell -> spell.level }

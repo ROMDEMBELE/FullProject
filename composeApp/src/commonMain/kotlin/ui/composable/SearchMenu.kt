@@ -73,7 +73,7 @@ fun SearchMenu(
                         } else {
                             Icon(
                                 Icons.Filled.KeyboardArrowDown, null,
-                                tint = darkPrimary,
+                                tint = if(favoriteEnabled) lightGray else darkPrimary,
                             )
                         }
                     }

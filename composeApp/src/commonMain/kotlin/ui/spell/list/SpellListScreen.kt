@@ -1,8 +1,7 @@
-package ui.spell
+package ui.spell.list
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,7 +33,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -54,10 +52,11 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import domain.model.Level
 import domain.model.spell.Spell
-import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
+import org.dembeyo.shared.resources.error_dialog_title
 import org.dembeyo.shared.resources.ornament
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import ui.composable.BigBold
 import ui.composable.CustomAnimatedPlaceHolder
@@ -74,6 +73,7 @@ import ui.composable.item
 import ui.composable.primary
 import ui.composable.roundCornerShape
 import ui.composable.yellow
+import ui.spell.details.SpellDetailsScreen
 
 
 class SpellListScreen() : Screen {
@@ -83,84 +83,86 @@ class SpellListScreen() : Screen {
 
     @Composable
     override fun Content() {
-        val infiniteTransition = rememberInfiniteTransition()
         val viewModel: SpellListViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
         var showFavorite by rememberSaveable { mutableStateOf(false) }
 
-        AnimatedVisibility(!uiState.error.isNullOrEmpty()) {
-            CustomErrorDialog("Oups, Something went Wrong", uiState.error.orEmpty()) {
+        AnimatedVisibility(uiState.hasError) {
+            CustomErrorDialog(
+                stringResource(Res.string.error_dialog_title),
+                uiState.error.orEmpty()
+            ) {
                 viewModel.acknowledgeError()
             }
         }
-        AnimatedContent(uiState.spellByLevel) { list ->
-            Column(
-                Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                if (list.isEmpty()) {
-                    Text("The spells database is empty...", style = BigBold)
-                    Spacer(Modifier.height(8.dp))
-                    CustomButton(onClick = { viewModel.refresh() }) {
-                        Text("Refresh", style = MediumBold)
-                    }
-                } else {
-                    SearchMenu(
-                        searchTextPlaceholder = "Search by name",
-                        searchTextFieldValue = uiState.textField,
-                        onTextChange = { viewModel.filterByText(it) },
-                        favoriteCounter = uiState.favoritesCounter,
-                        filterCounter = uiState.filterCounter,
-                        favoriteEnabled = showFavorite,
-                        onFavoritesClick = { showFavorite = !showFavorite },
+
+        Column(
+            Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            if (uiState.spellByLevel.isEmpty()) {
+                Text("The spells database is empty...", style = BigBold)
+                Spacer(Modifier.height(8.dp))
+                CustomButton(onClick = { viewModel.refresh() }) {
+                    Text("Refresh", style = MediumBold)
+                }
+            } else {
+                SearchMenu(
+                    searchTextPlaceholder = "Search by name",
+                    searchTextFieldValue = uiState.textField,
+                    onTextChange = { viewModel.filterByText(it) },
+                    favoriteCounter = uiState.favoritesCounter,
+                    filterCounter = uiState.filterCounter,
+                    favoriteEnabled = showFavorite,
+                    onFavoritesClick = { showFavorite = !showFavorite },
+                ) {
+                    LazyVerticalGrid(
+                        modifier = Modifier.padding(8.dp),
+                        columns = GridCells.Fixed(2),
                     ) {
-                        LazyVerticalGrid(
-                            modifier = Modifier.padding(8.dp),
-                            columns = GridCells.Fixed(2),
-                        ) {
-                            items(Level.entries.subList(0, 10)) { level ->
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.height(30.dp)
-                                ) {
-                                    Checkbox(
-                                        colors = CheckboxDefaults.colors(darkBlue),
-                                        checked = uiState.filterByLevel.contains(level),
-                                        onCheckedChange = { checked ->
-                                            viewModel.filterByLevel(level, checked)
-                                        })
-                                    Text(
-                                        text = "Level ${level.level}",
-                                        modifier = Modifier.weight(1f),
-                                        style = MediumBold.copy(
-                                            color = darkBlue,
-                                            textAlign = TextAlign.Start
-                                        )
+                        items(Level.entries.subList(0, 10)) { level ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.height(30.dp)
+                            ) {
+                                Checkbox(
+                                    colors = CheckboxDefaults.colors(darkBlue),
+                                    checked = uiState.filterByLevel.contains(level),
+                                    onCheckedChange = { checked ->
+                                        viewModel.filterByLevel(level, checked)
+                                    })
+                                Text(
+                                    text = "Level ${level.level}",
+                                    modifier = Modifier.weight(1f),
+                                    style = MediumBold.copy(
+                                        color = darkBlue,
+                                        textAlign = TextAlign.Start
                                     )
-                                }
+                                )
                             }
                         }
                     }
-                    TaperedRule()
-                    AnimatedContent(showFavorite) { fav ->
-                        if (fav) {
-                            ListOfSpell(uiState.favoriteByLevel, viewModel)
-                        } else {
-                            ListOfSpell(uiState.filteredSpellsByLevel, viewModel)
-                        }
+                }
+                TaperedRule()
+
+                AnimatedContent(showFavorite) { showFavorite ->
+                    val list = if (showFavorite) {
+                        uiState.favoriteByLevel
+                    } else {
+                        uiState.filteredSpellsByLevel
                     }
+                    ListOfSpell(list, viewModel)
                 }
             }
         }
 
-        CustomAnimatedPlaceHolder(!uiState.isReady, infiniteTransition)
+        CustomAnimatedPlaceHolder(!uiState.isReady)
     }
 
     @Composable
     fun ListOfSpell(spellByLevel: Map<Level, List<Spell>>, viewModel: SpellListViewModel) {
         val navigator = LocalNavigator.currentOrThrow
-        val scope = rememberCoroutineScope()
         CustomLazyHeaderList(
             mapOfValue = spellByLevel,
             stickyMode = false,
@@ -176,15 +178,13 @@ class SpellListScreen() : Screen {
                 )
             },
             item = { spell ->
-                SpellItem(spell, onClick = {
-                    navigator.push(SpellDetailsScreen(spell.index))
-                },
-                    onFavoriteClick = {
-                        scope.launch {
-                            viewModel.toggleSpellIsFavorite(spell)
-                        }
-                    })
-            })
+                SpellItem(
+                    spell = spell,
+                    onClick = { navigator.push(SpellDetailsScreen(spell.index)) },
+                    onFavoriteClick = { viewModel.toggleSpellIsFavorite(spell) }
+                )
+            }
+        )
     }
 
     @Composable

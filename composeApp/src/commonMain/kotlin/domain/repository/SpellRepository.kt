@@ -12,7 +12,6 @@ import domain.model.SavingThrow
 import domain.model.spell.MagicSchool
 import domain.model.spell.Spell
 import domain.model.spell.Spell.Details.SpellDamage
-import io.ktor.client.plugins.ServerResponseException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -102,14 +101,9 @@ class SpellRepository(private val spellApi: Dnd5Api, private val dataBase: SqlDa
     }
 
     suspend fun getSpellByIndex(index: String): Spell? {
-        try {
-            return spellApi.getSpellByIndex(index)?.let { dto ->
-                val isFavorite = dataBase.getSpellById(index).firstOrNull()?.isFavorite == 1L
-                return dto.toDomain(isFavorite)
-            }
-        } catch (e: ServerResponseException) {
-            Log.e { e.message }
-            return null
+        return spellApi.getSpellByIndex(index)?.let { dto ->
+            val isFavorite = dataBase.getSpellById(index).firstOrNull()?.isFavorite == 1L
+            return dto.toDomain(isFavorite)
         }
     }
 

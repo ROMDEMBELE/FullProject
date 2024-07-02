@@ -1,10 +1,10 @@
 package ui.composable
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.InfiniteTransition
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -21,9 +21,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.d20
@@ -33,15 +33,15 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CustomAnimatedPlaceHolder(
-    isLoading: Boolean,
-    infiniteTransition: InfiniteTransition,
+    visible: Boolean,
     backgroundColor: Color = darkBlue,
     contentColor: Color = secondary
 ) {
-    AnimatedVisibility(isLoading, enter = fadeIn(), exit = fadeOut()) {
-        val degrees by infiniteTransition.animateFloat(
-            0f, 360f, infiniteRepeatable(tween(3000, easing = LinearEasing))
-        )
+    val infiniteTransition = rememberInfiniteTransition()
+    val degrees by infiniteTransition.animateFloat(
+        0f, 360f, infiniteRepeatable(tween(3000, easing = LinearEasing))
+    )
+    AnimatedVisibility(visible, enter = fadeIn(), exit = fadeOut()) {
         Column(
             Modifier.fillMaxSize().background(backgroundColor),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -53,7 +53,9 @@ fun CustomAnimatedPlaceHolder(
                 painter = painterResource(Res.drawable.d20),
                 colorFilter = ColorFilter.tint(contentColor),
                 contentDescription = "loading",
-                modifier = Modifier.rotate(degrees).size(180.dp)
+                modifier = Modifier.size(180.dp).graphicsLayer {
+                    rotationZ = degrees
+                }
             )
         }
     }
