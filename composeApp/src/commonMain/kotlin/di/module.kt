@@ -13,6 +13,7 @@ import domain.repository.SpeciesRepository
 import domain.repository.SpellRepository
 import domain.usecase.DeleteCampaignUseCase
 import domain.usecase.DeleteCharacterUseCase
+import domain.usecase.GetCampaignCharacterUseCase
 import domain.usecase.GetCampaignsUseCase
 import domain.usecase.SaveCampaignUseCase
 import domain.usecase.SaveCharacterUseCase
@@ -40,6 +41,7 @@ val repositoryModule = module {
     factoryOf(::SaveCharacterUseCase)
     factoryOf(::DeleteCharacterUseCase)
     factoryOf(::GetCampaignsUseCase)
+    factoryOf(::GetCampaignCharacterUseCase)
     factoryOf(::DeleteCampaignUseCase)
     factoryOf(::SaveCampaignUseCase)
 }

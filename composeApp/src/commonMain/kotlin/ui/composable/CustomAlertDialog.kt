@@ -29,6 +29,7 @@ fun CustomAlertDialog(
     cancellable: Boolean = true,
     content: String,
     onDismiss: () -> Unit,
+    confirmText: String = stringResource(Res.string.confirm_button),
     onConfirm: () -> Unit
 ) {
     Dialog(
@@ -77,7 +78,7 @@ fun CustomAlertDialog(
                         modifier = Modifier.weight(0.3f),
                         onClick = onConfirm
                     ) {
-                        Text(stringResource(Res.string.confirm_button))
+                        Text(confirmText)
                     }
                 }
             }

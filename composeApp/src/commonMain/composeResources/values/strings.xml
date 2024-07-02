@@ -53,6 +53,22 @@
     <string name="select_campaign">Please select or create campaign to start</string>
     <string name="create_campaign_button">Start a new Adventure !</string>
 
+    <string name="edit_character_screen">Edit Character</string>
+    <string name="create_character_button">Create a new Character</string>
+    <string name="edit_character_information">Character Information</string>
+    <string name="player_name">Player Name</string>
+    <string name="character_name">Character Name</string>
+    <string name="character_class">Character Class</string>
+    <string name="background">Background</string>
+    <string name="species">Species</string>
+    <string name="level">Level</string>
+    <string name="armor_class">Armor Class</string>
+    <string name="hit_points">Hit Points</string>
+    <string name="spell_save">Spell Save</string>
+    <string name="edit_character_abilities">Character Abilities</string>
+    <string name="edit_character_statistics">Character Statistics</string>
+
+
     <string name="delete_campaign">Delete Campaign</string>
     <string name="delete_campaign_confirm">Are you sure, do you want to delete this campaign ?</string>
 

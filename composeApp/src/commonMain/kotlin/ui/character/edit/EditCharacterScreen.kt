@@ -1,16 +1,15 @@
 package ui.character.edit
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -21,28 +20,36 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
-import org.dembeyo.shared.resources.ancient
-import org.dembeyo.shared.resources.menu_character
-import org.jetbrains.compose.resources.Font
+import org.dembeyo.shared.resources.armor_class
+import org.dembeyo.shared.resources.background
+import org.dembeyo.shared.resources.character_class
+import org.dembeyo.shared.resources.character_name
+import org.dembeyo.shared.resources.delete_button
+import org.dembeyo.shared.resources.edit_character_abilities
+import org.dembeyo.shared.resources.edit_character_information
+import org.dembeyo.shared.resources.edit_character_statistics
+import org.dembeyo.shared.resources.hit_points
+import org.dembeyo.shared.resources.level
+import org.dembeyo.shared.resources.player_name
+import org.dembeyo.shared.resources.save_button
+import org.dembeyo.shared.resources.species
+import org.dembeyo.shared.resources.spell_save
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import ui.composable.BigBold
 import ui.composable.CounterSelector
+import ui.composable.CustomAlertDialog
 import ui.composable.CustomButton
 import ui.composable.CustomTextField
 import ui.composable.DropDownTextField
 import ui.composable.darkPrimary
 import ui.composable.primary
-import ui.composable.roundCornerShape
 import ui.composable.secondary
 
 class EditCharacterScreen(val id: Long? = null) : Screen {
@@ -56,28 +63,17 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
         var deleteDialogDisplay by remember { mutableStateOf(false) }
 
         AnimatedVisibility(deleteDialogDisplay) {
-            AlertDialog(
-                onDismissRequest = { deleteDialogDisplay = false },
-                title = { Text("Delete Character") },
-                text = { Text("Are you sure you want to delete this character?") },
-                confirmButton = {
-                    TextButton(onClick = {
-                        deleteDialogDisplay = false
-                        viewModel.deleteCharacter()
-                        navigator.pop()
-                    }) {
-                        Text("Delete", color = primary)
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { deleteDialogDisplay = false }) {
-                        Text("Cancel", color = darkPrimary)
-                    }
-                },
-                backgroundColor = secondary,
-                contentColor = darkPrimary,
-                shape = roundCornerShape
-            )
+            CustomAlertDialog(
+                onDismiss = { deleteDialogDisplay = false },
+                title = "Delete Character",
+                content = "Are you sure you want to delete this character?",
+                confirmText = stringResource(Res.string.delete_button),
+                onConfirm = {
+                    deleteDialogDisplay = false
+                    viewModel.deleteCharacter()
+                    navigator.pop()
+
+                })
         }
 
         LaunchedEffect(uiState.isReady) {
@@ -87,33 +83,18 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
         }
 
         LazyColumn(
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier.background(secondary).padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                Text(
-                    text = stringResource(Res.string.menu_character),
-                    modifier = Modifier.fillMaxWidth(),
-                    fontSize = 40.sp,
-                    textAlign = TextAlign.Center,
-                    fontFamily = FontFamily(Font(Res.font.ancient)),
-                    color = darkPrimary
-                )
-
-                Divider(
-                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp),
-                    color = darkPrimary,
-                    thickness = 3.dp
-                )
-
-                Text("Character Information", style = BigBold)
+                Text(stringResource(Res.string.edit_character_information), style = BigBold)
 
                 Spacer(Modifier.height(8.dp))
 
                 CustomTextField(
                     textFieldValue = uiState.playerName,
                     onTextChange = { viewModel.updatePlayerName(it) },
-                    placeholder = "Player Name",
+                    placeholder = stringResource(Res.string.player_name),
                     modifier = Modifier.fillMaxWidth(),
                 )
 
@@ -122,7 +103,7 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
                 CustomTextField(
                     textFieldValue = uiState.characterName,
                     onTextChange = { viewModel.updateCharacterName(it) },
-                    placeholder = "Character Name",
+                    placeholder = stringResource(Res.string.character_name),
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -131,7 +112,7 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
                 CustomTextField(
                     textFieldValue = uiState.characterClass,
                     onTextChange = { viewModel.updateCharacterClass(it) },
-                    placeholder = "Character Class",
+                    placeholder = stringResource(Res.string.character_class),
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -140,7 +121,7 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
                 DropDownTextField(
                     value = uiState.characterBackground,
                     display = { this?.name ?: "" },
-                    label = "Background",
+                    label = stringResource(Res.string.background),
                     list = uiState.backgrounds.values.toList()
                 ) {
                     if (it != null) {
@@ -153,7 +134,7 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
                 DropDownTextField(
                     value = uiState.characterSpecies,
                     display = { this?.fullName ?: "" },
-                    label = "Species",
+                    label = stringResource(Res.string.species),
                     list = uiState.species.values.toList()
                 ) {
                     if (it != null) {
@@ -167,31 +148,29 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
                     thickness = 3.dp
                 )
 
-                Text("Character Statistics", style = BigBold)
+                Text(stringResource(Res.string.edit_character_statistics), style = BigBold)
 
                 Spacer(Modifier.height(8.dp))
 
-                CounterSelector("Level", minimum = 1, maximum = 20, value = uiState.level) {
+                CounterSelector(stringResource(Res.string.level), minimum = 1, maximum = 20, value = uiState.level) {
                     viewModel.updateLevel(it)
                 }
 
                 Spacer(Modifier.height(8.dp))
 
-                CounterSelector(label = "Armor Class", value = uiState.armorClass, maximum = 30) {
+                CounterSelector(stringResource(Res.string.armor_class), value = uiState.armorClass, maximum = 30) {
                     viewModel.updateArmorClass(it)
                 }
 
                 Spacer(Modifier.height(8.dp))
 
-                CounterSelector(
-                    label = "Hit Point", minimum = 1, maximum = 999, value = uiState.hitPoint
-                ) {
+                CounterSelector(stringResource(Res.string.hit_points), minimum = 1, maximum = 999, value = uiState.hitPoint) {
                     viewModel.updateHitPoint(it)
                 }
 
                 Spacer(Modifier.height(8.dp))
 
-                CounterSelector(label = "Spell Save", value = uiState.spellSave, maximum = 30) {
+                CounterSelector(stringResource(Res.string.spell_save), value = uiState.spellSave, maximum = 30) {
                     viewModel.updateSpellSave(it)
                 }
 
@@ -201,7 +180,7 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
                     thickness = 3.dp
                 )
 
-                Text("Character Abilities", style = BigBold)
+                Text(stringResource(Res.string.edit_character_abilities), style = BigBold)
 
                 Spacer(Modifier.height(8.dp))
 
@@ -228,7 +207,7 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Save")
+                    Text(stringResource(Res.string.save_button))
                 }
 
                 AnimatedVisibility(uiState.canBeDeleted) {
@@ -240,12 +219,10 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
                             contentColor = secondary
                         ),
                     ) {
-                        Text("Delete")
+                        Text(stringResource(Res.string.delete_button))
                     }
                 }
             }
         }
     }
-
-
 }

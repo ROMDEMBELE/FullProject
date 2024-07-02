@@ -1,24 +1,37 @@
 package ui.character
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import domain.repository.CharacterRepository
+import domain.model.Campaign
+import domain.usecase.GetCampaignCharacterUseCase
+import domain.usecase.GetCampaignsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 
-class CharacterViewModel(private val repository: CharacterRepository) : ViewModel() {
+class CharacterViewModel(
+    private val getCampaignCharacterUseCase: GetCampaignCharacterUseCase,
+    private val getCampaignsUseCase: GetCampaignsUseCase
+) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(CharacterListUiState(isLoading = true))
+    private val _uiState = MutableStateFlow(CharacterListUiState())
     val uiState: StateFlow<CharacterListUiState> = _uiState.asStateFlow()
 
-    init {
-        viewModelScope.launch {
-            repository.getListOfCharacters().collectLatest {
-                _uiState.value = CharacterListUiState(characters = it, isLoading = false)
-            }
-        }
+    suspend fun fetchCampaign() {
+        getCampaignsUseCase.execute().map { it.firstOrNull(Campaign::inProgress) }.firstOrNull()
+            ?.let { campaign ->
+                getCampaignCharacterUseCase.execute(campaign.id).collectLatest { characters ->
+                    _uiState.update {
+                        it.copy(
+                            campaign = campaign,
+                            characters = characters,
+                            isReady = true
+                        )
+                    }
+                }
+            } ?: run { _uiState.update { it.copy(isReady = true) } }
     }
 }
