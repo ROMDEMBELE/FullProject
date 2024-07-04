@@ -1,5 +1,6 @@
 package data.api
 
+import data.dto.MagicItemDto
 import data.dto.ReferenceDto
 import data.dto.SearchResultDto
 import data.dto.SpellDto
@@ -51,10 +52,7 @@ class Dnd5Api {
         }
         when (response.status) {
             HttpStatusCode.OK -> return response.body() as SearchResultDto<ReferenceDto>
-            else -> throw ServerResponseException(
-                response,
-                "/api/monsters failed : status ${response.status}"
-            )
+            else -> throw ServerResponseException(response, "/api/monsters failed : status ${response.status}")
         }
     }
 
@@ -63,11 +61,11 @@ class Dnd5Api {
         CancellationException::class,
         JsonConvertException::class,
     )
-    suspend fun getMonsterByIndex(index: String): MonsterDto? {
+    suspend fun getMonsterByIndex(index: String): MonsterDto {
         val response = client.get("$BASE_URL/api/monsters/$index")
-        return when (response.status) {
+         when (response.status) {
             HttpStatusCode.OK -> return response.body() as MonsterDto
-            else -> null
+            else -> throw ServerResponseException(response, "/api/monsters/$index : status ${response.status}")
         }
     }
 
@@ -90,12 +88,9 @@ class Dnd5Api {
                 }
             }
         }
-        return when (response.status) {
-            HttpStatusCode.OK -> response.body() as SearchResultDto<SpellReferenceDto>
-            else -> throw ServerResponseException(
-                response,
-                "/api/spells failed : status ${response.status}"
-            )
+        when (response.status) {
+            HttpStatusCode.OK -> return response.body() as SearchResultDto<SpellReferenceDto>
+            else -> throw ServerResponseException(response, "/api/spells failed : status ${response.status}")
         }
     }
 
@@ -104,11 +99,37 @@ class Dnd5Api {
         CancellationException::class,
         JsonConvertException::class
     )
-    suspend fun getSpellByIndex(index: String): SpellDto? {
+    suspend fun getSpellByIndex(index: String): SpellDto {
         val response = client.get("$BASE_URL/api/spells/$index")
-        return when (response.status) {
-            HttpStatusCode.OK -> response.body() as SpellDto
-            else -> null
+        when (response.status) {
+            HttpStatusCode.OK -> return response.body() as SpellDto
+            else -> throw ServerResponseException(response, "/api/spells/$index : status ${response.status}")
+        }
+    }
+
+    @Throws(
+        ServerResponseException::class,
+        CancellationException::class,
+        JsonConvertException::class
+    )
+    suspend fun getMagicItems(): SearchResultDto<ReferenceDto> {
+        val response = client.get("$BASE_URL/api/magic-items")
+        when (response.status) {
+            HttpStatusCode.OK -> return response.body() as SearchResultDto<ReferenceDto>
+            else -> throw ServerResponseException(response, "/api/magic-items failed : status ${response.status}")
+        }
+    }
+
+    @Throws(
+        ServerResponseException::class,
+        CancellationException::class,
+        JsonConvertException::class
+    )
+    suspend fun getMagicItemByIndex(index: String): MagicItemDto {
+        val response = client.get("$BASE_URL/api/magic-items/$index")
+        when (response.status) {
+            HttpStatusCode.OK -> return response.body() as MagicItemDto
+            else -> throw ServerResponseException(response, "/api/magic-items/$index failed : status ${response.status}")
         }
     }
 

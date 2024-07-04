@@ -14,6 +14,9 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import ui.battle.BattleScreen
+import ui.character.CharacterListScreen
+import ui.composable.darkBlue
 import ui.home.MenuScreen.MenuItem.BATTLE
 import ui.home.MenuScreen.MenuItem.CHARACTERS
 import ui.home.MenuScreen.MenuItem.EQUIPMENTS
@@ -21,10 +24,8 @@ import ui.home.MenuScreen.MenuItem.HOME
 import ui.home.MenuScreen.MenuItem.MAGIC_ITEMS
 import ui.home.MenuScreen.MenuItem.MAGIC_SPELLS
 import ui.home.MenuScreen.MenuItem.MONSTERS
-import ui.battle.BattleScreen
-import ui.composable.darkBlue
+import ui.magicItem.list.MagicItemListScreen
 import ui.monster.list.MonsterListScreen
-import ui.character.CharacterListScreen
 import ui.spell.list.SpellListScreen
 
 @Composable
@@ -36,7 +37,7 @@ fun MenuDrawer(navigator: Navigator, onDismiss: () -> Unit) {
                     HOME -> navigator.popUntil { it is MenuScreen }
                     MAGIC_SPELLS -> navigator.replaceAll(listOf(MenuScreen(), SpellListScreen()))
                     MONSTERS -> navigator.replaceAll(listOf(MenuScreen(), MonsterListScreen()))
-                    MAGIC_ITEMS -> {}
+                    MAGIC_ITEMS -> navigator.replaceAll(listOf(MenuScreen(), MagicItemListScreen()))
                     CHARACTERS -> navigator.replaceAll(listOf(MenuScreen(), CharacterListScreen()))
                     BATTLE -> navigator.replaceAll(listOf(MenuScreen(), BattleScreen()))
                     EQUIPMENTS -> {}

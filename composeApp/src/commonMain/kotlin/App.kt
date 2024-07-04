@@ -1,4 +1,3 @@
-
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -32,6 +31,7 @@ import org.dembeyo.shared.resources.adventure
 import org.dembeyo.shared.resources.ancient
 import org.dembeyo.shared.resources.castle_empty
 import org.dembeyo.shared.resources.menu_character
+import org.dembeyo.shared.resources.menu_magic_item
 import org.dembeyo.shared.resources.menu_monster
 import org.dembeyo.shared.resources.menu_screen_title
 import org.dembeyo.shared.resources.menu_spell
@@ -47,6 +47,8 @@ import ui.composable.primary
 import ui.composable.secondary
 import ui.home.MenuDrawer
 import ui.home.MenuScreen
+import ui.magicItem.details.MagicItemDetailsScreen
+import ui.magicItem.list.MagicItemListScreen
 import ui.monster.details.MonsterDetailScreen
 import ui.monster.list.MonsterListScreen
 import ui.spell.details.SpellDetailsScreen
@@ -94,6 +96,7 @@ fun App() {
                                     is SpellListScreen, is SpellDetailsScreen -> Res.string.menu_spell
                                     is MonsterListScreen, is MonsterDetailScreen -> Res.string.menu_monster
                                     is CharacterListScreen, is EditCharacterScreen -> Res.string.menu_character
+                                    is MagicItemListScreen, is MagicItemDetailsScreen -> Res.string.menu_magic_item
                                     else -> Res.string.menu_screen_title
                                 }
                                 Text(

@@ -42,12 +42,12 @@ fun CustomAnimatedPlaceHolder(
         verticalArrangement = Arrangement.Center
     ) {
         Text(stringResource(Res.string.loading), style = screenTitle(contentColor))
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(36.dp))
         Image(
             painter = painterResource(Res.drawable.d20),
             colorFilter = ColorFilter.tint(contentColor),
             contentDescription = "loading",
-            modifier = Modifier.size(180.dp).graphicsLayer {
+            modifier = Modifier.size(100.dp).graphicsLayer {
                 rotationZ = rotationAnimation.value
             }
         )

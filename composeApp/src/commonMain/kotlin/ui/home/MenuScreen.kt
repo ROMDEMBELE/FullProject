@@ -84,6 +84,7 @@ import ui.composable.darkPrimary
 import ui.composable.primary
 import ui.composable.roundCornerShape
 import ui.composable.secondary
+import ui.magicItem.list.MagicItemListScreen
 import ui.monster.list.MonsterListScreen
 import ui.spell.list.SpellListScreen
 
@@ -110,7 +111,7 @@ class MenuScreen : Screen {
                             MenuItem.MAGIC_SPELLS -> navigator.push(SpellListScreen())
                             MenuItem.BATTLE -> navigator.push(BattleScreen())
                             MenuItem.MONSTERS -> navigator.push(MonsterListScreen())
-                            MenuItem.MAGIC_ITEMS -> {}
+                            MenuItem.MAGIC_ITEMS -> navigator.push(MagicItemListScreen())
                             MenuItem.CHARACTERS -> navigator.push(CharacterListScreen())
                             MenuItem.EQUIPMENTS -> {}
                             MenuItem.HOME -> {}
@@ -133,7 +134,11 @@ class MenuScreen : Screen {
     @Composable
     fun MenuItemView(menu: MenuItem, onClick: () -> Unit) {
         val infiniteTransition = rememberInfiniteTransition()
-        val colorAnimation by infiniteTransition.animateColor(primary, darkPrimary, infiniteRepeatable(tween(10000), RepeatMode.Reverse))
+        val colorAnimation by infiniteTransition.animateColor(
+            primary,
+            darkPrimary,
+            infiniteRepeatable(tween(10000), RepeatMode.Reverse)
+        )
         val interactionSource = remember { NoRippleInteractionSource() }
         Button(
             modifier = Modifier.height(220.dp).bounceClick(),

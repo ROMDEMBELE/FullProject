@@ -1,12 +1,13 @@
 package di
 
 import data.api.Dnd5Api
-import data.database.RealmDataBase
 import data.database.SqlDatabase
+import data.database.realm.RealmDataBase
 import domain.repository.BackgroundRepository
 import domain.repository.CampaignRepository
 import domain.repository.CharacterRepository
 import domain.repository.ConditionRepository
+import domain.repository.MagicItemRepository
 import domain.repository.MonsterRepository
 import domain.repository.SettingsRepository
 import domain.repository.SpeciesRepository
@@ -37,6 +38,7 @@ val repositoryModule = module {
     singleOf(::CampaignRepository)
     singleOf(::ConditionRepository)
     singleOf(::SettingsRepository)
+    singleOf(::MagicItemRepository)
 
     factoryOf(::SaveCharacterUseCase)
     factoryOf(::DeleteCharacterUseCase)
