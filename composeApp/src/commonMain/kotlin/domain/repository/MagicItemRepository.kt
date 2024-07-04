@@ -46,7 +46,7 @@ class MagicItemRepository(private val api: Dnd5Api, private val database: RealmD
     fun getListOfMagicItems(): Flow<List<MagicItem>> {
         return database.getAllMagicItems().map { it.map { dbo -> dbo.toDomain() } }
     }
-    
+
     private fun MagicItemDbo.toDomain(): MagicItem {
         return MagicItem(
             index = index.toString(),
