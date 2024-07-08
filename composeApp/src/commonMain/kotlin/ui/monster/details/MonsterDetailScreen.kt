@@ -75,6 +75,7 @@ import org.dembeyo.shared.resources.monster_legendary_actions
 import org.dembeyo.shared.resources.monster_proficiencies
 import org.dembeyo.shared.resources.monster_saving_throws
 import org.dembeyo.shared.resources.monster_senses
+import org.dembeyo.shared.resources.monster_special_abilities
 import org.dembeyo.shared.resources.monster_speed
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
@@ -262,6 +263,15 @@ class MonsterDetailScreen(private val index: String) : Screen {
                             )
                         }
                         TaperedRule()
+
+                        Text(
+                            text = stringResource(Res.string.monster_special_abilities),
+                            fontSize = 21.sp,
+                            fontWeight = FontWeight.Normal,
+                            fontFamily = FontFamily.Serif,
+                            color = darkPrimary,
+                            modifier = Modifier.padding(vertical = 12.dp)
+                        )
 
                         if (details.specialAbilities.isNotEmpty()) {
                             details.specialAbilities.forEach {

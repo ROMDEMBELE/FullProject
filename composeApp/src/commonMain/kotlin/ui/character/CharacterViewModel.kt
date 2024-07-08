@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import domain.model.Campaign
 import domain.usecase.GetCampaignCharacterUseCase
 import domain.usecase.GetCampaignsUseCase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +25,7 @@ class CharacterViewModel(
         getCampaignsUseCase.execute().map { it.firstOrNull(Campaign::inProgress) }.firstOrNull()
             ?.let { campaign ->
                 getCampaignCharacterUseCase.execute(campaign.id).collectLatest { characters ->
+                    delay(500)
                     _uiState.update {
                         it.copy(
                             campaign = campaign,

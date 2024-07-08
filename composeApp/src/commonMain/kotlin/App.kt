@@ -1,3 +1,4 @@
+
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -7,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -43,6 +43,7 @@ import ui.campaign.main.CampaignMainScreen
 import ui.character.CharacterListScreen
 import ui.character.edit.EditCharacterScreen
 import ui.composable.darkBlue
+import ui.composable.darkGray
 import ui.composable.primary
 import ui.composable.secondary
 import ui.home.MenuDrawer
@@ -57,80 +58,88 @@ import ui.spell.list.SpellListScreen
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
-        val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
-        val scope = rememberCoroutineScope()
-        Navigator(screen = MenuScreen()) { navigator ->
-            Scaffold(
-                scaffoldState = scaffoldState,
-                drawerBackgroundColor = secondary,
-                drawerContent = {
-                    MenuDrawer(navigator) {
-                        scope.launch {
-                            scaffoldState.drawerState.close()
-                        }
+    val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
+    val scope = rememberCoroutineScope()
+    Navigator(
+        screen = MenuScreen(),
+        onBackPressed = {
+            if (scaffoldState.drawerState.isOpen) {
+                scope.launch { scaffoldState.drawerState.close() }
+                false
+            } else {
+                true
+            }
+        }) { navigator ->
+        Scaffold(
+            scaffoldState = scaffoldState,
+            drawerBackgroundColor = secondary,
+            drawerContent = {
+                MenuDrawer(navigator) {
+                    scope.launch {
+                        scaffoldState.drawerState.close()
                     }
-                },
-                topBar = {
-                    TopAppBar(backgroundColor = darkBlue) {
-                        Box(Modifier.fillMaxSize()) {
-                            IconButton(
-                                modifier = Modifier.align(Alignment.CenterStart),
-                                onClick = {
-                                    scope.launch {
-                                        scaffoldState.drawerState.open()
-                                    }
-                                }) {
-                                Image(
-                                    painter = painterResource(Res.drawable.adventure),
-                                    contentDescription = null,
-                                    colorFilter = ColorFilter.tint(primary),
-                                    modifier = Modifier.size(24.dp).aspectRatio(1f)
-                                )
-                            }
-                            AnimatedContent(
-                                navigator.lastItem,
-                                Modifier.fillMaxWidth().align(Alignment.Center)
-                            ) { currentScreen ->
-                                val title = when (currentScreen) {
-                                    is SpellListScreen, is SpellDetailsScreen -> Res.string.menu_spell
-                                    is MonsterListScreen, is MonsterDetailScreen -> Res.string.menu_monster
-                                    is CharacterListScreen, is EditCharacterScreen -> Res.string.menu_character
-                                    is MagicItemListScreen, is MagicItemDetailsScreen -> Res.string.menu_magic_item
-                                    else -> Res.string.menu_screen_title
+                }
+            },
+            topBar = {
+                TopAppBar(backgroundColor = darkBlue) {
+                    Box(Modifier.fillMaxSize()) {
+                        IconButton(
+                            modifier = Modifier.align(Alignment.CenterStart),
+                            onClick = {
+                                scope.launch {
+                                    scaffoldState.drawerState.open()
                                 }
-                                Text(
-                                    stringResource(title),
-                                    fontSize = 30.sp,
-                                    textAlign = TextAlign.Center,
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = FontFamily(Font(Res.font.ancient)),
-                                    color = primary,
-                                )
-                            }
-
-                            IconButton(
-                                modifier = Modifier.align(Alignment.CenterEnd),
-                                onClick = {
-                                    scope.launch {
-                                        navigator.push(CampaignMainScreen())
-                                    }
-                                }) {
-                                Image(
-                                    painter = painterResource(Res.drawable.castle_empty),
-                                    contentDescription = null,
-                                    colorFilter = ColorFilter.tint(primary),
-                                    modifier = Modifier.size(24.dp).aspectRatio(1f)
-                                )
-                            }
+                            }) {
+                            Image(
+                                painter = painterResource(Res.drawable.adventure),
+                                contentDescription = null,
+                                colorFilter = ColorFilter.tint(primary),
+                                modifier = Modifier.size(24.dp).aspectRatio(1f)
+                            )
                         }
-
+                        AnimatedContent(
+                            navigator.lastItem,
+                            Modifier.fillMaxWidth().align(Alignment.Center)
+                        ) { currentScreen ->
+                            val title = when (currentScreen) {
+                                is SpellListScreen, is SpellDetailsScreen -> Res.string.menu_spell
+                                is MonsterListScreen, is MonsterDetailScreen -> Res.string.menu_monster
+                                is CharacterListScreen, is EditCharacterScreen -> Res.string.menu_character
+                                is MagicItemListScreen, is MagicItemDetailsScreen -> Res.string.menu_magic_item
+                                else -> Res.string.menu_screen_title
+                            }
+                            Text(
+                                stringResource(title),
+                                fontSize = 30.sp,
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = FontFamily(Font(Res.font.ancient)),
+                                color = primary,
+                            )
+                        }
+                        val campaignButtonEnabled = navigator.lastItem !is CampaignMainScreen
+                        IconButton(
+                            enabled = campaignButtonEnabled,
+                            modifier = Modifier.align(Alignment.CenterEnd),
+                            onClick = {
+                                scope.launch {
+                                    navigator.push(CampaignMainScreen())
+                                }
+                            }) {
+                            Image(
+                                painter = painterResource(Res.drawable.castle_empty),
+                                contentDescription = null,
+                                colorFilter = ColorFilter.tint(if (campaignButtonEnabled) primary else darkGray),
+                                modifier = Modifier.size(24.dp).aspectRatio(1f)
+                            )
+                        }
                     }
+
                 }
-            ) { _ ->
-                Box {
-                    CurrentScreen()
-                }
+            }
+        ) { _ ->
+            Box {
+                CurrentScreen()
             }
         }
     }
