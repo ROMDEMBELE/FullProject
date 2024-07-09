@@ -9,8 +9,8 @@ import domain.model.character.Species
 import domain.repository.BackgroundRepository
 import domain.repository.CharacterRepository
 import domain.repository.SpeciesRepository
-import domain.usecase.DeleteCharacterUseCase
-import domain.usecase.SaveCharacterUseCase
+import domain.usecase.character.DeleteCharacterUseCase
+import domain.usecase.character.SaveCharacterUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
@@ -21,7 +21,7 @@ class EditCharacterViewModel(
     private val characterRepository: CharacterRepository,
     private val speciesRepository: SpeciesRepository,
     private val backgroundRepository: BackgroundRepository,
-    private val createOrUpdateCharacter: SaveCharacterUseCase,
+    private val saveCharacter: SaveCharacterUseCase,
     private val deleteCharacter: DeleteCharacterUseCase
 ) : ViewModel() {
 
@@ -45,7 +45,7 @@ class EditCharacterViewModel(
     }
 
     private suspend fun loadSpecies() {
-        speciesRepository.getListOfSpecies().firstOrNull()?.let { species ->
+        speciesRepository.getList().firstOrNull()?.let { species ->
             _uiState.update {
                 it.copy(species = species.associateBy(Species::id))
             }
@@ -79,8 +79,32 @@ class EditCharacterViewModel(
         } ?: throw NullPointerException("Character id$id not found")
     }
 
-    suspend fun saveCharacter() {
-        createOrUpdateCharacter.execute(_uiState.value).firstOrNull()?.let { updatedCharacter ->
+    suspend fun save() {
+        val (id, playerName, characterName, characterClass, characterBackground, characterSpecies,
+            level, armorClass, hitPoint, spellSave) = _uiState.value
+        val dexterity = _uiState.value.abilities[Ability.DEX] ?: 10
+        val constitution = _uiState.value.abilities[Ability.CON] ?: 10
+        val intelligence = _uiState.value.abilities[Ability.INT] ?: 10
+        val wisdom = _uiState.value.abilities[Ability.WIS] ?: 10
+        val strength = _uiState.value.abilities[Ability.STR] ?: 10
+        saveCharacter(
+            id,
+            playerName,
+            characterName,
+            level,
+            armorClass,
+            hitPoint,
+            spellSave,
+            dexterity,
+            constitution,
+            intelligence,
+            wisdom,
+            strength,
+            spellSave,
+            characterSpecies ?: error("Species not selected"),
+            characterBackground ?: error("Background not selected"),
+            characterClass,
+        )?.let { updatedCharacter ->
             _uiState.update {
                 it.copy(
                     id = updatedCharacter.id,
@@ -151,7 +175,7 @@ class EditCharacterViewModel(
         viewModelScope.launch {
             try {
                 _uiState.value.id?.let {
-                    deleteCharacter.execute(it)
+                    deleteCharacter(it)
                 }
             } catch (e: IllegalArgumentException) {
                 e.printStackTrace()

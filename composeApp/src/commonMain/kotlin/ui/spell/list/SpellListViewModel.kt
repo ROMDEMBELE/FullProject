@@ -24,7 +24,7 @@ class SpellListViewModel(private val spellRepository: SpellRepository) : ViewMod
     init {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                spellRepository.getListOfSpells().collectLatest { list ->
+                spellRepository.getList().collectLatest { list ->
                     delay(500)
                     _uiState.update { it.copy(spellList = list, isReady = true) }
                 }
@@ -60,7 +60,7 @@ class SpellListViewModel(private val spellRepository: SpellRepository) : ViewMod
             withContext(Dispatchers.IO) {
                 _uiState.update { it.copy(isReady = false) }
                 try {
-                    spellRepository.fetchSpellDatabase()
+                    spellRepository.fetchData()
                 } catch (e: Exception) {
                     _uiState.update { it.copy(isReady = true, error = e.message) }
                 }

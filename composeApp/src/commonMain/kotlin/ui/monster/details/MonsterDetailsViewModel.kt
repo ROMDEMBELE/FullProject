@@ -15,7 +15,7 @@ class MonsterDetailsViewModel(
 
     suspend fun fetchMonster(index: String) {
         try {
-            val monster = monsterRepository.getMonsterByIndex(index)
+            val monster = monsterRepository.getByIndex(index)
             _uiState.update { it.copy(isReady = true, monster = monster) }
         } catch (e: Exception) {
             _uiState.update { it.copy(isReady = true, error = e.message) }

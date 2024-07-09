@@ -1,4 +1,4 @@
-package domain.usecase
+package domain.usecase.campaign
 
 import domain.repository.CampaignRepository
 import domain.repository.CharacterRepository
@@ -12,9 +12,9 @@ class DeleteCampaignUseCase(
     private val settingsRepository: SettingsRepository,
 ) {
 
-    suspend fun execute(id: Long, force: Boolean = false) {
+    suspend operator fun invoke(id: Long, force: Boolean = false): Boolean {
         // Check if campaign exist in database
-        campaignRepository.getCampaignById(id).firstOrNull()
+        campaignRepository.getById(id).firstOrNull()
             ?: throw NullPointerException("Campaign with id $id does not exist")
         // Check if there is not combat in the campaign
 
@@ -30,9 +30,10 @@ class DeleteCampaignUseCase(
         }
 
         // Delete id
-        settingsRepository.setCurrentCampaignId(null)
+        settingsRepository.setMainCampaignId(null)
 
         // Delete the campaign
-        campaignRepository.deleteCampaign(id)
+        campaignRepository.delete(id)
+        return true
     }
 }

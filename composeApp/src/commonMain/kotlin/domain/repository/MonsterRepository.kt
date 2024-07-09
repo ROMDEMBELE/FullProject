@@ -2,6 +2,7 @@ package domain.repository
 
 import data.api.Dnd5Api
 import data.database.SqlDatabase
+import data.dto.monster.MonsterDto
 import data.dto.monster.PolymorphicAbility
 import data.dto.monster.PolymorphicAction
 import data.dto.monster.PolymorphicDamage
@@ -23,45 +24,79 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.dembeyo.data.MonsterDbo
 import org.lighthousegames.logging.logging
 
 class MonsterRepository(private val dndApi: Dnd5Api, private val database: SqlDatabase) {
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            fetchMonsterDatabaseByChallenge()
+            fetchData()
         }
     }
 
-    suspend fun fetchMonsterDatabaseByChallenge() {
-        Challenge.entries.forEach {
-            try {
-                dndApi.getMonstersByChallenge(it.rating).results.forEach { dto ->
-                    database.insertMonster(
-                        index = dto.index,
-                        name = dto.name,
-                        challenge = it.rating,
+    private fun MonsterDbo.toDomain() = Monster(
+        index = id,
+        name = name,
+        challenge = Challenge.fromDouble(challenge),
+        isFavorite = isFavorite == 1L
+    )
+
+    private fun MonsterDto.toDomain(isFavorite: Boolean): Monster {
+        val savingThrows = mutableListOf<SavingThrow>()
+        val skills = mutableListOf("Proficiency Bonus $proficiencyBonus")
+        proficiencies.forEach {
+            when {
+                it.proficiency.name.contains("Skill") -> {
+                    skills += "${it.proficiency.name.removePrefix("Skill: ")} ${it.value}"
+                }
+
+                it.proficiency.name.contains("Saving") -> {
+                    SavingThrow(
+                        value = it.value,
+                        ability = Ability.valueOf(it.proficiency.name.removePrefix("Saving Throw: ")),
                     )
                 }
-            } catch (e: Exception) {
-                Log.w { "Unable to update the monster database" }
             }
         }
-    }
+        val specialAbilities: List<SpecialAbility> =
+            specialAbilities.mapNotNull { dto -> dto.toDomain() }
 
-    fun setMonsterIsFavorite(index: String, isFavorite: Boolean) {
-        database.updateMonsterFavoriteStatus(index, isFavorite)
-    }
-
-    fun getListOfMonsters(): Flow<List<Monster>> = database.getAllMonsters().map {
-        it.map { dbo ->
-            Monster(
-                index = dbo.id,
-                name = dbo.name,
-                challenge = Challenge.fromDouble(dbo.challenge),
-                isFavorite = dbo.isFavorite == 1L
+        return Monster(
+            index = index,
+            name = name,
+            isFavorite = isFavorite,
+            challenge = Challenge.fromDouble(challengeRating),
+            details = Monster.Details(
+                size = size,
+                type = type,
+                alignment = alignment,
+                armorsClass = buildMap {
+                    armorClass.forEach { put(it.type, it.value) }
+                },
+                hitPoints = hitPoints,
+                hitPointsRoll = hitPointsRoll,
+                strength = strength,
+                dexterity = dexterity,
+                constitution = constitution,
+                intelligence = intelligence,
+                wisdom = wisdom,
+                charisma = charisma, speedByMovements = speed,
+                skills = skills,
+                savingThrows = savingThrows,
+                damageVulnerabilities = damageVulnerabilities,
+                damageResistances = damageResistances,
+                damageImmunities = damageImmunities,
+                conditionImmunities = conditionImmunities.map { it.name },
+                senses = senses,
+                languages = languages,
+                xp = xp,
+                image = image,
+                specialAbilities = specialAbilities,
+                actions = actions.map { it.toDomain() },
+                legendaryActions = legendaryActions.map { it.toDomain() }
             )
-        }
+        )
     }
 
     private fun PolymorphicUsageLimitDto.toDomain(): String = when (this) {
@@ -218,68 +253,33 @@ class MonsterRepository(private val dndApi: Dnd5Api, private val database: SqlDa
         }
     }
 
-    suspend fun getMonsterByIndex(index: String): Monster? {
-        try {
-            return dndApi.getMonsterByIndex(index)?.let { monsterDto ->
-                val savingThrows = mutableListOf<SavingThrow>()
-                val skills = mutableListOf("Proficiency Bonus ${monsterDto.proficiencyBonus}")
-                monsterDto.proficiencies.forEach {
-                    when {
-                        it.proficiency.name.contains("Skill") -> {
-                            skills += "${it.proficiency.name.removePrefix("Skill: ")} ${it.value}"
-                        }
-
-                        it.proficiency.name.contains("Saving") -> {
-                            SavingThrow(
-                                value = it.value,
-                                ability = Ability.valueOf(it.proficiency.name.removePrefix("Saving Throw: ")),
-                            )
-                        }
-                    }
+    suspend fun fetchData() {
+        Challenge.entries.forEach {
+            try {
+                dndApi.getMonstersByChallenge(it.rating).results.forEach { dto ->
+                    database.insertMonster(
+                        index = dto.index,
+                        name = dto.name,
+                        challenge = it.rating,
+                    )
                 }
-                val isFavorite: Boolean =
-                    database.getMonsterById(index).firstOrNull()?.isFavorite == 1L
-
-                val specialAbilities: List<SpecialAbility> =
-                    monsterDto.specialAbilities.mapNotNull { dto ->
-                        dto.toDomain()
-                    }
-
-                return Monster(
-                    index = monsterDto.index,
-                    name = monsterDto.name,
-                    isFavorite = isFavorite,
-                    challenge = Challenge.fromDouble(monsterDto.challengeRating),
-                    details = Monster.Details(
-                        size = monsterDto.size,
-                        type = monsterDto.type,
-                        alignment = monsterDto.alignment,
-                        armorsClass = buildMap {
-                            monsterDto.armorClass.forEach { put(it.type, it.value) }
-                        },
-                        hitPoints = monsterDto.hitPoints,
-                        hitPointsRoll = monsterDto.hitPointsRoll,
-                        strength = monsterDto.strength,
-                        dexterity = monsterDto.dexterity,
-                        constitution = monsterDto.constitution,
-                        intelligence = monsterDto.intelligence,
-                        wisdom = monsterDto.wisdom,
-                        charisma = monsterDto.charisma, speedByMovements = monsterDto.speed,
-                        skills = skills,
-                        savingThrows = savingThrows,
-                        damageVulnerabilities = monsterDto.damageVulnerabilities,
-                        damageResistances = monsterDto.damageResistances,
-                        damageImmunities = monsterDto.damageImmunities,
-                        conditionImmunities = monsterDto.conditionImmunities.map { it.name },
-                        senses = monsterDto.senses,
-                        languages = monsterDto.languages,
-                        xp = monsterDto.xp,
-                        image = monsterDto.image,
-                        specialAbilities = specialAbilities,
-                        actions = monsterDto.actions.map { it.toDomain() },
-                        legendaryActions = monsterDto.legendaryActions.map { it.toDomain() }
-                    ))
+            } catch (e: Exception) {
+                Log.w { "Unable to update the monster database" }
             }
+        }
+    }
+
+    fun setFavorite(index: String, isFavorite: Boolean) =
+        database.updateMonsterFavoriteStatus(index, isFavorite)
+
+    fun getAll(): Flow<List<Monster>> =
+        database.getAllMonsters().map { it.map { dbo -> dbo.toDomain() } }
+
+    suspend fun getByIndex(index: String): Monster? {
+        try {
+            val monsterDto = dndApi.getMonsterByIndex(index)
+            val isFavorite: Boolean = database.getMonsterById(index).firstOrNull()?.isFavorite == 1L
+            return monsterDto.toDomain(isFavorite)
         } catch (e: Exception) {
             Log.e { e.message.toString() }
             return null

@@ -134,7 +134,7 @@ class EditCampaignScreen(val campaign: Campaign? = null) : Screen {
                 enabled = uiState.isValid,
                 onClick = {
                     scope.launch {
-                        viewModel.saveCampaign()
+                        viewModel.save()
                         navigator.pop()
                     }
                 },

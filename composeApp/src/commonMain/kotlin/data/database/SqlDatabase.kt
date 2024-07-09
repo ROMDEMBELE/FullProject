@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.Flow
 import org.dembeyo.data.BackgroundDbo
 import org.dembeyo.data.CampaingnDbo
 import org.dembeyo.data.CharacterDbo
-import org.dembeyo.data.ConditionDbo
 import org.dembeyo.data.MonsterDbo
 import org.dembeyo.data.MySqlDelightDatabase
 import org.dembeyo.data.RaceDbo
@@ -154,11 +153,4 @@ class SqlDatabase(driverFactory: DriverFactory) {
 
     fun getBackgroundById(id: Long): Flow<BackgroundDbo?> =
         database.backgroundQueries.selectById(id).asFlow().mapToOne(Dispatchers.IO)
-
-    // section Condition
-    fun getAllCondition(): Flow<List<ConditionDbo>> =
-        database.conditionQueries.selectAll().asFlow().mapToList(Dispatchers.IO)
-
-    fun getConditionById(id: String): Flow<ConditionDbo?> =
-        database.conditionQueries.selectById(id).asFlow().mapToOne(Dispatchers.IO)
 }

@@ -10,20 +10,16 @@ class CampaignRepository(private val database: SqlDatabase) {
 
     private fun CampaingnDbo.toDomain() = Campaign(id, fullName, description)
 
-    fun getListOfCampaign(): Flow<List<Campaign>> = database.getAllCampaign().map {
-        it.map { dbo -> dbo.toDomain() }
-    }
-
-    fun getCampaignById(id: Long): Flow<Campaign?> =
+    fun getById(id: Long): Flow<Campaign?> =
         database.getCampaignById(id).map { it?.toDomain() }
 
-    fun createOrUpdateCampaign(
+    fun createOrUpdate(
         id: Long?,
         name: String,
         description: String,
     ): Long? = database.insertOrUpdateCampaign(id, name, description)
 
-    fun deleteCampaign(id: Long) {
+    fun delete(id: Long) {
         database.deleteCampaignById(id)
     }
 }

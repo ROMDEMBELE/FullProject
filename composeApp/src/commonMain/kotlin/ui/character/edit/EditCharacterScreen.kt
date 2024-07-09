@@ -228,7 +228,7 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
                         enabled = uiState.isValid,
                         onClick = {
                             scope.launch {
-                                viewModel.saveCharacter()
+                                viewModel.save()
                                 navigator.pop()
                             }
                         },

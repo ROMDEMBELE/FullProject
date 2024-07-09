@@ -27,14 +27,14 @@ class SpellRepository(private val spellApi: Dnd5Api, private val dataBase: SqlDa
     init {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                fetchSpellDatabase()
+                fetchData()
             } catch (e: Exception) {
                 Log.w { "Unable to update the spell database" }
             }
         }
     }
 
-    suspend fun fetchSpellDatabase() {
+    suspend fun fetchData() {
         spellApi.getSpellByLevelOrSchool().results.forEach { dto ->
             dataBase.insertSpell(
                 index = dto.index,
@@ -71,7 +71,7 @@ class SpellRepository(private val spellApi: Dnd5Api, private val dataBase: SqlDa
 
     private fun SpellDto.toDomain(isFavorite: Boolean): Spell {
         val school = MagicSchool.fromIndex(school.index)
-            ?: throw IllegalArgumentException("Unknown school index")
+            ?: throw IllegalArgumentException("Unknown school index ${school.index}")
 
         return Spell(
             index = index,
@@ -96,14 +96,17 @@ class SpellRepository(private val spellApi: Dnd5Api, private val dataBase: SqlDa
         )
     }
 
-    fun getListOfSpells(): Flow<List<Spell>> = dataBase.getAllSpells().map {
-        it.map { dbo -> dbo.toDomain() }
-    }
+    fun getList(): Flow<List<Spell>> =
+        dataBase.getAllSpells().map { it.map { dbo -> dbo.toDomain() } }
 
-    suspend fun getSpellByIndex(index: String): Spell? {
-        return spellApi.getSpellByIndex(index)?.let { dto ->
+    suspend fun getByIndex(index: String): Spell? {
+        try {
+            val dto = spellApi.getSpellByIndex(index)
             val isFavorite = dataBase.getSpellById(index).firstOrNull()?.isFavorite == 1L
             return dto.toDomain(isFavorite)
+        } catch (e: Exception) {
+            Log.e { "Unable to get spell by index $index" }
+            return null
         }
     }
 

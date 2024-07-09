@@ -1,6 +1,8 @@
 package di
 
 import data.database.DriverFactory
+import data.database.room.EncounterDatabase
+import data.database.room.createDatabase
 import data.preference.SettingsStorage
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -29,4 +31,8 @@ actual fun platformModule(): Module = module {
 
     single { DriverFactory(androidContext()) }
     single { SettingsStorage(androidContext()) }
+    single<EncounterDatabase> { createDatabase(androidContext()).build() }
+    single { get<EncounterDatabase>().encounterDao() }
+    single { get<EncounterDatabase>().characterFighterDao() }
+    single { get<EncounterDatabase>().monsterFighterDao() }
 }

@@ -3,8 +3,8 @@ package ui.campaign.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import domain.model.Campaign
-import domain.usecase.GetCampaignsUseCase
-import domain.usecase.SaveCampaignUseCase
+import domain.usecase.campaign.GetMainCampaignUseCase
+import domain.usecase.campaign.SaveCampaignUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class CampaignMainViewModel(
-    private val saveCampaignUseCase: SaveCampaignUseCase,
-    private val getCampaignsUseCase: GetCampaignsUseCase,
+    private val saveCampaign: SaveCampaignUseCase,
+    private val getMainCampaign: GetMainCampaignUseCase
 ) :
     ViewModel() {
 
@@ -22,11 +22,9 @@ class CampaignMainViewModel(
 
     init {
         viewModelScope.launch {
-            getCampaignsUseCase.execute().collectLatest { campaigns ->
-                val campaignInProgress = campaigns.firstOrNull { it.inProgress }
+            getMainCampaign().collectLatest { campaignInProgress ->
                 _uiState.update {
                     it.copy(
-                        listOfCampaign = campaigns,
                         campaignInProgress = campaignInProgress,
                         isReady = true
                     )
@@ -36,13 +34,17 @@ class CampaignMainViewModel(
     }
 
     fun closeMainCampaign() {
-        _uiState.value.campaignInProgress?.let {
-            saveCampaignUseCase.execute(it.id, it.name, it.description, false)
+        viewModelScope.launch {
+            _uiState.value.campaignInProgress?.let {
+                saveCampaign(it.id, it.name, it.description, false)
+            }
         }
     }
 
     fun selectCampaignAsMain(campaign: Campaign) {
-        saveCampaignUseCase.execute(campaign.id, campaign.name, campaign.description, true)
+        viewModelScope.launch {
+            saveCampaign(campaign.id, campaign.name, campaign.description, true)
+        }
     }
 
 }

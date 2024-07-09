@@ -3,15 +3,15 @@ package ui.campaign.edit
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import domain.model.Campaign
-import domain.usecase.DeleteCampaignUseCase
-import domain.usecase.SaveCampaignUseCase
+import domain.usecase.campaign.DeleteCampaignUseCase
+import domain.usecase.campaign.SaveCampaignUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class EditCampaignViewModel(
-    private val saveCampaignUseCase: SaveCampaignUseCase,
-    private val deleteCampaignUseCase: DeleteCampaignUseCase
+    private val saveCampaign: SaveCampaignUseCase,
+    private val deleteCampaign: DeleteCampaignUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(EditCampaignUiState())
@@ -27,16 +27,16 @@ class EditCampaignViewModel(
         }
     }
 
-    fun saveCampaign() {
+    suspend fun save() {
         val id = _uiState.value.id
         val name = _uiState.value.name.text
         val description = _uiState.value.description.text
-        saveCampaignUseCase.execute(id, name, description, true)
+        saveCampaign(id, name, description, true)
     }
 
     suspend fun deleteCampaign(force: Boolean): Boolean {
         try {
-            _uiState.value.id?.let { deleteCampaignUseCase.execute(it, force) }
+            _uiState.value.id?.let { deleteCampaign(it, force) }
             return true
         } catch (e: IllegalStateException) {
             _uiState.update { it.copy(error = e.message) }

@@ -4,6 +4,7 @@ data class Encounter(
     val id: Long,
     val campaignId: Long,
     val title: String,
+    val description: String,
     val fighter: List<EncounterFighter>,
     val turn: Int = 0,
     val isFinished: Boolean = true

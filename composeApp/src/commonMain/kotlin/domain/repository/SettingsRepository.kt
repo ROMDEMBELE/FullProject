@@ -4,7 +4,7 @@ import data.preference.SettingsStorage
 
 class SettingsRepository(private val settingsStorage: SettingsStorage) {
 
-    fun setCurrentCampaignId(id: Long?) {
+    fun setMainCampaignId(id: Long?) {
         if (id == null) {
             settingsStorage.deleteValue(CURRENT_CAMPAIGN_ID)
         } else {
@@ -12,7 +12,7 @@ class SettingsRepository(private val settingsStorage: SettingsStorage) {
         }
     }
 
-    fun getCurrentCampaignId(): Long? = settingsStorage.readValue(CURRENT_CAMPAIGN_ID)
+    fun getMainCampaignId(): Long? = settingsStorage.readValue(CURRENT_CAMPAIGN_ID)
 
     companion object {
         private const val CURRENT_CAMPAIGN_ID = "current_campaign_id"

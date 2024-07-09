@@ -27,3 +27,5 @@ fun <T> lazyPromise(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>> {
         }
     }
 }
+
+expect fun randomUUID(): String

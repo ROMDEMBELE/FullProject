@@ -39,24 +39,21 @@ class MagicItemRepository(private val api: Dnd5Api, private val database: RealmD
         Log.i { "fetchData ${result.size} items registered in database" }
     }
 
-    suspend fun setIsFavoriteByIndex(index: String, isFavorite: Boolean) {
+    suspend fun setFavorite(index: String, isFavorite: Boolean) {
         database.updateMagicItemFavoriteStatus(index, isFavorite)
     }
 
-    fun getListOfMagicItems(): Flow<List<MagicItem>> {
-        return database.getAllMagicItems().map { it.map { dbo -> dbo.toDomain() } }
-    }
+    fun getAll(): Flow<List<MagicItem>> =
+        database.getAllMagicItems().map { it.map { dbo -> dbo.toDomain() } }
 
-    private fun MagicItemDbo.toDomain(): MagicItem {
-        return MagicItem(
-            index = index.toString(),
-            isFavorite = isFavorite,
-            name = name.toString(),
-            category = category?.name.toString(),
-            rarity = Rarity.valueOf(rarity.toString()),
-            description = description
-        )
-    }
+    private fun MagicItemDbo.toDomain() = MagicItem(
+        index = index.toString(),
+        isFavorite = isFavorite,
+        name = name.toString(),
+        category = category?.name.toString(),
+        rarity = Rarity.valueOf(rarity.toString()),
+        description = description
+    )
 
     companion object {
         val Log = logging("MagicItemRepository")

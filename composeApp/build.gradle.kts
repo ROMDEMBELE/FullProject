@@ -6,9 +6,11 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
-    id("io.realm.kotlin")
+    alias(libs.plugins.realm)
     alias(libs.plugins.sqlDelight)
     kotlin("plugin.serialization")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 sqldelight {
@@ -17,6 +19,10 @@ sqldelight {
             packageName = "org.dembeyo.data"
         }
     }
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 kotlin {
@@ -39,7 +45,6 @@ kotlin {
     }
 
     sourceSets {
-
         androidMain.dependencies {
             implementation(compose.preview)
             implementation("androidx.activity:activity-compose:1.9.0") {
@@ -77,13 +82,15 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.voyager.navigator)
-            implementation("cafe.adriel.voyager:voyager-transitions:1.1.0-beta02")
-            implementation("cafe.adriel.voyager:voyager-koin:1.1.0-beta02")
+            implementation(libs.voyager.transitions)
+            implementation(libs.voyager.koin)
             implementation(libs.library.base)
             implementation(libs.runtime)
             implementation(libs.coroutines.extensions)
             implementation(libs.constraintlayout.compose.multiplatform)
             api(libs.logging)
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.sqlite.bundled)
         }
     }
 }
@@ -130,4 +137,3 @@ android {
         debugImplementation(compose.uiTooling)
     }
 }
-

@@ -25,7 +25,7 @@ class MagicItemListViewModel(private val repository: MagicItemRepository) : View
     init {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                repository.getListOfMagicItems().collectLatest { magicItemList ->
+                repository.getAll().collectLatest { magicItemList ->
                     delay(500)
                     _uiState.update {
                         it.copy(magicItemsList = magicItemList, isReady = true)
@@ -50,7 +50,7 @@ class MagicItemListViewModel(private val repository: MagicItemRepository) : View
     fun addToFavorite(item: MagicItem) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                repository.setIsFavoriteByIndex(item.index, true)
+                repository.setFavorite(item.index, true)
             }
         }
     }
@@ -58,7 +58,7 @@ class MagicItemListViewModel(private val repository: MagicItemRepository) : View
     fun removeFromFavorite(item: MagicItem) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                repository.setIsFavoriteByIndex(item.index, false)
+                repository.setFavorite(item.index, false)
             }
         }
     }

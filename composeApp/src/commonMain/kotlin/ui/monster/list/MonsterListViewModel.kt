@@ -27,7 +27,7 @@ class MonsterListViewModel(
     init {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                monsterRepository.getListOfMonsters().collectLatest { list ->
+                monsterRepository.getAll().collectLatest { list ->
                     delay(500)
                     _uiState.update {
                         it.copy(monsterList = list, isReady = true)
@@ -58,7 +58,7 @@ class MonsterListViewModel(
     }
 
     fun toggleMonsterFavorite(monster: Monster) {
-        monsterRepository.setMonsterIsFavorite(monster.index, !monster.isFavorite)
+        monsterRepository.setFavorite(monster.index, !monster.isFavorite)
     }
 
     fun acknowledgeError() {
@@ -70,7 +70,7 @@ class MonsterListViewModel(
             withContext(Dispatchers.IO) {
                 _uiState.update { it.copy(isReady = false) }
                 try {
-                    monsterRepository.fetchMonsterDatabaseByChallenge()
+                    monsterRepository.fetchData()
                 } catch (e: Exception) {
                     _uiState.update { it.copy(isReady = true, error = e.message) }
                 }
