@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import domain.model.Level
 import domain.model.spell.Spell
 import domain.repository.SpellRepository
+import domain.usecase.spell.GetSpellFilterUseCase
+import domain.usecase.spell.SaveSpellFilterUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
@@ -16,7 +18,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SpellListViewModel(private val spellRepository: SpellRepository) : ViewModel() {
+class SpellListViewModel(
+    private val spellRepository: SpellRepository,
+    private val saveSpellFilter: SaveSpellFilterUseCase,
+    private val getSpellFilter: GetSpellFilterUseCase
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SpellListUiState())
     val uiState = _uiState.asStateFlow()
@@ -26,7 +32,10 @@ class SpellListViewModel(private val spellRepository: SpellRepository) : ViewMod
             withContext(Dispatchers.IO) {
                 spellRepository.getList().collectLatest { list ->
                     delay(500)
-                    _uiState.update { it.copy(spellList = list, isReady = true) }
+                    _uiState.update { it.copy(
+                        spellList = list,
+                        filterByLevel = getSpellFilter(),
+                        isReady = true) }
                 }
             }
         }
@@ -38,11 +47,11 @@ class SpellListViewModel(private val spellRepository: SpellRepository) : ViewMod
 
     fun filterByLevel(filter: Level, enable: Boolean) {
         _uiState.update {
-            val updatedList = it.filterByLevel.toMutableList().apply {
-                if (enable) add(filter) else remove(filter)
-            }
-            it.copy(filterByLevel = updatedList)
+            it.copy(filterByLevel = it.filterByLevel.toMutableMap().apply {
+                this[filter] = enable
+            })
         }
+        saveSpellFilter(_uiState.value.filterByLevel)
     }
 
     fun filterByText(textFieldValue: TextFieldValue) {

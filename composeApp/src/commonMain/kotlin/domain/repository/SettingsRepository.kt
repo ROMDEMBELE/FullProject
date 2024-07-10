@@ -14,7 +14,14 @@ class SettingsRepository(private val settingsStorage: SettingsStorage) {
 
     fun getMainCampaignId(): Long? = settingsStorage.readValue(CURRENT_CAMPAIGN_ID)
 
+    fun setSpellFilter(filter: String) {
+        settingsStorage.storeValue(SPELL_FILTER, filter)
+    }
+
+    fun getSpellFilter(): String? = settingsStorage.readValue<String>(SPELL_FILTER)
+
     companion object {
         private const val CURRENT_CAMPAIGN_ID = "current_campaign_id"
+        private const val SPELL_FILTER = "spell_filter"
     }
 }

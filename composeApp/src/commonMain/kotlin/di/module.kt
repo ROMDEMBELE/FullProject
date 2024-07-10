@@ -11,10 +11,22 @@ import domain.repository.MonsterRepository
 import domain.repository.SettingsRepository
 import domain.repository.SpeciesRepository
 import domain.repository.SpellRepository
-import domain.usecase.campaign.*
-import domain.usecase.character.*
-import domain.usecase.common.*
-import domain.usecase.encounter.*
+import domain.usecase.campaign.DeleteCampaignUseCase
+import domain.usecase.campaign.GetMainCampaignCharactersUseCase
+import domain.usecase.campaign.GetMainCampaignUseCase
+import domain.usecase.campaign.SaveCampaignUseCase
+import domain.usecase.character.DeleteCharacterUseCase
+import domain.usecase.character.SaveCharacterUseCase
+import domain.usecase.common.AddToFavoriteUseCase
+import domain.usecase.common.RemoveFromFavoriteUseCase
+import domain.usecase.encounter.AddCharacterToEncounterUseCase
+import domain.usecase.encounter.AddMonsterToEncounterUseCase
+import domain.usecase.encounter.CreateEncounterUseCase
+import domain.usecase.encounter.RemoveCharacterFromEncounterUseCase
+import domain.usecase.encounter.RemoveMonsterFromEncounterUseCase
+import domain.usecase.encounter.UpdateEncounterUseCase
+import domain.usecase.spell.GetSpellFilterUseCase
+import domain.usecase.spell.SaveSpellFilterUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -46,6 +58,9 @@ val repositoryModule = module {
 
     factoryOf(::AddToFavoriteUseCase)
     factoryOf(::RemoveFromFavoriteUseCase)
+
+    factory { SaveSpellFilterUseCase(get()) }
+    factory { GetSpellFilterUseCase(get()) }
 
     factoryOf(::AddCharacterToEncounterUseCase)
     factoryOf(::AddMonsterToEncounterUseCase)

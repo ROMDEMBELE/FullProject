@@ -100,8 +100,8 @@ class MenuScreen : Screen {
         LazyVerticalGrid(
             modifier = Modifier.background(secondary).fillMaxSize().padding(16.dp),
             columns = GridCells.Fixed(2),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             items(MenuItem.entries.filter { it != MenuItem.HOME }) { menu ->
                 MenuItemView(menu) {

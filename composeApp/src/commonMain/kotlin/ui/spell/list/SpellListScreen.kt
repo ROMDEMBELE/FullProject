@@ -134,7 +134,7 @@ class SpellListScreen() : Screen {
                                 ) {
                                     Checkbox(
                                         colors = CheckboxDefaults.colors(darkBlue),
-                                        checked = uiState.filterByLevel.contains(level),
+                                        checked = uiState.filterByLevel[level] ?: false,
                                         onCheckedChange = { checked ->
                                             viewModel.filterByLevel(level, checked)
                                         })

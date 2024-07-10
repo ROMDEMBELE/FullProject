@@ -6,7 +6,7 @@ import domain.model.spell.Spell
 
 data class SpellListUiState(
     val spellList: List<Spell> = emptyList(),
-    val filterByLevel: List<Level> = emptyList(),
+    val filterByLevel: Map<Level, Boolean> = Level.entries.subList(0,10).associateWith { true },
     val textField: TextFieldValue = TextFieldValue(),
     val isReady: Boolean = false,
     val error: String? = null
@@ -21,13 +21,13 @@ data class SpellListUiState(
 
     val filteredSpellsByLevel: Map<Level, List<Spell>>
         get() = spellList.asSequence().sortedBy { spell -> spell.level }
-            .filter { spell -> filterByLevel.isEmpty() || filterByLevel.contains(spell.level) }
+            .filter { spell -> filterByLevel[spell.level] ?: false }
             .filter { spell -> spell.name.contains(textField.text, true) }
             .sortedBy { spell -> spell.level }
             .groupBy { spell -> spell.level }
 
     val filterCounter: Int
-        get() = filterByLevel.size
+        get() = filterByLevel.count { !it.value }
 
     val favoritesCounter: Int
         get() = favoriteByLevel.values.sumOf { it.size }
