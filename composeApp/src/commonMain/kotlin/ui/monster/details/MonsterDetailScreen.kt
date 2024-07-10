@@ -38,6 +38,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -274,16 +276,25 @@ class MonsterDetailScreen(private val index: String) : Screen {
                         )
 
                         if (details.specialAbilities.isNotEmpty()) {
-                            details.specialAbilities.forEach {
-                                when (it) {
-                                    is InnateSpellCastingAbility, is SpellCastingAbility -> {
+                            details.specialAbilities.forEach { ability ->
+                                when (ability) {
+                                    is SpellCastingAbility -> {
                                         SpellCastingAbilityItem(
                                             monster,
-                                            it
+                                            ability
                                         ) { spellDialogDisplayed = true }
                                     }
 
-                                    else -> SpecialAbilityItem(it)
+                                    is InnateSpellCastingAbility -> {
+                                        SpellCastingAbilityItem(
+                                            monster,
+                                            ability
+                                        ) { innateSpellDialogDisplayed = true }
+                                    }
+
+                                    else -> {
+                                        SpecialAbilityItem(ability)
+                                    }
                                 }
                             }
                             TaperedRule()
@@ -560,7 +571,7 @@ class MonsterDetailScreen(private val index: String) : Screen {
                     .background(secondary),
             ) {
                 Text(
-                    text = ability.name,
+                    text = ability.name+ "(click for details)",
                     style = SmallBold.copy(color = secondary),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -570,32 +581,16 @@ class MonsterDetailScreen(private val index: String) : Screen {
                 LazyColumn(
                     Modifier.height(400.dp).fillMaxWidth(),
                     contentPadding = PaddingValues(0.dp),
-                    verticalArrangement = Arrangement.Center,
                 ) {
                     when (ability) {
                         is SpellCastingAbility -> {
                             ability.slots.forEach { (level, slot) ->
                                 item(level) {
-                                    Text(
-                                        text = "Lv${level.level} ($slot slots)",
-                                        modifier = Modifier.background(darkGray).fillMaxWidth()
-                                            .padding(4.dp),
-                                        color = level.color,
-                                        fontWeight = FontWeight.Bold,
-                                        textAlign = TextAlign.Center,
-                                    )
+                                    header("Lv${level.level} ($slot slots)")
                                 }
                                 items(items = ability.spellByLevel[level].orEmpty()) { spell ->
-                                    TextButton(
-                                        modifier = Modifier.background(level.color)
-                                            .fillMaxWidth(),
-                                        colors = ButtonDefaults.textButtonColors(
-                                            contentColor = darkPrimary,
-                                        ),
-                                        onClick = {
-
-                                        }) {
-                                        Text(text = spell.name.capitalize(Locale.current))
+                                    spell(spell.name, level.color) {
+                                        navigator.push(SpellDetailsScreen(spell.index))
                                     }
                                 }
                             }
@@ -604,34 +599,45 @@ class MonsterDetailScreen(private val index: String) : Screen {
                         is InnateSpellCastingAbility -> {
                             ability.spellByUsage.forEach { (usage, spells) ->
                                 item(usage) {
-                                    Text(
-                                        text = usage.capitalize(Locale.current),
-                                        modifier = Modifier.background(darkGray)
-                                            .fillMaxWidth()
-                                            .padding(4.dp),
-                                        color = secondary,
-                                        fontWeight = FontWeight.Bold,
-                                        textAlign = TextAlign.Center,
-                                    )
+                                    header(usage)
                                 }
                                 items(items = spells) { spell ->
-                                    TextButton(
-                                        modifier = Modifier.background(spell.level.color)
-                                            .fillMaxWidth(),
-                                        colors = ButtonDefaults.textButtonColors(darkPrimary),
-                                        onClick = {
-                                            navigator.push(SpellDetailsScreen(spell.index))
-                                        })
-                                    {
-                                        Text(text = spell.name.capitalize(Locale.current))
+                                    spell(spell.name, spell.level.color) {
+                                        navigator.push(SpellDetailsScreen(spell.index))
                                     }
                                 }
                             }
-
                         }
                     }
                 }
             }
+        }
+    }
+
+    @Composable
+    fun header(text: String) {
+        Text(
+            text = text.capitalize(Locale.current),
+            modifier = Modifier.height(30.dp).background(darkGray).fillMaxWidth().padding(6.dp),
+            color = secondary,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+        )
+    }
+
+    @Composable
+    fun spell(text: String, color: Color, onClick: () -> Unit) {
+        TextButton(
+            modifier = Modifier.height(30.dp).fillMaxWidth(),
+            shape = RectangleShape,
+            colors = ButtonDefaults.textButtonColors(
+                backgroundColor = color,
+                contentColor = darkPrimary
+            ),
+            onClick = onClick
+        )
+        {
+            Text(text = text.capitalize(Locale.current))
         }
     }
 }
