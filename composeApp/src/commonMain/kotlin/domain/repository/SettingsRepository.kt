@@ -20,8 +20,15 @@ class SettingsRepository(private val settingsStorage: SettingsStorage) {
 
     fun getSpellFilter(): String? = settingsStorage.readValue<String>(SPELL_FILTER)
 
+    fun setChallengeFilter(filter: String) {
+        settingsStorage.storeValue(CHALLENGE_FILTER, filter)
+    }
+
+    fun getChallengeFilter(): String? = settingsStorage.readValue(CHALLENGE_FILTER)
+
     companion object {
         private const val CURRENT_CAMPAIGN_ID = "current_campaign_id"
         private const val SPELL_FILTER = "spell_filter"
+        private const val CHALLENGE_FILTER = "challenge_filter"
     }
 }

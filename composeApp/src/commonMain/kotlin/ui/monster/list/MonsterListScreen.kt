@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,8 +21,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.RangeSlider
+import androidx.compose.material.SliderDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
@@ -59,15 +63,17 @@ import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.CustomButton
 import ui.composable.CustomErrorDialog
 import ui.composable.CustomLazyHeaderList
-import ui.composable.DropDownTextField
 import ui.composable.MediumBold
 import ui.composable.SearchMenu
+import ui.composable.SmallBold
 import ui.composable.TaperedRule
 import ui.composable.bounceClick
 import ui.composable.darkBlue
 import ui.composable.darkGray
+import ui.composable.darkPrimary
 import ui.composable.item
 import ui.composable.primary
+import ui.composable.propertyText
 import ui.composable.roundCornerShape
 import ui.composable.secondary
 import ui.monster.details.MonsterDetailScreen
@@ -78,6 +84,7 @@ class MonsterListScreen() : Screen {
     override val key: ScreenKey
         get() = uniqueScreenKey
 
+    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
         val viewModel: MonsterListViewModel = koinInject()
@@ -115,30 +122,45 @@ class MonsterListScreen() : Screen {
                         favoriteEnabled = favoriteEnabled,
                         onFavoritesClick = { favoriteEnabled = !favoriteEnabled },
                         filterContent = {
-                            Column(
-                                modifier = Modifier.padding(12.dp),
-                            ) {
-                                DropDownTextField(
-                                    label = "Min Challenge",
-                                    display = { "CR $rating" },
-                                    value = uiState.minChallenge,
-                                    list = Challenge.entries,
-                                    modifier = Modifier.weight(.5f)
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    viewModel.setMinChallenge(it)
+                                    Text(
+                                        "Min CR ${uiState.minChallenge.rating}",
+                                        style = propertyText,
+                                        color = darkPrimary
+                                    )
+
+                                    Text(
+                                        "Filter by Challenge",
+                                        style = SmallBold,
+                                        color = darkPrimary,
+                                    )
+
+                                    Text(
+                                        "Max CR ${uiState.maxChallenge.rating}",
+                                        style = propertyText,
+                                        color = darkPrimary
+                                    )
+
                                 }
 
-                                Spacer(Modifier.height(12.dp))
+                                RangeSlider(
+                                    value = uiState.filterChallengeRange,
+                                    onValueChange = { viewModel.setChallengeRange(it) },
+                                    valueRange = uiState.challengeRange,
+                                    steps = Challenge.entries.size,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    colors = SliderDefaults.colors(
+                                        thumbColor = darkPrimary,
+                                        activeTrackColor = darkPrimary,
+                                        inactiveTrackColor = darkGray
+                                    )
+                                )
 
-                                DropDownTextField(
-                                    label = "Max Challenge",
-                                    display = { "CR $rating" },
-                                    value = uiState.maxChallenge,
-                                    list = Challenge.entries,
-                                    modifier = Modifier.weight(.5f)
-                                ) {
-                                    viewModel.setMaxChallenge(it)
-                                }
                             }
                         },
                     )

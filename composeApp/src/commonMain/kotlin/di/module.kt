@@ -25,6 +25,7 @@ import domain.usecase.encounter.CreateEncounterUseCase
 import domain.usecase.encounter.RemoveCharacterFromEncounterUseCase
 import domain.usecase.encounter.RemoveMonsterFromEncounterUseCase
 import domain.usecase.encounter.UpdateEncounterUseCase
+import domain.usecase.monster.ChallengeFilterUseCase
 import domain.usecase.spell.GetSpellFilterUseCase
 import domain.usecase.spell.SaveSpellFilterUseCase
 import org.koin.core.module.Module
@@ -58,6 +59,8 @@ val repositoryModule = module {
 
     factoryOf(::AddToFavoriteUseCase)
     factoryOf(::RemoveFromFavoriteUseCase)
+
+    factory { ChallengeFilterUseCase(get()) }
 
     factory { SaveSpellFilterUseCase(get()) }
     factory { GetSpellFilterUseCase(get()) }
