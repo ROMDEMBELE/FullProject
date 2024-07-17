@@ -15,6 +15,7 @@ import ui.campaign.edit.EditCampaignViewModel
 import ui.campaign.main.CampaignMainViewModel
 import ui.character.CharacterViewModel
 import ui.character.edit.EditCharacterViewModel
+import ui.magicItem.details.MagicItemDetailsViewModel
 import ui.magicItem.list.MagicItemListViewModel
 import ui.monster.details.MonsterDetailsViewModel
 import ui.monster.list.MonsterListViewModel
@@ -35,6 +36,7 @@ actual fun platformModule(): Module = module {
     factoryOf(::EditCampaignViewModel)
     factoryOf(::CampaignMainViewModel)
     factoryOf(::MagicItemListViewModel)
+    factoryOf(::MagicItemDetailsViewModel)
 
     single { SettingsStorage(IosContext) }
 
@@ -45,11 +47,12 @@ actual fun platformModule(): Module = module {
 }
 
 object ViewModelProvider : KoinComponent {
-    fun getSpellScreenListViewModel() = SpellListViewModel(get())
+    fun getSpellScreenListViewModel() = SpellListViewModel(get(), get(), get())
     fun getSpellScreenDetailsViewModel() = SpellDetailsViewModel(get())
     fun getEditCharacterViewModel() = EditCharacterViewModel(get(), get(), get(), get(), get())
     fun getCharacterViewModel() = CharacterViewModel(get(), get())
-    fun getMonsterListViewModel() = MonsterListViewModel(get())
+    fun getMonsterListViewModel() = MonsterListViewModel(get(), get())
     fun getMonsterDetailsViewModel() = MonsterDetailsViewModel(get())
     fun getMagicItemListViewModel() = MagicItemListViewModel(get())
+    fun getMagicItemDetailsViewModel() = MagicItemDetailsViewModel(get())
 }

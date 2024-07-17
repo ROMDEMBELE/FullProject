@@ -2,7 +2,9 @@ package ui.composable
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -60,6 +62,19 @@ val monsterTitle = TextStyle(
     fontFamily = FontFamily.Serif,
 )
 
+val magicItemTitle = TextStyle(
+    fontSize = 23.sp,
+    fontWeight = FontWeight.Bold,
+    fontFamily = FontFamily.Serif,
+    textAlign = TextAlign.Center,
+    color = darkBlue,
+    shadow = Shadow(
+        color = primary,
+        offset = Offset(5f, 5f),
+        blurRadius = 12f
+    )
+)
+
 val monsterSubTitle = TextStyle(
     fontSize = 12.sp,
     fontStyle = FontStyle.Italic,
@@ -82,4 +97,3 @@ val item = TextStyle(
     color = secondary,
     fontSize = 20.sp,
 )
-

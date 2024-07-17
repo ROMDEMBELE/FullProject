@@ -2,6 +2,7 @@ package ui.monster.details
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -22,6 +23,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -39,7 +41,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -63,6 +64,9 @@ import domain.model.monster.Monster
 import domain.model.monster.SpecialAbility
 import domain.model.monster.SpecialAbility.InnateSpellCastingAbility
 import domain.model.monster.SpecialAbility.SpellCastingAbility
+import io.kamel.image.KamelImage
+import io.kamel.image.asyncPainterResource
+import io.ktor.http.Url
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.monster_actions
 import org.dembeyo.shared.resources.monster_armor_class
@@ -328,6 +332,18 @@ class MonsterDetailScreen(private val index: String) : Screen {
                             }
                         }
                         CustomDivider()
+
+                        if (details.image != null) {
+                            KamelImage(
+                                modifier = Modifier.fillMaxWidth().height(200.dp),
+                                resource = asyncPainterResource(data = Url(details.image)),
+                                onLoading = { progress ->
+                                    CircularProgressIndicator(progress)
+                                },
+                                contentDescription = null,
+                                animationSpec = tween()
+                            )
+                        }
                     }
                 }
             }
@@ -571,7 +587,7 @@ class MonsterDetailScreen(private val index: String) : Screen {
                     .background(secondary),
             ) {
                 Text(
-                    text = ability.name+ "(click for details)",
+                    text = ability.name + "(click for details)",
                     style = SmallBold.copy(color = secondary),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -628,8 +644,8 @@ class MonsterDetailScreen(private val index: String) : Screen {
     @Composable
     fun spell(text: String, color: Color, onClick: () -> Unit) {
         TextButton(
-            modifier = Modifier.height(30.dp).fillMaxWidth(),
-            shape = RectangleShape,
+            modifier = Modifier.padding(8.dp).height(40.dp).fillMaxWidth(),
+            shape = roundCornerShape,
             colors = ButtonDefaults.textButtonColors(
                 backgroundColor = color,
                 contentColor = darkPrimary

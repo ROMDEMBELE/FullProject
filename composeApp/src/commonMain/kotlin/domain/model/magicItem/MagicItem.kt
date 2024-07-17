@@ -4,7 +4,18 @@ data class MagicItem(
     val index: String,
     val isFavorite: Boolean,
     val name: String,
-    val category: String,
+    val category: Category,
     val rarity: Rarity,
-    var description: List<String>
-)
+    val description: List<String>,
+    val imageUrl: String?,
+) {
+
+    val hasAttunement: Boolean
+        get() = description.any { it.contains("requires attunement", ignoreCase = true) }
+
+    data class Category(
+        val index: String,
+        val name: String,
+        val url: String,
+    )
+}

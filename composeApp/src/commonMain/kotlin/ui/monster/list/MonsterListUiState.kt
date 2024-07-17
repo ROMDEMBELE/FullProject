@@ -26,6 +26,9 @@ data class MonsterListUiState(
                 .groupBy { it.challenge }
         }
 
+    val monsterCount: Int
+        get() = monsterByChallenge.flatMap { it.value }.size
+
     val hasError get() = error != null
 
     val challengeRange = Challenge.CR_0.ordinal.toFloat()..Challenge.CR_30.ordinal.toFloat()

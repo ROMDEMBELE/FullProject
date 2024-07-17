@@ -20,6 +20,8 @@ open class MagicItemDbo() : RealmObject {
 
     var description: RealmList<String> = realmListOf()
 
+    var imageUrl: String? = null
+
     open class CategoryDbo() : EmbeddedRealmObject {
         var index: String? = null
 

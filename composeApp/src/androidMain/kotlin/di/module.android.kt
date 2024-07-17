@@ -12,6 +12,7 @@ import ui.campaign.edit.EditCampaignViewModel
 import ui.campaign.main.CampaignMainViewModel
 import ui.character.CharacterViewModel
 import ui.character.edit.EditCharacterViewModel
+import ui.magicItem.details.MagicItemDetailsViewModel
 import ui.magicItem.list.MagicItemListViewModel
 import ui.monster.details.MonsterDetailsViewModel
 import ui.monster.list.MonsterListViewModel
@@ -28,6 +29,7 @@ actual fun platformModule(): Module = module {
     viewModelOf(::EditCampaignViewModel)
     viewModelOf(::CampaignMainViewModel)
     viewModelOf(::MagicItemListViewModel)
+    viewModelOf(::MagicItemDetailsViewModel)
 
     single { DriverFactory(androidContext()) }
     single { SettingsStorage(androidContext()) }

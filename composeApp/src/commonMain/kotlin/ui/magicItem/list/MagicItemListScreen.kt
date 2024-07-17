@@ -182,7 +182,7 @@ class MagicItemListScreen() : Screen {
                 MagicItem(
                     magicItem = magicItem,
                     onClick = {
-                        navigator.push(MagicItemDetailsScreen(magicItem))
+                        navigator.push(MagicItemDetailsScreen(magicItem.index))
                     },
                     onFavoriteClick = {
                         if (magicItem.isFavorite) {

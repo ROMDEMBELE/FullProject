@@ -135,7 +135,7 @@ class MonsterListScreen() : Screen {
                                     )
 
                                     Text(
-                                        "Filter by Challenge",
+                                        "Filter by Challenge (${uiState.monsterCount} results)",
                                         style = SmallBold,
                                         color = darkPrimary,
                                     )
