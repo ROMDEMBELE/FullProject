@@ -47,6 +47,7 @@ import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.ornament
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.MediumBoldSecondary
@@ -109,7 +110,7 @@ class MagicItemDetailsScreen(private val index: String) : Screen {
                     TaperedRule(Modifier.padding(vertical = 8.dp), darkBlue)
 
                     Text(
-                        text = magicItem.rarity.text,
+                        text = stringResource(magicItem.rarity.stringRes),
                         color = darkBlue,
                         style = MediumBoldSecondary,
                         modifier = Modifier

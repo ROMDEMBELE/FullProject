@@ -11,7 +11,7 @@ import org.dembeyo.shared.resources.monster_senses_true_sight
 import org.jetbrains.compose.resources.StringResource
 
 @Serializable
-enum class CreatureSense(val fullName: StringResource) {
+enum class CreatureSense(val stringRes: StringResource) {
     @SerialName("darkvision")
     DARKVISION(Res.string.monster_senses_dark_vision),
 

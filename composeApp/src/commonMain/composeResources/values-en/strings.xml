@@ -85,4 +85,65 @@
     <string name="ability_int">Intelligence</string>
     <string name="ability_str">Strength</string>
     <string name="ability_wis">Wisdom</string>
+
+    <string name="any_alignment">Any alignment</string>
+    <string name="any_evil_alignment">Any evil alignment</string>
+    <string name="unaligned">Unaligned</string>
+    <string name="chaotic_evil">Chaotic evil</string>
+    <string name="chaotic_good">Chaotic good</string>
+    <string name="chaotic_neutral">Chaotic neutral</string>
+    <string name="lawful_evil">Lawful evil</string>
+    <string name="lawful_good">Lawful good</string>
+    <string name="lawful_neutral">Lawful neutral</string>
+    <string name="neutral">Neutral</string>
+    <string name="neutral_evil">Neutral evil</string>
+    <string name="neutral_good">Neutral good</string>
+
+    <string name="common">Common</string>
+    <string name="uncommon">Uncommon</string>
+    <string name="rare">Rare</string>
+    <string name="very_rare">Very Rare</string>
+    <string name="legendary">Legendary</string>
+    <string name="artifact">Artifact</string>
+    <string name="varies">Varies</string>
+
+    <string name="abjuration">Abjuration</string>
+    <string name="conjuration">Conjuration</string>
+    <string name="divination">Divination</string>
+    <string name="enchantment">Enchantment</string>
+    <string name="evocation">Evocation</string>
+    <string name="illusion">Illusion</string>
+    <string name="necromancy">Necromancy</string>
+    <string name="transmutation">Transmutation</string>
+    <string name="ritual">Ritual</string>
+    <string name="concentration">Concentration</string>
+
+    <string name="burrow">Burrow</string>
+    <string name="hover">Hover</string>
+    <string name="climb">Climb</string>
+    <string name="walk">Walk</string>
+    <string name="fly">Fly</string>
+    <string name="swim">Swim</string>
+
+    <string name="tiny">Tiny</string>
+    <string name="small">Small</string>
+    <string name="medium">Medium</string>
+    <string name="large">Large</string>
+    <string name="huge">Huge</string>
+    <string name="gargantuan">Gargantuan</string>
+
+    <string name="aberration">Aberration</string>
+    <string name="beast">Beast</string>
+    <string name="celestial">Celestial</string>
+    <string name="construct">Construct</string>
+    <string name="dragon">Dragon</string>
+    <string name="elemental">Elemental</string>
+    <string name="fey">Fey</string>
+    <string name="fiend">Fiend</string>
+    <string name="giant">Giant</string>
+    <string name="humanoid">Humanoid</string>
+    <string name="monstrosity">Monstrosity</string>
+    <string name="ooze">Ooze</string>
+    <string name="plant">Plant</string>
+    <string name="undead">Undead</string>
 </resources>

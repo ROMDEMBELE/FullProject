@@ -151,9 +151,10 @@ class MonsterDetailScreen(private val index: String) : Screen {
                         Text(text = monster.name, style = monsterTitle)
                         Spacer(Modifier.height(4.dp))
                         // Size, Type of Creature, Alignment
-                        val subtitle =
-                            "${details.size.fullName} ${details.type.fullName}, ${details.alignment.fullName}"
-                        Text(text = subtitle, style = monsterSubTitle)
+                        val alignmentText = stringResource(details.alignment.stringRes)
+                        val sizeText = stringResource(details.size.stringRes)
+                        val typeText = stringResource(details.type.stringRes)
+                        Text(text = "$sizeText $typeText, $alignmentText", style = monsterSubTitle)
                         TaperedRule()
 
                         // Armor Class 16 ( Plate Armor )
@@ -186,8 +187,9 @@ class MonsterDetailScreen(private val index: String) : Screen {
                                     contentDescription = null,
                                     tint = darkPrimary
                                 )
+                                val movementText = stringResource(movement.stringRes)
                                 Text(
-                                    text = "${movement.fullName} $value",
+                                    text = "$movementText $value",
                                     modifier = Modifier.padding(4.dp),
                                     textAlign = TextAlign.End,
                                     style = propertyText,
@@ -242,7 +244,7 @@ class MonsterDetailScreen(private val index: String) : Screen {
                         }
 
                         val sensesText = details.senses.entries.map { (key, value) ->
-                            "${stringResource(key.fullName)} $value"
+                            "${stringResource(key.stringRes)} $value"
                         }
                         PropertyLine(Res.string.monster_senses, sensesText.joinToString())
 

@@ -62,7 +62,7 @@ class MagicItemRepository(private val api: Dnd5Api, private val database: RealmD
         isFavorite = isFavorite,
         name = name.toString(),
         category = category?.toDomain() ?: throw IllegalStateException("Category is null"),
-        rarity = Rarity.fromText(rarity.toString()),
+        rarity = Rarity.valueOf(rarity.toString()),
         description = description.toList(),
         imageUrl = null
     )

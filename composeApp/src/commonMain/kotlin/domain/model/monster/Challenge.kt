@@ -1,8 +1,6 @@
 package domain.model.monster
 
 import androidx.compose.ui.graphics.Color
-import kotlin.math.max
-import kotlin.math.min
 
 enum class Challenge(val rating: Double, val color: Color) {
     CR_0(0.0, Color(0xFF006400)), // Dark Green
@@ -34,16 +32,6 @@ enum class Challenge(val rating: Double, val color: Color) {
     CR_23(23.0, Color(0xFF000000)), // Black
     CR_24(24.0, Color(0xFF000000)), // Black
     CR_30(30.0, Color(0xFF000000)); // Black
-
-    fun next(): Challenge {
-        val index = Challenge.entries.indexOf(this)
-        return entries[min(index + 1, Challenge.entries.lastIndex)]
-    }
-
-    fun previous(): Challenge {
-        val index = Challenge.entries.indexOf(this)
-        return entries[max(index - 1, 0)]
-    }
 
     override fun toString(): String = "CR $rating"
 

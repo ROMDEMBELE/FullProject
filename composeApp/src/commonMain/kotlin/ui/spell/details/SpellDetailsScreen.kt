@@ -69,10 +69,12 @@ import domain.model.DamageType
 import domain.model.Level
 import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
+import org.dembeyo.shared.resources.concentration
 import org.dembeyo.shared.resources.error_dialog_title
 import org.dembeyo.shared.resources.minus_circle
 import org.dembeyo.shared.resources.ornament
 import org.dembeyo.shared.resources.plus_circle
+import org.dembeyo.shared.resources.ritual
 import org.dembeyo.shared.resources.spell_area_of_effect
 import org.dembeyo.shared.resources.spell_casting_time
 import org.dembeyo.shared.resources.spell_components
@@ -85,9 +87,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.CustomErrorDialog
-import ui.composable.MediumBoldSecondary
 import ui.composable.SmallBoldDarkBlue
-import ui.composable.SmallBoldSecondary
 import ui.composable.TaperedRule
 import ui.composable.darkBlue
 import ui.composable.generateIcon
@@ -155,7 +155,7 @@ class SpellDetailsScreen(private val index: String) : Screen {
                         )
 
                         TextClip(
-                            details.school.displayName,
+                            stringResource(details.school.stringRes),
                             details.school.color,
                             Alignment.TopStart
                         )
@@ -164,14 +164,14 @@ class SpellDetailsScreen(private val index: String) : Screen {
 
                         if (details.ritual) {
                             TextClip(
-                                text = "Ritual",
+                                text = stringResource(Res.string.ritual),
                                 lightBlue,
                                 Alignment.BottomEnd
                             )
                         }
                         if (details.concentration) {
                             TextClip(
-                                text = "Concentration",
+                                text = stringResource(Res.string.concentration),
                                 primary,
                                 Alignment.BottomStart
                             )

@@ -133,7 +133,7 @@ class MagicItemListScreen() : Screen {
                                             }
                                         })
                                     Text(
-                                        text = rarity.text,
+                                        text = stringResource(rarity.stringRes),
                                         modifier = Modifier.weight(1f),
                                         style = MediumBoldDarkBlue.copy(
                                             textAlign = TextAlign.Start
@@ -169,7 +169,7 @@ class MagicItemListScreen() : Screen {
             stickyMode = false,
             header = { rarity ->
                 Text(
-                    text = rarity.text,
+                    text = stringResource(rarity.stringRes),
                     modifier = Modifier.clip(CutCornerShape(8.dp))
                         .background(rarity.color)
                         .border(2.dp, darkBlue, CutCornerShape(8.dp))
