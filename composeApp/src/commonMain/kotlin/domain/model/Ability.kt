@@ -1,15 +1,23 @@
 package domain.model
 
 import androidx.compose.ui.graphics.Color
+import org.dembeyo.shared.resources.Res
+import org.dembeyo.shared.resources.ability_cha
+import org.dembeyo.shared.resources.ability_con
+import org.dembeyo.shared.resources.ability_dex
+import org.dembeyo.shared.resources.ability_int
+import org.dembeyo.shared.resources.ability_str
+import org.dembeyo.shared.resources.ability_wis
+import org.jetbrains.compose.resources.StringResource
 
 
-enum class Ability(val id: String, val fullName: String) {
-    CHA("cha", "Charisma"),
-    CON("con", "Constitution"),
-    DEX("dex", "Dexterity"),
-    INT("int", "Intelligence"),
-    STR("str", "Strength"),
-    WIS("wis", "Wisdom");
+enum class Ability(val id: String, val stringRes: StringResource) {
+    CHA("cha", Res.string.ability_cha),
+    CON("con", Res.string.ability_con),
+    DEX("dex", Res.string.ability_dex),
+    INT("int", Res.string.ability_int),
+    STR("str", Res.string.ability_str),
+    WIS("wis", Res.string.ability_wis);
 
     companion object {
         fun Int.getAbilityBonus(): Int = when (this) {

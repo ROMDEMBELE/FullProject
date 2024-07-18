@@ -65,7 +65,8 @@ import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.CustomButton
 import ui.composable.CustomErrorDialog
 import ui.composable.CustomLazyHeaderList
-import ui.composable.MediumBold
+import ui.composable.MediumBoldDarkBlue
+import ui.composable.MediumBoldSecondary
 import ui.composable.SearchMenu
 import ui.composable.TaperedRule
 import ui.composable.bounceClick
@@ -111,7 +112,7 @@ class SpellListScreen() : Screen {
                     Text("The spells database is empty...", style = BigBold)
                     Spacer(Modifier.height(8.dp))
                     CustomButton(onClick = { viewModel.refresh() }) {
-                        Text("Refresh", style = MediumBold)
+                        Text("Refresh", style = MediumBoldSecondary)
                     }
                 } else {
                     SearchMenu(
@@ -141,8 +142,7 @@ class SpellListScreen() : Screen {
                                     Text(
                                         text = "Level ${level.level}",
                                         modifier = Modifier.weight(1f),
-                                        style = MediumBold.copy(
-                                            color = darkBlue,
+                                        style = MediumBoldDarkBlue.copy(
                                             textAlign = TextAlign.Start
                                         )
                                     )
@@ -181,7 +181,7 @@ class SpellListScreen() : Screen {
                         .fillMaxWidth()
                         .border(2.dp, darkBlue, CutCornerShape(8.dp))
                         .padding(8.dp),
-                    style = MediumBold.copy(color = darkBlue)
+                    style = MediumBoldDarkBlue
                 )
             },
             item = { spell ->

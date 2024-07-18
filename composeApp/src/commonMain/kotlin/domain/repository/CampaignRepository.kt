@@ -13,6 +13,9 @@ class CampaignRepository(private val database: SqlDatabase) {
     fun getById(id: Long): Flow<Campaign?> =
         database.getCampaignById(id).map { it?.toDomain() }
 
+    fun getAll(): Flow<List<Campaign>> =
+        database.getAllCampaign().map { list -> list.map { it.toDomain() } }
+
     fun createOrUpdate(
         id: Long?,
         name: String,

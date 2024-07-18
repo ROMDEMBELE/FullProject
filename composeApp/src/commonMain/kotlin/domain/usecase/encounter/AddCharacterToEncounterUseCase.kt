@@ -19,7 +19,7 @@ class AddCharacterToEncounterUseCase(
             throw IllegalArgumentException("Character id $characterId already part of the encounter")
         }
 
-        val character = characterRepository.getCharacterById(characterId).firstOrNull()
+        val character = characterRepository.getById(characterId).firstOrNull()
             ?: error("Character id $characterId not found")
 
         encounterRepository.insertCharacterFighter(

@@ -3,6 +3,7 @@ package ui.composable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
@@ -40,7 +41,7 @@ fun <T> DropDownTextField(
             value = value.display(),
             onValueChange = { },
             readOnly = true,
-            shape = roundCornerShape,
+            shape = RoundedCornerShape(8.dp),
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             label = { Text(text = label) },
             colors = ExposedDropdownMenuDefaults.textFieldColors(
@@ -48,6 +49,7 @@ fun <T> DropDownTextField(
                 backgroundColor = lightGray,
                 unfocusedIndicatorColor = Color.Transparent,
                 leadingIconColor = darkPrimary,
+                textColor = darkBlue,
                 focusedTrailingIconColor = darkPrimary,
                 focusedLabelColor = darkPrimary,
                 unfocusedLabelColor = darkPrimary,

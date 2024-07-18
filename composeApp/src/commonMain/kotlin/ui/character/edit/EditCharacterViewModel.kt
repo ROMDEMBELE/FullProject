@@ -4,6 +4,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import domain.model.Ability
+import domain.model.Level
 import domain.model.character.Background
 import domain.model.character.Species
 import domain.repository.BackgroundRepository
@@ -53,11 +54,11 @@ class EditCharacterViewModel(
     }
 
     suspend fun loadCharacterToEdit(id: Long) {
-        characterRepository.getCharacterById(id).firstOrNull()?.let { character ->
+        characterRepository.getById(id).firstOrNull()?.let { character ->
             _uiState.update {
                 it.copy(
                     id = character.id,
-                    level = character.level.level,
+                    level = character.level,
                     playerName = TextFieldValue(character.player),
                     characterName = TextFieldValue(character.fullName),
                     armorClass = character.armorClass,
@@ -160,7 +161,7 @@ class EditCharacterViewModel(
 
     fun updateLevel(level: Int) {
         _uiState.update {
-            it.copy(level = level)
+            it.copy(level = Level.fromInt(level))
         }
     }
 

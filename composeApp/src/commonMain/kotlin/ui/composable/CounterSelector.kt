@@ -14,10 +14,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.minus_circle
 import org.dembeyo.shared.resources.plus_circle
@@ -39,6 +42,12 @@ fun CounterSelector(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            val limitTextStyle = TextStyle(
+                color = lightBlue,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                fontSize = 12.sp,
+            )
             IconButton(
                 modifier = Modifier.size(20.dp).aspectRatio(1f),
                 onClick = { onChange(if (value - step >= minimum) value - step else minimum) },
@@ -50,13 +59,13 @@ fun CounterSelector(
                     colorFilter = ColorFilter.tint(if (value > minimum) Color.White else lightGray)
                 )
             }
-            Text(text = "min : $minimum", style = SmallBold, modifier = Modifier.alpha(.5f))
+            Text(text = "min : $minimum", style = limitTextStyle)
             Text(
                 text = "$label : $value",
-                style = MediumBold,
+                style = MediumBoldSecondary,
                 modifier = Modifier.width(180.dp)
             )
-            Text(text = "max : $maximum", style = SmallBold, modifier = Modifier.alpha(.5f))
+            Text(text = "max : $maximum", style = limitTextStyle)
             IconButton(
                 modifier = Modifier.size(20.dp).aspectRatio(1f),
                 onClick = { onChange(if (value + step <= maximum) value + step else maximum) },

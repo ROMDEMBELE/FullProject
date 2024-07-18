@@ -11,28 +11,40 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun RoundIconText(text: String, drawable: DrawableResource, modifier: Modifier = Modifier) {
-    Surface(shape = CircleShape, color = darkGray, modifier = modifier.size(40.dp)) {
+fun RoundIconText(
+    drawable: DrawableResource? = null,
+    modifier: Modifier = Modifier,
+    text: String? = null,
+    iconColor: Color = darkPrimary,
+    backgroundColor: Color = darkGray
+) {
+    Surface(shape = CircleShape, color = backgroundColor, modifier = modifier.size(40.dp)) {
         Box {
-            Image(
-                painter = painterResource(drawable),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(darkPrimary),
-                modifier = Modifier.alpha(0.7f).size(30.dp).align(Alignment.Center).aspectRatio(1f)
-            )
+            if (drawable != null) {
+                Image(
+                    painter = painterResource(drawable),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(iconColor),
+                    modifier = Modifier.alpha(0.7f).size(30.dp).align(Alignment.Center)
+                        .aspectRatio(1f)
+                )
+            }
+            if (text != null) {
+                Text(
+                    text = text,
+                    style = SmallBoldSecondary,
+                    color = iconColor,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
 
-            Text(
-                text = text,
-                style = SmallBold,
-                color = secondary,
-                modifier = Modifier.align(Alignment.Center)
-            )
         }
     }
 }

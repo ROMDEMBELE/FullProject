@@ -18,7 +18,7 @@ class SaveCharacterUseCase(
         id: Long? = null,
         playerName: TextFieldValue,
         characterName: TextFieldValue,
-        level: Int,
+        level: Level,
         armorClass: Int,
         hitPoint: Int,
         charisma: Int,
@@ -34,11 +34,10 @@ class SaveCharacterUseCase(
     ): Character? {
         require(playerName.text.isNotEmpty()) { "Player name cannot be empty" }
         require(characterName.text.isNotEmpty()) { "Character name cannot be empty" }
-        require(level in 1..20) { "Level must be between 1 and 20" }
         require(armorClass >= 0) { "Armor class must be non-negative" }
         require(hitPoint >= 0) { "Hit point must be non-negative" }
 
-        val campaignId = settingsRepository.getMainCampaignId()
+        val campaignId = settingsRepository.getMainCampaignId().firstOrNull()
             ?: throw IllegalStateException("Character cannot be created without a campaign")
 
         val newId = characterRepository.createOrUpdateCharacter(
@@ -46,7 +45,7 @@ class SaveCharacterUseCase(
             fullName = characterName.text,
             campaignId = campaignId,
             player = playerName.text,
-            level = Level.fromInt(level),
+            level = level,
             armorClass = armorClass,
             hitPoint = hitPoint,
             spellSavingThrow = spellSave,
@@ -61,7 +60,7 @@ class SaveCharacterUseCase(
             characterClass = characterClass.text
         ) ?: throw NullPointerException("Unable to create or update character")
 
-        return characterRepository.getCharacterById(newId).firstOrNull()
+        return characterRepository.getById(newId).firstOrNull()
     }
 
 }

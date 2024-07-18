@@ -44,14 +44,31 @@ val BigBold = TextStyle(
     textAlign = TextAlign.Center,
 )
 
-val MediumBold = TextStyle(
+val MediumBoldSecondary = TextStyle(
     color = secondary,
     fontSize = 16.sp,
     fontWeight = FontWeight.Bold,
     textAlign = TextAlign.Center,
 )
 
-val SmallBold = MediumBold.copy(
+val MediumBoldDarkBlue = TextStyle(
+    color = darkBlue,
+    fontSize = 16.sp,
+    fontWeight = FontWeight.Bold,
+    textAlign = TextAlign.Center,
+)
+
+val SmallBoldSecondary = TextStyle(
+    color = secondary,
+    fontWeight = FontWeight.Bold,
+    textAlign = TextAlign.Center,
+    fontSize = 14.sp,
+)
+
+val SmallBoldDarkBlue = TextStyle(
+    color = darkBlue,
+    fontWeight = FontWeight.Bold,
+    textAlign = TextAlign.Center,
     fontSize = 14.sp,
 )
 

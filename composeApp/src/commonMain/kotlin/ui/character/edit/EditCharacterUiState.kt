@@ -2,6 +2,7 @@ package ui.character.edit
 
 import androidx.compose.ui.text.input.TextFieldValue
 import domain.model.Ability
+import domain.model.Level
 import domain.model.character.Background
 import domain.model.character.Species
 
@@ -12,7 +13,7 @@ data class EditCharacterUiState(
     val characterClass: TextFieldValue = TextFieldValue(),
     val characterBackground: Background? = null,
     val characterSpecies: Species? = null,
-    val level: Int = 1,
+    val level: Level = Level.LEVEL_1,
     val armorClass: Int = 0,
     val hitPoint: Int = 1,
     val spellSave: Int = 0,

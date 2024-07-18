@@ -7,7 +7,7 @@ class DeleteCharacterUseCase(private val characterRepository: CharacterRepositor
 
     suspend operator fun invoke(id: Long, force: Boolean = false): Boolean {
         // check if character exists in database
-        characterRepository.getCharacterById(id).firstOrNull()
+        characterRepository.getById(id).firstOrNull()
             ?: error("Character with id $id does not exist")
         // TODO check if character is in use in encounter
 

@@ -49,7 +49,7 @@ import org.dembeyo.shared.resources.ornament
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import ui.composable.CustomAnimatedPlaceHolder
-import ui.composable.MediumBold
+import ui.composable.MediumBoldSecondary
 import ui.composable.TaperedRule
 import ui.composable.darkBlue
 import ui.composable.darkPrimary
@@ -111,7 +111,7 @@ class MagicItemDetailsScreen(private val index: String) : Screen {
                     Text(
                         text = magicItem.rarity.text,
                         color = darkBlue,
-                        style = MediumBold,
+                        style = MediumBoldSecondary,
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(8.dp))
@@ -124,7 +124,7 @@ class MagicItemDetailsScreen(private val index: String) : Screen {
                     Text(
                         text = magicItem.category.name,
                         color = secondary,
-                        style = MediumBold,
+                        style = MediumBoldSecondary,
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(8.dp))
@@ -138,7 +138,7 @@ class MagicItemDetailsScreen(private val index: String) : Screen {
                         Text(
                             text = "Requires Attunement",
                             color = secondary,
-                            style = MediumBold,
+                            style = MediumBoldSecondary,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(8.dp))

@@ -1,8 +1,15 @@
 package domain.repository
 
 import data.preference.SettingsStorage
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class SettingsRepository(private val settingsStorage: SettingsStorage) {
+
+    private val mainCampaignId =
+        MutableStateFlow<Long?>(settingsStorage.readValue(CURRENT_CAMPAIGN_ID))
 
     fun setMainCampaignId(id: Long?) {
         if (id == null) {
@@ -10,9 +17,10 @@ class SettingsRepository(private val settingsStorage: SettingsStorage) {
         } else {
             settingsStorage.storeValue(CURRENT_CAMPAIGN_ID, id)
         }
+        mainCampaignId.update { id }
     }
 
-    fun getMainCampaignId(): Long? = settingsStorage.readValue(CURRENT_CAMPAIGN_ID)
+    fun getMainCampaignId(): Flow<Long?> = mainCampaignId.asStateFlow()
 
     fun setSpellFilter(filter: String) {
         settingsStorage.storeValue(SPELL_FILTER, filter)

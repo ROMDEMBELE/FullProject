@@ -3,6 +3,7 @@ import android.os.Build
 import android.util.Base64
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import java.util.Locale
 import java.util.UUID
 
 class AndroidPlatform : Platform {
@@ -27,3 +28,8 @@ actual fun decodeBase64ToImageBitmap(base64: String): ImageBitmap? {
 }
 
 actual fun randomUUID() = UUID.randomUUID().toString()
+
+actual fun changeLanguage(language: String) {
+    val locale = Locale(language)
+    Locale.setDefault(locale)
+}

@@ -4,19 +4,17 @@ import domain.model.encounter.Encounter
 import domain.repository.EncounterRepository
 import domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.combine
 
 class GetMainCampaignEncounterUseCase(
     private val settingsRepository: SettingsRepository,
     private val encounterRepository: EncounterRepository
 ) {
 
-    suspend operator fun invoke(): Flow<List<Encounter>> {
-        val campaignId = settingsRepository.getMainCampaignId()
-        return if (campaignId == null) {
-            flowOf(emptyList())
-        } else {
-            encounterRepository.getByCampaignId(campaignId)
-        }
+    operator fun invoke(): Flow<List<Encounter>> {
+        return combine(
+            settingsRepository.getMainCampaignId(),
+            encounterRepository.getAll()
+        ) { id, list -> if (id != null) list.filter { it.campaignId == id } else emptyList() }
     }
 }

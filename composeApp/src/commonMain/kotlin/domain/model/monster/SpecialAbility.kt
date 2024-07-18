@@ -1,9 +1,11 @@
 package domain.model.monster
 
+import androidx.compose.runtime.Composable
 import domain.model.Ability
 import domain.model.Level
 import domain.model.SavingThrow
 import domain.model.spell.Spell
+import org.jetbrains.compose.resources.stringResource
 
 open class SpecialAbility(
     override val name: String,
@@ -40,9 +42,11 @@ open class SpecialAbility(
         val spellByUsage: Map<String, List<SpellCasting>> = emptyMap()
     ) : SavingThrowAbility(name, desc, savingThrow) {
 
+        @Composable
         open fun buildDescription(name: String): String {
             return buildString {
-                append("The $name spell casting ability ${savingThrow.ability.fullName}")
+                val s = stringResource(savingThrow.ability.stringRes)
+                append("The $name spell casting ability $s")
                 append(" (spell save DC ${savingThrow.value})")
             }
         }
@@ -62,10 +66,12 @@ open class SpecialAbility(
         val slots: Map<Level, Int>,
     ) : InnateSpellCastingAbility(name, desc, savingThrow, components) {
 
+        @Composable
         override fun buildDescription(name: String): String {
             return buildString {
+                val s = stringResource(ability.stringRes)
                 append("The $name is an ${level.level}th-level spell caster")
-                append(" with ${ability.fullName} spell casting ability")
+                append(" with $s spell casting ability")
                 append(" (spell save DC ${dc}, +${modifier} to hit with spell attacks)")
             }
         }

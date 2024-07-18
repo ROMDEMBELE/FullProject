@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,6 +21,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -44,14 +44,15 @@ import org.dembeyo.shared.resources.species
 import org.dembeyo.shared.resources.spell_save
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
-import ui.composable.BigBold
 import ui.composable.CounterSelector
 import ui.composable.CustomAlertDialog
 import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.CustomButton
 import ui.composable.CustomTextField
 import ui.composable.DropDownTextField
+import ui.composable.MediumBoldDarkBlue
 import ui.composable.SliderSelector
+import ui.composable.TaperedRule
 import ui.composable.darkPrimary
 import ui.composable.primary
 import ui.composable.secondary
@@ -88,14 +89,19 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
 
         CustomAnimatedPlaceHolder()
 
-        AnimatedVisibility(uiState.isReady, enter = fadeIn(), exit = fadeOut()){
-
+        AnimatedVisibility(uiState.isReady, enter = fadeIn(), exit = fadeOut()) {
+            val gradient = Brush.verticalGradient(
+                colors = listOf(secondary, uiState.level.color),
+            )
             LazyColumn(
-                modifier = Modifier.background(secondary).padding(8.dp),
+                modifier = Modifier.background(gradient).padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 item {
-                    Text(stringResource(Res.string.edit_character_information), style = BigBold)
+                    Text(
+                        stringResource(Res.string.edit_character_information),
+                        style = MediumBoldDarkBlue
+                    )
 
                     Spacer(Modifier.height(8.dp))
 
@@ -150,13 +156,12 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
                         }
                     }
 
-                    Divider(
-                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp),
-                        color = darkPrimary,
-                        thickness = 3.dp
-                    )
+                    Spacer(Modifier.height(8.dp))
 
-                    Text(stringResource(Res.string.edit_character_statistics), style = BigBold)
+                    Text(
+                        stringResource(Res.string.edit_character_statistics),
+                        style = MediumBoldDarkBlue
+                    )
 
                     Spacer(Modifier.height(8.dp))
 
@@ -164,7 +169,7 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
                         stringResource(Res.string.level),
                         minimum = 1,
                         maximum = 20,
-                        value = uiState.level
+                        value = uiState.level.level
                     ) {
                         viewModel.updateLevel(it)
                     }
@@ -186,7 +191,6 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
                         value = uiState.hitPoint,
                         minimum = 1,
                         maximum = 999,
-                        step = 1,
                     ) {
                         viewModel.updateHitPoint(it)
                     }
@@ -201,28 +205,21 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
                         viewModel.updateSpellSave(it)
                     }
 
-                    Divider(
-                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp),
-                        color = darkPrimary,
-                        thickness = 3.dp
-                    )
+                    Spacer(Modifier.height(8.dp))
 
-                    Text(stringResource(Res.string.edit_character_abilities), style = BigBold)
+                    Text(stringResource(Res.string.edit_character_abilities), style = MediumBoldDarkBlue)
 
                     Spacer(Modifier.height(8.dp))
 
                     uiState.abilities.forEach { (ability, value) ->
-                        CounterSelector(ability.fullName, value = value) {
+                        val abilityName = stringResource(ability.stringRes)
+                        CounterSelector(abilityName, value = value) {
                             viewModel.updateAbilityScores(ability, it)
                         }
                         Spacer(Modifier.height(8.dp))
                     }
 
-                    Divider(
-                        modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 4.dp),
-                        color = darkPrimary,
-                        thickness = 3.dp
-                    )
+                    TaperedRule(color = darkPrimary)
 
                     CustomButton(
                         enabled = uiState.isValid,

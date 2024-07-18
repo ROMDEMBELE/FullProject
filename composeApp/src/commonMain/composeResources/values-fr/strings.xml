@@ -1,0 +1,87 @@
+<resources>
+    <string name="app_name">Mon Donjon</string>
+    <string name="menu_screen_title">Donjons &amp; Dragons</string>
+    <string name="menu_home">Accueil</string>
+    <string name="menu_spell">Sorts Magiques</string>
+    <string name="menu_monster">Monstres</string>
+    <string name="menu_magic_item">Objets Magiques</string>
+    <string name="menu_character">Personnage</string>
+    <string name="menu_equipment">Équipements</string>
+    <string name="menu_battle">Bataille</string>
+    <string name="menu_campaign">Campagne</string>
+
+    <string name="monster_not_found">Monstre %1$s introuvable</string>
+
+    <string name="monster_armor_class">Classe d'Armure</string>
+    <string name="monster_hit_points">Points de Vie</string>
+    <string name="monster_speed">Vitesse</string>
+    <string name="monster_damage_immunities">Immunités aux Dégâts</string>
+    <string name="monster_damage_vulnerabilities">Vulnérabilités aux Dégâts</string>
+    <string name="monster_condition_immunities">Immunités aux Conditions</string>
+    <string name="monster_damage_resistances">Résistances aux Dégâts</string>
+    <string name="monster_senses">Sens</string>
+    <string name="monster_languages">Langues</string>
+    <string name="monster_special_abilities">Capacités Spéciales</string>
+    <string name="monster_actions">Actions</string>
+    <string name="monster_legendary_actions">Actions Légendaires</string>
+    <string name="monster_challenge_rating">Niveau de Difficulté</string>
+    <string name="monster_proficiencies">Compétences</string>
+    <string name="monster_saving_throws">Jets de Sauvegarde</string>
+    <string name="monster_senses_dark_vision">Vision dans le Noir</string>
+    <string name="monster_senses_blind_sight">Vision Aveugle</string>
+    <string name="monster_senses_tremor_sense">Sens Sismiques</string>
+    <string name="monster_senses_passive_perception">Perception Passive</string>
+    <string name="monster_senses_true_sight">Vision Véritable</string>
+
+    <string name="spell_range">Portée</string>
+    <string name="spell_duration">Durée</string>
+    <string name="spell_materials">Matériaux</string>
+    <string name="spell_components">Composants</string>
+    <string name="spell_casting_time">Temps d'Incantation</string>
+    <string name="spell_area_of_effect">Zone d'Effet</string>
+
+    <string name="loading">Chargement...</string>
+
+    <string name="save_button">Sauvegarder</string>
+    <string name="confirm_button">OK</string>
+    <string name="cancel_button">Annuler</string>
+    <string name="delete_button">Supprimer</string>
+    <string name="edit_button">Modifier</string>
+
+    <string name="edit_campaign_screen">Modifier la Campagne</string>
+    <string name="edit_campaign_title">Titre de la Campagne :</string>
+    <string name="edit_campaign_description">Résumé de la Campagne :</string>
+    <string name="no_campaign">Aucune campagne en cours. Veuillez créer ou sélectionner une nouvelle campagne dans le menu Campagne et démarrer la campagne en appuyant sur le bouton de lecture.</string>
+    <string name="select_campaign">Veuillez sélectionner ou créer une campagne pour commencer</string>
+    <string name="create_campaign_button">Commencez une nouvelle aventure !</string>
+    <string name="campaign_characters">Personnages de la Campagne</string>
+    <string name="campaign_encounters">Rencontres Prévues</string>
+
+    <string name="edit_character_screen">Modifier le Personnage</string>
+    <string name="create_character_button">Créer un nouveau Personnage</string>
+    <string name="no_character">Aucun personnage</string>
+    <string name="edit_character_information">Informations</string>
+    <string name="player_name">Nom du Joueur</string>
+    <string name="character_name">Nom du Personnage</string>
+    <string name="character_class">Classe du Personnage</string>
+    <string name="background">Historique</string>
+    <string name="species">Espèce</string>
+    <string name="level">Niveau</string>
+    <string name="armor_class">Classe d'Armure</string>
+    <string name="hit_points">Points de Vie</string>
+    <string name="spell_save">Jet de Sauvegarde Sorts</string>
+    <string name="edit_character_abilities">Capacités</string>
+    <string name="edit_character_statistics">Statistiques</string>
+
+    <string name="delete_campaign">Supprimer la Campagne</string>
+    <string name="delete_campaign_confirm">Êtes-vous sûr de vouloir supprimer cette campagne ?</string>
+
+    <string name="error_dialog_title">Une erreur est survenue</string>
+
+    <string name="ability_cha">Charisme</string>
+    <string name="ability_con">Constitution</string>
+    <string name="ability_dex">Dextérité</string>
+    <string name="ability_int">Intelligence</string>
+    <string name="ability_str">Force</string>
+    <string name="ability_wis">Sagesse</string>
+</resources>

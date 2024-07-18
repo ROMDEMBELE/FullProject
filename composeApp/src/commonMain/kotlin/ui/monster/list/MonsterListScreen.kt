@@ -63,9 +63,9 @@ import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.CustomButton
 import ui.composable.CustomErrorDialog
 import ui.composable.CustomLazyHeaderList
-import ui.composable.MediumBold
+import ui.composable.MediumBoldSecondary
 import ui.composable.SearchMenu
-import ui.composable.SmallBold
+import ui.composable.SmallBoldSecondary
 import ui.composable.TaperedRule
 import ui.composable.bounceClick
 import ui.composable.darkBlue
@@ -111,7 +111,7 @@ class MonsterListScreen() : Screen {
                     Text("The spells database is empty...", style = BigBold)
                     Spacer(Modifier.height(8.dp))
                     CustomButton(onClick = { viewModel.refresh() }) {
-                        Text("Refresh", style = MediumBold)
+                        Text("Refresh", style = MediumBoldSecondary)
                     }
                 } else {
                     SearchMenu(
@@ -136,7 +136,7 @@ class MonsterListScreen() : Screen {
 
                                     Text(
                                         "Filter by Challenge (${uiState.monsterCount} results)",
-                                        style = SmallBold,
+                                        style = SmallBoldSecondary,
                                         color = darkPrimary,
                                     )
 
@@ -196,7 +196,7 @@ class MonsterListScreen() : Screen {
                         .border(2.dp, darkBlue, CutCornerShape(8.dp))
                         .fillMaxWidth()
                         .padding(8.dp),
-                    style = MediumBold.copy(color = secondary)
+                    style = MediumBoldSecondary
                 )
             },
             item = { monster ->

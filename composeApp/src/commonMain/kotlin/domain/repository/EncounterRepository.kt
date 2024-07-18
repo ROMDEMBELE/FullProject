@@ -61,12 +61,15 @@ class EncounterRepository(
         fighters = monsters.map { it.toDomain() } + characters.map { it.toDomain() },
     )
 
-    suspend fun getByCampaignId(campaignId: Long): Flow<List<Encounter>> =
+    fun getByCampaignId(campaignId: Long): Flow<List<Encounter>> =
         encounterDao.getEncountersByCampaignId(campaignId)
             .map { list -> list.map { it.toDomain() } }
 
-    suspend fun getById(id: Long): Flow<Encounter?> =
+    fun getById(id: Long): Flow<Encounter?> =
         encounterDao.getEncounterWithFightersAndConditions(id).map { it?.toDomain() }
+
+    fun getAll(): Flow<List<Encounter>> =
+        encounterDao.getAll().map { list -> list.map { it.toDomain() } }
 
     suspend fun insertEncounter(campaignId: Long, title: String, description: String) {
         encounterDao.insertEncounter(
@@ -144,6 +147,10 @@ class EncounterRepository(
         } else {
             throw IllegalStateException("Monster details is null")
         }
+    }
+
+    suspend fun delete(id: Long) {
+        encounterDao.deleteEncounterById(id)
     }
 
     suspend fun deleteCharacterFighter(id: Long): Int = characterFighterDao.deleteFighter(id)

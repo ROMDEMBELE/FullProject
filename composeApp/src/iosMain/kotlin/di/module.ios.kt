@@ -12,7 +12,7 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 import ui.campaign.edit.EditCampaignViewModel
-import ui.campaign.main.CampaignMainViewModel
+import ui.campaign.main.CampaignViewModel
 import ui.character.CharacterViewModel
 import ui.character.edit.EditCharacterViewModel
 import ui.magicItem.details.MagicItemDetailsViewModel
@@ -34,13 +34,12 @@ actual fun platformModule(): Module = module {
     factoryOf(::MonsterListViewModel)
     factoryOf(::MonsterDetailsViewModel)
     factoryOf(::EditCampaignViewModel)
-    factoryOf(::CampaignMainViewModel)
+    factoryOf(::CampaignViewModel)
     factoryOf(::MagicItemListViewModel)
     factoryOf(::MagicItemDetailsViewModel)
 
     single { SettingsStorage(IosContext) }
 
-    single<EncounterDatabase> { getDatabaseBuilder(IosContext) }
     single { get<EncounterDatabase>().encounterDao() }
     single { get<EncounterDatabase>().characterFighterDao() }
     single { get<EncounterDatabase>().monsterFighterDao() }

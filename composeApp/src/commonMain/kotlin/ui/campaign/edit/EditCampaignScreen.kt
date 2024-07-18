@@ -2,8 +2,8 @@ package ui.campaign.edit
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,17 +34,17 @@ import org.dembeyo.shared.resources.delete_button
 import org.dembeyo.shared.resources.delete_campaign
 import org.dembeyo.shared.resources.delete_campaign_confirm
 import org.dembeyo.shared.resources.edit_campaign_description
-import org.dembeyo.shared.resources.edit_campaign_screen
 import org.dembeyo.shared.resources.edit_campaign_title
 import org.dembeyo.shared.resources.save_button
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import ui.composable.CustomAlertDialog
 import ui.composable.CustomButton
+import ui.composable.MediumBoldSecondary
 import ui.composable.darkBlue
 import ui.composable.darkPrimary
 import ui.composable.primary
-import ui.composable.screenTitle
+import ui.composable.roundCornerShape
 import ui.composable.secondary
 
 class EditCampaignScreen(val campaign: Campaign? = null) : Screen {
@@ -87,21 +87,18 @@ class EditCampaignScreen(val campaign: Campaign? = null) : Screen {
 
 
         Column(
-            modifier = Modifier.fillMaxSize().background(darkBlue).padding(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.fillMaxSize().background(darkBlue).padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceEvenly
         ) {
-            Text(
-                text = stringResource(Res.string.edit_campaign_screen),
-                modifier = Modifier.fillMaxWidth(),
-                style = screenTitle(secondary)
-            )
-
-            Spacer(Modifier.height(12.dp))
+            Text(stringResource(Res.string.edit_campaign_title), style = MediumBoldSecondary)
 
             TextField(
                 value = uiState.name,
+                shape = roundCornerShape,
+                singleLine = true,
                 onValueChange = { viewModel.updateName(it) },
-                placeholder = { Text(stringResource(Res.string.edit_campaign_title)) },
+                placeholder = { Text("ex : Le Murmure de la Forêt") },
                 modifier = Modifier.fillMaxWidth(),
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = secondary,
@@ -111,13 +108,14 @@ class EditCampaignScreen(val campaign: Campaign? = null) : Screen {
                 )
             )
 
-            Spacer(Modifier.height(8.dp))
+            Text(stringResource(Res.string.edit_campaign_description), style = MediumBoldSecondary)
 
             TextField(
                 value = uiState.description,
+                shape = roundCornerShape,
                 onValueChange = { viewModel.updateDescription(it) },
-                placeholder = { Text(stringResource(Res.string.edit_campaign_description)) },
-                modifier = Modifier.fillMaxWidth().weight(1f),
+                placeholder = { Text("Une ancienne forêt s’est éveillée avec des esprits malveillants et des murmures étranges. Les aventuriers doivent découvrir l’histoire sombre qui a réveillé ces esprits et affronter le cœur maléfique de la forêt pour restaurer la paix dans la région.") },
+                modifier = Modifier.height(400.dp).fillMaxWidth(),
                 singleLine = false,
                 maxLines = 30,
                 colors = TextFieldDefaults.textFieldColors(
@@ -127,8 +125,6 @@ class EditCampaignScreen(val campaign: Campaign? = null) : Screen {
                     textColor = darkBlue
                 )
             )
-
-            Spacer(Modifier.height(8.dp))
 
             CustomButton(
                 enabled = uiState.isValid,
@@ -142,15 +138,17 @@ class EditCampaignScreen(val campaign: Campaign? = null) : Screen {
             ) {
                 Text(stringResource(Res.string.save_button))
             }
-            CustomButton(
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = primary,
-                    contentColor = darkPrimary
-                ),
-                onClick = { deleteDialogDisplay = true },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(Res.string.delete_button))
+            if (campaign != null) {
+                CustomButton(
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = primary,
+                        contentColor = darkPrimary
+                    ),
+                    onClick = { deleteDialogDisplay = true },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(stringResource(Res.string.delete_button))
+                }
             }
 
         }

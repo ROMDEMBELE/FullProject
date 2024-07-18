@@ -88,8 +88,8 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import ui.composable.CustomAnimatedPlaceHolder
-import ui.composable.MediumBold
-import ui.composable.SmallBold
+import ui.composable.MediumBoldSecondary
+import ui.composable.SmallBoldSecondary
 import ui.composable.TaperedRule
 import ui.composable.darkBlue
 import ui.composable.darkGray
@@ -363,7 +363,7 @@ class MonsterDetailScreen(private val index: String) : Screen {
         ) {
             Text(
                 text = "$abilityName $abilityValue",
-                style = SmallBold,
+                style = SmallBoldSecondary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().padding(2.dp)
             )
@@ -375,7 +375,7 @@ class MonsterDetailScreen(private val index: String) : Screen {
                     .background(abilityValue.getAbilityBonusColor())
                     .padding(2.dp),
                 textAlign = TextAlign.Center,
-                style = MediumBold.copy(color = darkPrimary)
+                style = MediumBoldSecondary.copy(color = darkPrimary)
             )
         }
     }
@@ -423,7 +423,7 @@ class MonsterDetailScreen(private val index: String) : Screen {
         ) {
             Text(
                 text = ability.name,
-                style = SmallBold.copy(color = secondary),
+                style = SmallBoldSecondary.copy(color = secondary),
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(darkPrimary)
@@ -451,7 +451,7 @@ class MonsterDetailScreen(private val index: String) : Screen {
         ) {
             Text(
                 text = ability.name,
-                style = SmallBold.copy(color = secondary),
+                style = SmallBoldSecondary.copy(color = secondary),
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(darkPrimary)
@@ -512,7 +512,7 @@ class MonsterDetailScreen(private val index: String) : Screen {
         ) {
             Text(
                 text = title,
-                style = SmallBold,
+                style = SmallBoldSecondary,
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(darkBlue)
@@ -538,7 +538,7 @@ class MonsterDetailScreen(private val index: String) : Screen {
                     }
                     Text(
                         text = "${action.savingThrow} of $damageText",
-                        style = SmallBold,
+                        style = SmallBoldSecondary,
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(primary)
@@ -557,7 +557,7 @@ class MonsterDetailScreen(private val index: String) : Screen {
                     }
                     Text(
                         text = "+${action.attackBonus} $damageText",
-                        style = SmallBold,
+                        style = SmallBoldSecondary,
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(darkGray)
@@ -588,7 +588,7 @@ class MonsterDetailScreen(private val index: String) : Screen {
             ) {
                 Text(
                     text = ability.name + "(click for details)",
-                    style = SmallBold.copy(color = secondary),
+                    style = SmallBoldSecondary.copy(color = secondary),
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(darkPrimary)

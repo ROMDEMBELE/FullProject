@@ -64,7 +64,8 @@ import org.koin.compose.koinInject
 import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.CustomErrorDialog
 import ui.composable.CustomLazyHeaderList
-import ui.composable.MediumBold
+import ui.composable.MediumBoldDarkBlue
+import ui.composable.MediumBoldSecondary
 import ui.composable.SearchMenu
 import ui.composable.TaperedRule
 import ui.composable.bounceClick
@@ -134,8 +135,7 @@ class MagicItemListScreen() : Screen {
                                     Text(
                                         text = rarity.text,
                                         modifier = Modifier.weight(1f),
-                                        style = MediumBold.copy(
-                                            color = darkBlue,
+                                        style = MediumBoldDarkBlue.copy(
                                             textAlign = TextAlign.Start
                                         )
                                     )
@@ -175,7 +175,7 @@ class MagicItemListScreen() : Screen {
                         .border(2.dp, darkBlue, CutCornerShape(8.dp))
                         .fillMaxWidth()
                         .padding(8.dp),
-                    style = MediumBold.copy(color = secondary)
+                    style = MediumBoldSecondary
                 )
             },
             item = { magicItem ->

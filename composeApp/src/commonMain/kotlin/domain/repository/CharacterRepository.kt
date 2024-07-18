@@ -29,14 +29,18 @@ class CharacterRepository(private val database: SqlDatabase) {
         speciesId = species_id
     )
 
-    fun getCharacterById(id: Long): Flow<Character?> =
+    fun getById(id: Long): Flow<Character?> =
         database.getCharacterById(id).map { it?.toDomain() }
+
+    fun getByCampaignId(campaignId: Long): Flow<List<Character>> =
+        database.getAllCharacter()
+            .map { list -> list.map { it.toDomain() }.filter { it.campaignId == campaignId } }
 
     fun deleteCharacter(id: Long) {
         database.deleteCharacterById(id)
     }
 
-    fun getListOfCharacters(): Flow<List<Character>> = database.getAllCharacter().map {
+    fun getAll(): Flow<List<Character>> = database.getAllCharacter().map {
         it.map { dbo -> dbo.toDomain() }
     }
 

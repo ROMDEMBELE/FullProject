@@ -21,7 +21,7 @@ interface EncounterDao {
 
     @Transaction
     @Query("SELECT * FROM encounters")
-    fun getAll(): Flow<List<EncounterEntity>>
+    fun getAll(): Flow<List<EncounterWithFightersAndConditions>>
 
     @Transaction
     @Query("SELECT * FROM encounters WHERE id = :id")
@@ -30,4 +30,7 @@ interface EncounterDao {
     @Transaction
     @Query("SELECT * FROM encounters WHERE campaignId = :campaignId")
     fun getEncountersByCampaignId(campaignId: Long): Flow<List<EncounterWithFightersAndConditions>>
+
+    @Query("DELETE FROM encounters WHERE id = :id")
+    suspend fun deleteEncounterById(id: Long)
 }

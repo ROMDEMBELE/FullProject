@@ -1,0 +1,28 @@
+CREATE TABLE SessionDbo (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date TEXT NOT NULL,
+    campaign_id INTEGER NOT NULL,
+    FOREIGN KEY (campaign_id) REFERENCES CampaingnDbo(id)
+);
+
+CREATE INDEX session_id ON SessionDbo(id);
+
+selectAll:
+SELECT * FROM SessionDbo;
+
+selectById:
+SELECT * FROM SessionDbo WHERE id = ?;
+
+selectByCampaignId:
+SELECT * FROM SessionDbo WHERE campaign_id = ?;
+
+insertOrUpdate:
+INSERT OR REPLACE INTO SessionDbo (
+    id, date, campaign_id
+) VALUES (?, ?, ?);
+
+deleteById:
+DELETE FROM SessionDbo WHERE id = ?;
+
+lastInsertRowId:
+SELECT last_insert_rowid();

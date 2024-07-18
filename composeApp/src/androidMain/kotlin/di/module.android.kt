@@ -8,7 +8,7 @@ import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import ui.campaign.edit.EditCampaignViewModel
-import ui.campaign.main.CampaignMainViewModel
+import ui.campaign.main.CampaignViewModel
 import ui.character.CharacterViewModel
 import ui.character.edit.EditCharacterViewModel
 import ui.encounter.EncounterListViewModel
@@ -27,14 +27,11 @@ actual fun platformModule(): Module = module {
     viewModelOf(::MonsterDetailsViewModel)
     viewModelOf(::CharacterViewModel)
     viewModelOf(::EditCampaignViewModel)
-    viewModelOf(::CampaignMainViewModel)
+    viewModelOf(::CampaignViewModel)
     viewModelOf(::MagicItemListViewModel)
     viewModelOf(::MagicItemDetailsViewModel)
     viewModelOf(::EncounterListViewModel)
 
     single { DriverFactory(androidContext()) }
     single { SettingsStorage(androidContext()) }
-    single { get<EncounterDatabase>().encounterDao() }
-    single { get<EncounterDatabase>().characterFighterDao() }
-    single { get<EncounterDatabase>().monsterFighterDao() }
 }

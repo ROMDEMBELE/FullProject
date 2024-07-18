@@ -28,10 +28,8 @@ class EditCampaignViewModel(
     }
 
     suspend fun save() {
-        val id = _uiState.value.id
-        val name = _uiState.value.name.text
-        val description = _uiState.value.description.text
-        saveCampaign(id, name, description, true)
+        val (id, name, description) = _uiState.value
+        saveCampaign(id, name.text, description.text, false)
     }
 
     suspend fun deleteCampaign(force: Boolean): Boolean {

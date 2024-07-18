@@ -85,7 +85,9 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.CustomErrorDialog
-import ui.composable.MediumBold
+import ui.composable.MediumBoldSecondary
+import ui.composable.SmallBoldDarkBlue
+import ui.composable.SmallBoldSecondary
 import ui.composable.TaperedRule
 import ui.composable.darkBlue
 import ui.composable.generateIcon
@@ -302,7 +304,7 @@ class SpellDetailsScreen(private val index: String) : Screen {
         ) {
             Text(
                 text = "Lv${level.level}",
-                style = MediumBold.copy(color = darkBlue, fontSize = 14.sp),
+                style = SmallBoldDarkBlue,
                 modifier = Modifier.clip(RoundedCornerShape(8.dp))
                     .background(level.color)
                     .padding(8.dp)
@@ -313,7 +315,7 @@ class SpellDetailsScreen(private val index: String) : Screen {
 
             Text(
                 text = dice,
-                style = MediumBold.copy(color = darkBlue, fontSize = 14.sp),
+                style = SmallBoldDarkBlue.copy(color = darkBlue, fontSize = 14.sp),
                 modifier = Modifier.clip(RoundedCornerShape(8.dp))
                     .background(secondary)
                     .padding(8.dp)

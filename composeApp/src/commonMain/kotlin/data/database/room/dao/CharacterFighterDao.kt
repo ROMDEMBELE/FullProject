@@ -17,4 +17,10 @@ interface CharacterFighterDao {
 
     @Query("DELETE FROM character_fighters WHERE id = :id")
     suspend fun deleteFighter(id: Long): Int
+
+    @Query("SELECT * FROM character_fighters WHERE encounterId = :encounterId")
+    suspend fun getFightersByEncounterId(encounterId: Long): List<CharacterFighterEntity>
+
+    @Query("DELETE FROM character_fighters WHERE encounterId = :encounterId")
+    suspend fun deleteFightersByEncounterId(encounterId: Long): Int
 }

@@ -2,6 +2,7 @@ package di
 
 import data.api.Dnd5Api
 import data.database.realm.RealmDataBase
+import data.database.room.EncounterDatabase
 import data.database.room.getDatabase
 import data.database.room.getDatabaseBuilder
 import data.database.sqlDelight.SqlDatabase
@@ -15,6 +16,7 @@ import domain.repository.SettingsRepository
 import domain.repository.SpeciesRepository
 import domain.repository.SpellRepository
 import domain.usecase.campaign.DeleteCampaignUseCase
+import domain.usecase.campaign.GetCampaignsUseCase
 import domain.usecase.campaign.GetMainCampaignUseCase
 import domain.usecase.campaign.SaveCampaignUseCase
 import domain.usecase.character.DeleteCharacterUseCase
@@ -25,6 +27,7 @@ import domain.usecase.common.RemoveFromFavoriteUseCase
 import domain.usecase.encounter.AddCharacterToEncounterUseCase
 import domain.usecase.encounter.AddMonsterToEncounterUseCase
 import domain.usecase.encounter.CreateEncounterUseCase
+import domain.usecase.encounter.DeleteEncounterUseCase
 import domain.usecase.encounter.GetMainCampaignEncounterUseCase
 import domain.usecase.encounter.RemoveCharacterFromEncounterUseCase
 import domain.usecase.encounter.RemoveMonsterFromEncounterUseCase
@@ -45,6 +48,9 @@ val dataModule = module {
         val builder = getDatabaseBuilder(get())
         getDatabase(builder)
     }
+    single { get<EncounterDatabase>().encounterDao() }
+    single { get<EncounterDatabase>().characterFighterDao() }
+    single { get<EncounterDatabase>().monsterFighterDao() }
 }
 
 val repositoryModule = module {
@@ -82,6 +88,8 @@ val repositoryModule = module {
     factoryOf(::CreateEncounterUseCase)
     factoryOf(::UpdateEncounterUseCase)
     factoryOf(::GetMainCampaignEncounterUseCase)
+    factoryOf(::GetCampaignsUseCase)
+    factoryOf(::DeleteEncounterUseCase)
 }
 
 expect fun platformModule(): Module
