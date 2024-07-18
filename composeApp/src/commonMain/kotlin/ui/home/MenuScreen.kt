@@ -75,7 +75,7 @@ import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import ui.battle.BattleScreen
+import ui.encounter.EncounterListScreen
 import ui.character.CharacterListScreen
 import ui.composable.bounceClick
 import ui.composable.darkBlue
@@ -109,7 +109,7 @@ class MenuScreen : Screen {
                         delay(200)
                         when (menu) {
                             MenuItem.MAGIC_SPELLS -> navigator.push(SpellListScreen())
-                            MenuItem.BATTLE -> navigator.push(BattleScreen())
+                            MenuItem.BATTLE -> navigator.push(EncounterListScreen())
                             MenuItem.MONSTERS -> navigator.push(MonsterListScreen())
                             MenuItem.MAGIC_ITEMS -> navigator.push(MagicItemListScreen())
                             MenuItem.CHARACTERS -> navigator.push(CharacterListScreen())

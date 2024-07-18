@@ -15,6 +15,6 @@ interface CharacterFighterDao {
     @Update
     suspend fun updateFighter(fighter: CharacterFighterEntity): Int
 
-    @Query("DELETE FROM fighters WHERE id = :id")
+    @Query("DELETE FROM character_fighters WHERE id = :id")
     suspend fun deleteFighter(id: Long): Int
 }

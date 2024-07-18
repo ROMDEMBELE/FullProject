@@ -160,115 +160,116 @@ class CharacterListScreen() : Screen {
             }
         }
     }
-}
 
-@Composable
-fun CharacterItem(character: Character, onEdit: () -> Unit) {
-    var moreExpanded by rememberSaveable { mutableStateOf(false) }
-    Surface(
-        shape = roundCornerShape,
-        color = darkPrimary,
-        modifier = Modifier.padding(bottom = 8.dp).clickable {
-            moreExpanded = !moreExpanded
-        }
-    ) {
-        Column(Modifier.padding(8.dp)) {
-            ConstraintLayout(Modifier.fillMaxWidth().height(60.dp)) {
-                val (picture, characterName, playerName, editButton, moreButton) = createRefs()
 
-                RoundIconText(
-                    drawable = Res.drawable.knight,
-                    text = "Lv${character.level.level}",
-                    modifier = Modifier
-                        .constrainAs(picture) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                        },
-                )
+    @Composable
+    fun CharacterItem(character: Character, onEdit: () -> Unit) {
+        var moreExpanded by rememberSaveable { mutableStateOf(false) }
+        Surface(
+            shape = roundCornerShape,
+            color = darkPrimary,
+            modifier = Modifier.padding(bottom = 8.dp).clickable {
+                moreExpanded = !moreExpanded
+            }
+        ) {
+            Column(Modifier.padding(8.dp)) {
+                ConstraintLayout(Modifier.fillMaxWidth().height(60.dp)) {
+                    val (picture, characterName, playerName, editButton, moreButton) = createRefs()
 
-                Text(
-                    text = character.fullName,
-                    color = secondary,
-                    style = MediumBold,
-                    modifier = Modifier
-                        .constrainAs(characterName) {
-                            top.linkTo(picture.top)
-                            start.linkTo(picture.end, margin = 6.dp)
-                        }
-                )
-                Text(
-                    text = "(${character.player})",
-                    color = secondary,
-                    style = SmallBold.copy(fontStyle = FontStyle.Italic),
-                    modifier = Modifier
-                        .alpha(0.5f)
-                        .constrainAs(playerName) {
-                            top.linkTo(characterName.bottom, margin = 2.dp)
-                            start.linkTo(characterName.start)
-                        }
-                )
+                    RoundIconText(
+                        drawable = Res.drawable.knight,
+                        text = "Lv${character.level.level}",
+                        modifier = Modifier
+                            .constrainAs(picture) {
+                                top.linkTo(parent.top)
+                                start.linkTo(parent.start)
+                            },
+                    )
 
-                IconButton(
-                    modifier = Modifier.size(15.dp)
-                        .constrainAs(editButton) {
-                            top.linkTo(parent.top)
-                            end.linkTo(parent.end)
-                        }
-                        .aspectRatio(1f),
-                    onClick = onEdit)
-                {
-                    Icon(Icons.Filled.Edit, null, tint = secondary)
-                }
+                    Text(
+                        text = character.fullName,
+                        color = secondary,
+                        style = MediumBold,
+                        modifier = Modifier
+                            .constrainAs(characterName) {
+                                top.linkTo(picture.top)
+                                start.linkTo(picture.end, margin = 6.dp)
+                            }
+                    )
+                    Text(
+                        text = "(${character.player})",
+                        color = secondary,
+                        style = SmallBold.copy(fontStyle = FontStyle.Italic),
+                        modifier = Modifier
+                            .alpha(0.5f)
+                            .constrainAs(playerName) {
+                                top.linkTo(characterName.bottom, margin = 2.dp)
+                                start.linkTo(characterName.start)
+                            }
+                    )
 
-                IconButton(
-                    modifier = Modifier.size(18.dp)
-                        .constrainAs(moreButton) {
-                            bottom.linkTo(parent.bottom)
-                            end.linkTo(parent.end)
-                            start.linkTo(parent.start)
-                        }
-                        .aspectRatio(1f),
-                    onClick = { moreExpanded = !moreExpanded })
-                {
-                    Crossfade(moreExpanded) { extended ->
-                        if (extended) {
-                            Icon(
-                                Icons.Filled.KeyboardArrowUp, null,
-                                tint = secondary,
-                            )
-                        } else {
-                            Icon(
-                                Icons.Filled.KeyboardArrowDown, null,
-                                tint = secondary
-                            )
+                    IconButton(
+                        modifier = Modifier.size(15.dp)
+                            .constrainAs(editButton) {
+                                top.linkTo(parent.top)
+                                end.linkTo(parent.end)
+                            }
+                            .aspectRatio(1f),
+                        onClick = onEdit)
+                    {
+                        Icon(Icons.Filled.Edit, null, tint = secondary)
+                    }
+
+                    IconButton(
+                        modifier = Modifier.size(18.dp)
+                            .constrainAs(moreButton) {
+                                bottom.linkTo(parent.bottom)
+                                end.linkTo(parent.end)
+                                start.linkTo(parent.start)
+                            }
+                            .aspectRatio(1f),
+                        onClick = { moreExpanded = !moreExpanded })
+                    {
+                        Crossfade(moreExpanded) { extended ->
+                            if (extended) {
+                                Icon(
+                                    Icons.Filled.KeyboardArrowUp, null,
+                                    tint = secondary,
+                                )
+                            } else {
+                                Icon(
+                                    Icons.Filled.KeyboardArrowDown, null,
+                                    tint = secondary
+                                )
+                            }
                         }
                     }
                 }
-            }
 
-            AnimatedVisibility(moreExpanded) {
-                Row(
-                    Modifier.fillMaxWidth().height(60.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    RoundIconText(
-                        drawable = Res.drawable.shield,
-                        text = "${character.armorClass}",
-                        modifier = Modifier.padding(8.dp)
-                    )
+                AnimatedVisibility(moreExpanded) {
+                    Row(
+                        Modifier.fillMaxWidth().height(60.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        RoundIconText(
+                            drawable = Res.drawable.shield,
+                            text = "${character.armorClass}",
+                            modifier = Modifier.padding(8.dp)
+                        )
 
-                    RoundIconText(
-                        drawable = Res.drawable.life_bar,
-                        text = "${character.hitPoint}",
-                        modifier = Modifier.padding(8.dp)
-                    )
+                        RoundIconText(
+                            drawable = Res.drawable.life_bar,
+                            text = "${character.hitPoint}",
+                            modifier = Modifier.padding(8.dp)
+                        )
 
-                    RoundIconText(
-                        drawable = Res.drawable.magic,
-                        text = "${character.spellSavingThrow}",
-                        modifier = Modifier.padding(8.dp)
-                    )
+                        RoundIconText(
+                            drawable = Res.drawable.magic,
+                            text = "${character.spellSavingThrow}",
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
                 }
             }
         }

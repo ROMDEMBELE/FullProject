@@ -26,7 +26,7 @@ class UpdateEncounterUseCase(
             description = description,
             isFinished = isFinished,
             id = id,
-            campaignId = entity.encounter.campaignId,
+            campaignId = entity.campaignId,
             turn = turn
         )
 

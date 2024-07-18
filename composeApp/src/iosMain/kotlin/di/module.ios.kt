@@ -1,9 +1,9 @@
 package di
 
 import IosContext
-import data.database.DriverFactory
 import data.database.room.EncounterDatabase
-import data.database.room.createDatabase
+import data.database.room.getDatabaseBuilder
+import data.database.sqlDelight.DriverFactory
 import data.preference.SettingsStorage
 import io.ktor.client.engine.darwin.Darwin
 import org.koin.core.component.KoinComponent
@@ -40,7 +40,7 @@ actual fun platformModule(): Module = module {
 
     single { SettingsStorage(IosContext) }
 
-    single<EncounterDatabase> { createDatabase(IosContext).build() }
+    single<EncounterDatabase> { getDatabaseBuilder(IosContext) }
     single { get<EncounterDatabase>().encounterDao() }
     single { get<EncounterDatabase>().characterFighterDao() }
     single { get<EncounterDatabase>().monsterFighterDao() }

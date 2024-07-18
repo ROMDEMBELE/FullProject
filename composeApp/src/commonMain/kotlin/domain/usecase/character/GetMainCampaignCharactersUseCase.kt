@@ -1,4 +1,4 @@
-package domain.usecase.campaign
+package domain.usecase.character
 
 import domain.model.character.Character
 import domain.repository.CharacterRepository

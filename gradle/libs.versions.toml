@@ -11,19 +11,19 @@ koinAndroid = "3.5.6"
 koinCompose = "1.1.5"
 kotlin = "2.0.0"
 kotlinxSerializationJson = "1.7.0-RC"
-ktor = "2.3.11"
-coroutines = "1.8.0"
+ktor = "2.3.12"
+coroutines = "1.8.1"
 kvault = "1.12.0"
 libraryBase = "2.0.0"
-lifecycleViewmodel = "2.8.2"
+lifecycleViewmodel = "2.8.3"
 logging = "1.4.2"
 sqlDelight = "2.0.2"
-statelyCommon = "2.0.5"
+statelyCommon = "2.0.6"
 voyager = "1.1.0-beta02"
 realm = "2.0.0"
-ksp = "1.9.23-1.0.19"
+ksp = "2.0.0-1.0.21"
 sqlite = "2.5.0-SNAPSHOT"
-androidx-room = "2.7.0-alpha01"
+room = "2.7.0-alpha05"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
@@ -32,28 +32,35 @@ androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmode
 constraintlayout-compose-multiplatform = { module = "tech.annexflow.compose:constraintlayout-compose-multiplatform", version.ref = "constraintlayoutComposeMultiplatform" }
 coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
 kamel-image = { module = "media.kamel:kamel-image", version.ref = "kamelImage" }
+
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroid" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koinCompose" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinAndroid" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
-kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+
 kvault = { module = "com.liftric:kvault", version.ref = "kvault" }
 library-base = { module = "io.realm.kotlin:library-base", version.ref = "libraryBase" }
 logging = { module = "org.lighthousegames:logging", version.ref = "logging" }
 native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" }
 runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqlDelight" }
 stately-common = { module = "co.touchlab:stately-common", version.ref = "statelyCommon" }
+
 voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
-androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
-androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
+
+room-runtime-android = { group = "androidx.room", name = "room-runtime-android", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 
 [plugins]
@@ -65,4 +72,4 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
 realm = { id = "io.realm.kotlin", version.ref = "realm" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-room = { id = "androidx.room", version.ref = "androidx-room" }
+room = { id = "androidx.room", version.ref = "room" }

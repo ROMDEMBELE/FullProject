@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import ui.battle.BattleScreen
+import ui.encounter.EncounterListScreen
 import ui.character.CharacterListScreen
 import ui.composable.darkBlue
 import ui.home.MenuScreen.MenuItem.BATTLE
@@ -39,7 +39,7 @@ fun MenuDrawer(navigator: Navigator, onDismiss: () -> Unit) {
                     MONSTERS -> navigator.replaceAll(listOf(MenuScreen(), MonsterListScreen()))
                     MAGIC_ITEMS -> navigator.replaceAll(listOf(MenuScreen(), MagicItemListScreen()))
                     CHARACTERS -> navigator.replaceAll(listOf(MenuScreen(), CharacterListScreen()))
-                    BATTLE -> navigator.replaceAll(listOf(MenuScreen(), BattleScreen()))
+                    BATTLE -> navigator.replaceAll(listOf(MenuScreen(), EncounterListScreen()))
                     EQUIPMENTS -> {}
                 }
                 onDismiss()

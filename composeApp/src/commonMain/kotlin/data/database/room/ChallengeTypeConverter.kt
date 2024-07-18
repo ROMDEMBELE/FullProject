@@ -1,10 +1,8 @@
 package data.database.room
 
-import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
 import domain.model.monster.Challenge
 
-@ProvidedTypeConverter
 class ChallengeTypeConverter {
 
     @TypeConverter

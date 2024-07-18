@@ -4,7 +4,6 @@ import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
 import domain.model.encounter.Condition
 
-@ProvidedTypeConverter
 class ConditionsTypeConverter {
 
     @TypeConverter

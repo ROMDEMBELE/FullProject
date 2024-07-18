@@ -1,8 +1,8 @@
 package ui.character
 
 import androidx.lifecycle.ViewModel
-import domain.usecase.campaign.GetMainCampaignCharactersUseCase
 import domain.usecase.campaign.GetMainCampaignUseCase
+import domain.usecase.character.GetMainCampaignCharactersUseCase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

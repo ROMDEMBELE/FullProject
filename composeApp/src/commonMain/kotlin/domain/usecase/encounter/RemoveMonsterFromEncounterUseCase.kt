@@ -1,5 +1,6 @@
 package domain.usecase.encounter
 
+import domain.model.encounter.MonsterFighter
 import domain.repository.EncounterRepository
 import kotlinx.coroutines.flow.firstOrNull
 
@@ -10,7 +11,9 @@ class RemoveMonsterFromEncounterUseCase(
         val encounter = encounterRepository.getById(encounterId).firstOrNull()
             ?: error("Encounter id: $encounterId not found")
 
-        val entity = encounter.monsters.firstOrNull { it.monsterIndex == index }
+        val entity = encounter.fighters
+            .filterIsInstance<MonsterFighter>()
+            .firstOrNull { it.index == index }
 
         if (entity == null) {
             throw IllegalArgumentException("Monster index $index not part of the encounter")

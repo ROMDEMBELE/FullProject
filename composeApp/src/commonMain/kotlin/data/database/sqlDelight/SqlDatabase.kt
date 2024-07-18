@@ -1,4 +1,4 @@
-package data.database
+package data.database.sqlDelight
 
 import app.cash.sqldelight.ColumnAdapter
 import app.cash.sqldelight.EnumColumnAdapter

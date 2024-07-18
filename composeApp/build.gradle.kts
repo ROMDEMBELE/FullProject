@@ -1,35 +1,38 @@
+
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.realm)
-    alias(libs.plugins.sqlDelight)
+
     kotlin("plugin.serialization")
+
+    // Realm
+    alias(libs.plugins.realm)
+
+    // SqlDelight
+    alias(libs.plugins.sqlDelight)
+
+    // Room
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
 }
 
-sqldelight {
-    databases {
-        create("MySqlDelightDatabase") {
-            packageName = "org.dembeyo.data"
-        }
-    }
-}
-
-room {
-    schemaDirectory("$projectDir/schemas")
-}
-
 kotlin {
+
+    sourceSets.commonMain {
+        kotlin.srcDir("build/generated/ksp/metadata")
+    }
+
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
+            freeCompilerArgs.add("-Xexpect-actual-classes")
         }
     }
 
@@ -41,10 +44,12 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            linkerOpts.add("-lsqlite3")
         }
     }
 
     sourceSets {
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation("androidx.activity:activity-compose:1.9.0") {
@@ -53,43 +58,70 @@ kotlin {
                     module = "lifecycle-viewmodel-ktx"
                 ) // Here we are exlcuding the ViewModel dependency
             }
+            // Ktor Client
             implementation(libs.ktor.client.okhttp)
+
+            // Koin
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
+
             implementation(libs.android.driver)
+            // Room
+            implementation(libs.room.runtime.android)
         }
+
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
             implementation(libs.stately.common)
             implementation(libs.native.driver)
         }
         commonMain.dependencies {
+            // KVault
             implementation(libs.kvault)
-            implementation (libs.accompanist.permissions)
+
+            // Permissions
+            implementation(libs.accompanist.permissions)
+
+            // Image (Kamel)
             implementation(libs.kamel.image)
+
+            // Compose
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation(libs.koin.core)
-            implementation(libs.koin.compose)
+
+            // Ktor
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
+
+            // Coroutines
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.coroutines.extensions)
+
+            // Voyager
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.transitions)
             implementation(libs.voyager.koin)
+
+            // Koin
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+
             implementation(libs.library.base)
             implementation(libs.runtime)
-            implementation(libs.coroutines.extensions)
+
             implementation(libs.constraintlayout.compose.multiplatform)
+
             api(libs.logging)
-            implementation(libs.androidx.room.runtime)
+
+            // Room
+            implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
         }
     }
@@ -130,10 +162,34 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     buildFeatures {
         compose = true
     }
     dependencies {
         debugImplementation(compose.uiTooling)
+    }
+}
+
+sqldelight {
+    databases {
+        create("MySqlDelightDatabase") {
+            packageName = "org.dembeyo.data"
+        }
+    }
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
+dependencies {
+    // Room
+    add("kspCommonMainMetadata", libs.room.compiler)
+}
+
+tasks.withType<KotlinCompilationTask<*>>().configureEach {
+    if (name != "kspCommonMainKotlinMetadata" ) {
+        dependsOn("kspCommonMainKotlinMetadata")
     }
 }

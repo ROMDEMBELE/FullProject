@@ -1,8 +1,7 @@
 package di
 
-import data.database.DriverFactory
 import data.database.room.EncounterDatabase
-import data.database.room.createDatabase
+import data.database.sqlDelight.DriverFactory
 import data.preference.SettingsStorage
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -12,6 +11,7 @@ import ui.campaign.edit.EditCampaignViewModel
 import ui.campaign.main.CampaignMainViewModel
 import ui.character.CharacterViewModel
 import ui.character.edit.EditCharacterViewModel
+import ui.encounter.EncounterListViewModel
 import ui.magicItem.details.MagicItemDetailsViewModel
 import ui.magicItem.list.MagicItemListViewModel
 import ui.monster.details.MonsterDetailsViewModel
@@ -30,10 +30,10 @@ actual fun platformModule(): Module = module {
     viewModelOf(::CampaignMainViewModel)
     viewModelOf(::MagicItemListViewModel)
     viewModelOf(::MagicItemDetailsViewModel)
+    viewModelOf(::EncounterListViewModel)
 
     single { DriverFactory(androidContext()) }
     single { SettingsStorage(androidContext()) }
-    single<EncounterDatabase> { createDatabase(androidContext()).build() }
     single { get<EncounterDatabase>().encounterDao() }
     single { get<EncounterDatabase>().characterFighterDao() }
     single { get<EncounterDatabase>().monsterFighterDao() }

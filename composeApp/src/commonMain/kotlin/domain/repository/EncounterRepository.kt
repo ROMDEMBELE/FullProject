@@ -5,9 +5,15 @@ import data.database.room.dao.EncounterDao
 import data.database.room.dao.MonsterFighterDao
 import data.database.room.entity.CharacterFighterEntity
 import data.database.room.entity.EncounterEntity
+import data.database.room.entity.EncounterWithFightersAndConditions
 import data.database.room.entity.MonsterFighterEntity
 import domain.model.character.Character
+import domain.model.encounter.CharacterFighter
+import domain.model.encounter.Encounter
+import domain.model.encounter.MonsterFighter
 import domain.model.monster.Monster
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class EncounterRepository(
     private val encounterDao: EncounterDao,
@@ -15,7 +21,52 @@ class EncounterRepository(
     private val monsterFighterDao: MonsterFighterDao,
 ) {
 
-    suspend fun getById(id: Long) = encounterDao.getEncounterWithFightersAndConditions(id)
+    private fun CharacterFighterEntity.toDomain() = CharacterFighter(
+        id = id,
+        characterId = characterId,
+        name = name,
+        player = player,
+        initiative = initiative,
+        ca = ca,
+        maxHitPoint = maxHitPoint,
+        level = level,
+        conditions = conditions,
+        armorClass = ca,
+        spellSavingThrow = null,
+        currentHitPoint = hitPoint
+    )
+
+    private fun MonsterFighterEntity.toDomain() = MonsterFighter(
+        id = id,
+        name = name,
+        initiative = initiative,
+        conditions = conditions,
+        armorClass = ca,
+        spellSavingThrow = null,
+        maxHitPoint = maxHitPoint,
+        currentHitPoint = hitPoint,
+        index = monsterIndex,
+        xp = xp,
+        challenge = challenge
+    )
+
+    private fun EncounterWithFightersAndConditions.toDomain() = Encounter(
+        id = encounter.id,
+        campaignId = encounter.campaignId,
+        title = encounter.title,
+        description = encounter.description,
+        turn = encounter.turn,
+        isFinished = encounter.isFinished,
+        inProgress = encounter.inProgress,
+        fighters = monsters.map { it.toDomain() } + characters.map { it.toDomain() },
+    )
+
+    suspend fun getByCampaignId(campaignId: Long): Flow<List<Encounter>> =
+        encounterDao.getEncountersByCampaignId(campaignId)
+            .map { list -> list.map { it.toDomain() } }
+
+    suspend fun getById(id: Long): Flow<Encounter?> =
+        encounterDao.getEncounterWithFightersAndConditions(id).map { it?.toDomain() }
 
     suspend fun insertEncounter(campaignId: Long, title: String, description: String) {
         encounterDao.insertEncounter(

@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface EncounterDao {
+
     @Insert
     suspend fun insertEncounter(encounter: EncounterEntity): Long
 
@@ -19,6 +20,14 @@ interface EncounterDao {
     suspend fun updateEncounter(encounter: EncounterEntity): Int
 
     @Transaction
+    @Query("SELECT * FROM encounters")
+    fun getAll(): Flow<List<EncounterEntity>>
+
+    @Transaction
     @Query("SELECT * FROM encounters WHERE id = :id")
-    suspend fun getEncounterWithFightersAndConditions(id: Long): Flow<EncounterWithFightersAndConditions?>
+    fun getEncounterWithFightersAndConditions(id: Long): Flow<EncounterWithFightersAndConditions?>
+
+    @Transaction
+    @Query("SELECT * FROM encounters WHERE campaignId = :campaignId")
+    fun getEncountersByCampaignId(campaignId: Long): Flow<List<EncounterWithFightersAndConditions>>
 }

@@ -1,7 +1,9 @@
 package domain.model.encounter
 
 import androidx.compose.ui.graphics.Color
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class Condition(
     val title: String,
     val color: Color,

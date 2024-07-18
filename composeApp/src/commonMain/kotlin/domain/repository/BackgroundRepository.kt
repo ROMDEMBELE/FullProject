@@ -1,6 +1,6 @@
 package domain.repository
 
-import data.database.SqlDatabase
+import data.database.sqlDelight.SqlDatabase
 import domain.model.character.Background
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
