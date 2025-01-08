@@ -13,10 +13,8 @@ import kotlinx.coroutines.flow.Flow
 import org.dembeyo.data.BackgroundDbo
 import org.dembeyo.data.CampaingnDbo
 import org.dembeyo.data.CharacterDbo
-import org.dembeyo.data.MonsterDbo
 import org.dembeyo.data.MySqlDelightDatabase
 import org.dembeyo.data.RaceDbo
-import org.dembeyo.data.SpellDbo
 
 class SqlDatabase(driverFactory: DriverFactory) {
 
@@ -41,35 +39,16 @@ class SqlDatabase(driverFactory: DriverFactory) {
         ),
     )
 
-    fun getMonsterById(id: String): Flow<MonsterDbo?> =
-        database.monsterQueries.selectOne(id).asFlow().mapToOne(Dispatchers.IO)
+    fun getAllFavorites(): Flow<List<String>> =
+        database.favoriteQueries.selectAll().asFlow().mapToList(Dispatchers.IO)
 
-    fun getAllMonsters(): Flow<List<MonsterDbo>> =
-        database.monsterQueries.selectAll().asFlow().mapToList(Dispatchers.IO)
-
-    fun insertMonster(index: String, name: String, challenge: Double) {
-        database.monsterQueries.insertOrIgnore(
-            id = index, name = name, challenge = challenge, isFavorite = 0L
-        )
+    fun removeFavorite(slug: String) {
+        database.favoriteQueries.delete(slug)
     }
 
-    fun updateMonsterFavoriteStatus(index: String, boolean: Boolean) =
-        database.monsterQueries.setFavorite(id = index, isFavorite = if (boolean) 1L else 0L)
-
-    fun getSpellById(id: String): Flow<SpellDbo?> =
-        database.spellQueries.selectOne(id).asFlow().mapToOne(Dispatchers.IO)
-
-    fun getAllSpells(): Flow<List<SpellDbo>> =
-        database.spellQueries.selectAll().asFlow().mapToList(Dispatchers.IO)
-
-    fun insertSpell(index: String, name: String, level: Long) {
-        database.spellQueries.insertOrIgnore(
-            id = index, name = name, level = level, isFavorite = 0L
-        )
+    fun insertFavorite(slug: String) {
+        database.favoriteQueries.insertOrIgnore(slug)
     }
-
-    fun updateSpellFavoriteStatus(index: String, boolean: Boolean) =
-        database.spellQueries.setFavorite(id = index, isFavorite = if (boolean) 1L else 0L)
 
     // section Character
 

@@ -1,0 +1,645 @@
+{
+  "name": "search_result_monster",
+  "schema": {
+    "strict": true,
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "count",
+      "ignored",
+      "results"
+    ],
+    "properties": {
+      "count": {
+        "type": "number",
+        "description": "The number of monsters in the results array list"
+      },
+      "ignored": {
+        "type": "number",
+        "description": "The number of raw data monsters ignored"
+      },
+      "results": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "key",
+            "name",
+            "size",
+            "walk",
+            "swim",
+            "fly",
+            "crawl",
+            "hover",
+            "burrow",
+            "climb",
+            "type",
+            "alignment",
+            "languages",
+            "armor_class",
+            "hit_points",
+            "hit_dice",
+            "challenge",
+            "strength",
+            "dexterity",
+            "constitution",
+            "intelligence",
+            "wisdom",
+            "charisma",
+            "strength_save",
+            "dexterity_save",
+            "constitution_save",
+            "intelligence_save",
+            "wisdom_save",
+            "charisma_save",
+            "skills",
+            "passive_perception",
+            "damage_immunities",
+            "nonmagical_attack_immunity",
+            "damage_resistances",
+            "nonmagical_attack_resistance",
+            "damage_vulnerabilities",
+            "condition_immunities",
+            "normal_sight_range",
+            "darkvision_range",
+            "blindsight_range",
+            "tremorsense_range",
+            "truesight_range",
+            "actions",
+            "reactions",
+            "bonus_actions",
+            "legendary_actions",
+            "traits",
+            "environments"
+          ],
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "size": {
+              "type": "string",
+              "enum": [
+                "Tiny",
+                "Small",
+                "Medium",
+                "Large",
+                "Huge",
+                "Gargantuan"
+              ]
+            },
+            "walk": {
+              "type": "number"
+            },
+            "swim": {
+              "type": "number"
+            },
+            "fly": {
+              "type": "number"
+            },
+            "crawl": {
+              "type": "number"
+            },
+            "hover": {
+              "type": "boolean"
+            },
+            "burrow": {
+              "type": "number"
+            },
+            "climb": {
+              "type": "number"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "aberration",
+                "beast",
+                "celestial",
+                "construct",
+                "dragon",
+                "elemental",
+                "fey",
+                "fiend",
+                "giant",
+                "humanoid",
+                "monstrosity",
+                "ooze",
+                "plant",
+                "undead"
+              ]
+            },
+            "alignment": {
+              "type": "string",
+              "enum": [
+                "AnyAlignment",
+                "AnyEvilAlignment",
+                "Unaligned",
+                "ChaoticEvil",
+                "ChaoticGood",
+                "ChaoticNeutral",
+                "LawfulEvil",
+                "LawfulGood",
+                "LawfulNeutral",
+                "Neutral",
+                "NeutralEvil",
+                "NeutralGood"
+              ]
+            },
+            "languages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "armor_class": {
+              "type": "integer"
+            },
+            "hit_points": {
+              "type": "integer"
+            },
+            "hit_dice": {
+              "type": "string",
+              "description": "Represents the hit dice for a creature. It follows the format <number_of_dice>d<dice_size>+<modifier>, e.g., 5d8+10"
+            },
+            "challenge": {
+              "type": "number"
+            },
+            "strength": {
+              "type": "integer"
+            },
+            "dexterity": {
+              "type": "integer"
+            },
+            "constitution": {
+              "type": "integer"
+            },
+            "intelligence": {
+              "type": "integer"
+            },
+            "wisdom": {
+              "type": "integer"
+            },
+            "charisma": {
+              "type": "integer"
+            },
+            "strength_save": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "dexterity_save": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "constitution_save": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "intelligence_save": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "wisdom_save": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "charisma_save": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "skills": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "acrobatics",
+                "animal_handling",
+                "arcana",
+                "athletics",
+                "deception",
+                "history",
+                "insight",
+                "intimidation",
+                "investigation",
+                "medicine",
+                "nature",
+                "perception",
+                "performance",
+                "persuasion",
+                "religion",
+                "sleight_of_hand",
+                "stealth",
+                "survival"
+              ],
+              "properties": {
+                "acrobatics": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "animal_handling": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "arcana": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "athletics": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "deception": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "history": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "insight": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "intimidation": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "investigation": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "medicine": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "nature": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "perception": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "performance": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "persuasion": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "religion": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "sleight_of_hand": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "stealth": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "survival": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                }
+              }
+            },
+            "passive_perception": {
+              "type": "integer"
+            },
+            "damage_immunities": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "acid",
+                  "bludgeoning",
+                  "cold",
+                  "fire",
+                  "force",
+                  "lightning",
+                  "necrotic",
+                  "piercing",
+                  "poison",
+                  "psychic",
+                  "radiant",
+                  "slashing",
+                  "thunder"
+                ]
+              }
+            },
+            "nonmagical_attack_immunity": {
+              "type": "boolean"
+            },
+            "damage_resistances": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "acid",
+                  "bludgeoning",
+                  "cold",
+                  "fire",
+                  "force",
+                  "lightning",
+                  "necrotic",
+                  "piercing",
+                  "poison",
+                  "psychic",
+                  "radiant",
+                  "slashing",
+                  "thunder"
+                ]
+              }
+            },
+            "nonmagical_attack_resistance": {
+              "type": "boolean"
+            },
+            "damage_vulnerabilities": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "acid",
+                  "bludgeoning",
+                  "cold",
+                  "fire",
+                  "force",
+                  "lightning",
+                  "necrotic",
+                  "piercing",
+                  "poison",
+                  "psychic",
+                  "radiant",
+                  "slashing",
+                  "thunder"
+                ]
+              }
+            },
+            "condition_immunities": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Blinded",
+                  "Charmed",
+                  "Deafened",
+                  "Exhaustion",
+                  "Frightened",
+                  "Grappled",
+                  "Incapacitated",
+                  "Invisible",
+                  "Paralyzed",
+                  "Petrified",
+                  "Poisoned",
+                  "Prone",
+                  "Restrained",
+                  "Stunned",
+                  "Unconscious"
+                ]
+              }
+            },
+            "normal_sight_range": {
+              "type": "number"
+            },
+            "darkvision_range": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "blindsight_range": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "tremorsense_range": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "truesight_range": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "actions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "desc",
+                  "usage",
+                  "action_type",
+                  "recharge_dice",
+                  "legendary_cost",
+                  "attacks"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "desc": {
+                    "type": "string"
+                  },
+                  "usage": {
+                    "type": "string",
+                    "enum": [
+                      "once",
+                      "once_per_day",
+                      "once_per_long_rest",
+                      "once_per_short_rest",
+                      "recharge_with_dice",
+                      "at_will"
+                    ]
+                  },
+                  "recharge_dice": {
+                    "type": "string",
+                    "description": "Represents the hit dice for a creature. It follows the format <number_of_dice>d<dice_size>+<modifier>, e.g., 5d8+10"
+                  },
+                  "action_type": {
+                    "type": "string",
+                    "enum": [
+                      "action",
+                      "bonus",
+                      "reaction",
+                      "legendary"
+                    ]
+                  },
+                  "legendary_cost": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ]
+                  },
+                  "attacks": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "name",
+                        "attack_type",
+                        "attack_bonus",
+                        "reach",
+                        "range",
+                        "long_range",
+                        "damage_dice",
+                        "damage_bonus",
+                        "damage_type"
+                      ],
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "attack_type": {
+                          "type": "string",
+                          "enum": [
+                            "melee",
+                            "ranged",
+                            "spell"
+                          ]
+                        },
+                        "attack_bonus": {
+                          "type": "integer"
+                        },
+                        "reach": {
+                          "type": "number"
+                        },
+                        "range": {
+                          "type": "number"
+                        },
+                        "long_range": {
+                          "type": "number"
+                        },
+                        "damage_dice": {
+                          "type": "string",
+                          "description": "Specifies the damage dice for an attack, formatted as <number_of_dice>d<dice_size>, e.g., 2d10."
+                        },
+                        "damage_bonus": {
+                          "type": "integer"
+                        },
+                        "damage_type": {
+                          "type": "string",
+                          "enum": [
+                            "acid",
+                            "bludgeoning",
+                            "cold",
+                            "fire",
+                            "force",
+                            "lightning",
+                            "necrotic",
+                            "piercing",
+                            "poison",
+                            "psychic",
+                            "radiant",
+                            "slashing",
+                            "thunder"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "traits": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "desc"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "desc": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "environments": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "arctic",
+                  "coastal",
+                  "desert",
+                  "forest",
+                  "grassland",
+                  "hill",
+                  "mountain",
+                  "swamp",
+                  "underdark",
+                  "urban",
+                  "underwater"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

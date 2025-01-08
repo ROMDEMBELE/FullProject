@@ -1,39 +1,23 @@
 package domain.model.monster
 
 import domain.model.DamageType
-import domain.model.SavingThrow
 
-open class Action(
-    override val name: String,
-    override val desc: String,
-    open val usage: String? = null,
-) : MonsterPropertyDescription {
 
-    data class AttackAction(
-        override val name: String,
-        override val desc: String,
-        val damage: List<Damage>,
+ class Action(
+     val name: String,
+     val desc: String,
+     val usage: String,
+     val legendaryCost: Int? = null,
+     val attacks: List<Attack> = emptyList()
+) {
+
+    data class Attack(
+        val type: String,
+        val damageDice: String,
+        val damageType: DamageType,
         val attackBonus: Int,
-    ) : Action(name, desc)
-
-    data class MultiAttackAction(
-        override val name: String,
-        override val desc: String,
-        val choose: Int,
-        val attacks: List<String>
-    ) : Action(name, desc)
-
-    data class SavingThrowAction(
-        override val name: String,
-        override val desc: String,
-        override val usage: String? = null,
-        val damage: List<Damage>,
-        val savingThrow: SavingThrow,
-    ) : Action(name, desc)
-
-    data class Damage(
-        val type: DamageType,
-        val dice: String,
-        val notes: String? = null,
+        val reach: Double? = null,
+        val range: Double? = null,
+        val longRange: Double? = null,
     )
 }

@@ -14,8 +14,6 @@ class MagicItemDetailsViewModel(
     val uiState = _uiState.asStateFlow()
 
     fun fetchMagicItem(index: String) {
-        repository.getByIndex(index)?.let { magicItem ->
-            _uiState.update { it.copy(magicItem = magicItem, isReady = true) }
-        }
+
     }
 }

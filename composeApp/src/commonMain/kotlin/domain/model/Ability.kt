@@ -11,13 +11,13 @@ import org.dembeyo.shared.resources.ability_wis
 import org.jetbrains.compose.resources.StringResource
 
 
-enum class Ability(val id: String, val stringRes: StringResource) {
-    CHA("cha", Res.string.ability_cha),
-    CON("con", Res.string.ability_con),
-    DEX("dex", Res.string.ability_dex),
-    INT("int", Res.string.ability_int),
-    STR("str", Res.string.ability_str),
-    WIS("wis", Res.string.ability_wis);
+enum class Ability(val id: String, val fullName: String, val stringRes: StringResource) {
+    CHA("cha", "charisma", Res.string.ability_cha),
+    CON("con", "constitution", Res.string.ability_con),
+    DEX("dex", "dexterity", Res.string.ability_dex),
+    INT("int", "intelligence", Res.string.ability_int),
+    STR("str", "strength", Res.string.ability_str),
+    WIS("wis", "wisdom", Res.string.ability_wis);
 
     companion object {
         fun Int.getAbilityBonus(): Int = when (this) {

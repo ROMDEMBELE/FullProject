@@ -12,7 +12,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,7 +29,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -75,16 +73,14 @@ import org.dembeyo.shared.resources.minus_circle
 import org.dembeyo.shared.resources.ornament
 import org.dembeyo.shared.resources.plus_circle
 import org.dembeyo.shared.resources.ritual
-import org.dembeyo.shared.resources.spell_area_of_effect
 import org.dembeyo.shared.resources.spell_casting_time
-import org.dembeyo.shared.resources.spell_components
 import org.dembeyo.shared.resources.spell_duration
-import org.dembeyo.shared.resources.spell_materials
 import org.dembeyo.shared.resources.spell_range
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
+import ui.color
 import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.CustomErrorDialog
 import ui.composable.SmallBoldDarkBlue
@@ -105,7 +101,6 @@ class SpellDetailsScreen(private val index: String) : Screen {
     override val key: ScreenKey
         get() = uniqueScreenKey
 
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
         val scope = rememberCoroutineScope()
@@ -131,14 +126,12 @@ class SpellDetailsScreen(private val index: String) : Screen {
         }
 
         AnimatedContent(uiState, transitionSpec = { fadeIn().togetherWith(fadeOut()) }) { state ->
-            val spell = state.spell
-            val details = spell?.details
             if (!state.isReady) {
                 CustomAnimatedPlaceHolder()
-            } else if (spell != null && details != null) {
-                val pagerState = rememberPagerState(pageCount = { details.damageByLevel.size })
+            } else {
+                val pagerState = rememberPagerState(pageCount = { state.castingOptions.size })
                 val brush =
-                    Brush.horizontalGradient(listOf(details.school.color, spell.level.color))
+                    Brush.horizontalGradient(listOf(state.school.color, state.level.color()))
                 Column(Modifier.fillMaxSize().background(brush).padding(8.dp)) {
                     Box(Modifier.weight(0.2f)) {
                         Image(
@@ -155,21 +148,21 @@ class SpellDetailsScreen(private val index: String) : Screen {
                         )
 
                         TextClip(
-                            stringResource(details.school.stringRes),
-                            details.school.color,
+                            stringResource(state.school.stringRes),
+                            state.school.color,
                             Alignment.TopStart
                         )
 
-                        TextClip(" Level ${spell.level.level}", spell.level.color, Alignment.TopEnd)
+                        TextClip(" Level ${state.level.level}", state.level.color(), Alignment.TopEnd)
 
-                        if (details.ritual) {
+                        if (state.ritual) {
                             TextClip(
                                 text = stringResource(Res.string.ritual),
                                 lightBlue,
                                 Alignment.BottomEnd
                             )
                         }
-                        if (details.concentration) {
+                        if (state.concentration) {
                             TextClip(
                                 text = stringResource(Res.string.concentration),
                                 primary,
@@ -178,11 +171,11 @@ class SpellDetailsScreen(private val index: String) : Screen {
                         }
 
                         Text(
-                            spell.name,
+                            state.name.toString(),
                             Modifier.align(Alignment.Center),
                             style = monsterTitle.copy(
                                 color = darkBlue, shadow = Shadow(
-                                    color = details.school.color,
+                                    color = state.school.color,
                                     offset = Offset(5f, 5f),
                                     blurRadius = 12f
                                 )
@@ -192,21 +185,15 @@ class SpellDetailsScreen(private val index: String) : Screen {
 
                     TaperedRule(Modifier.padding(vertical = 8.dp), darkBlue)
 
-                    PropertyLine(Res.string.spell_range, details.range)
+                    PropertyLine(Res.string.spell_range, state.range.toString())
 
-                    PropertyLine(Res.string.spell_duration, details.duration)
+                    PropertyLine(Res.string.spell_duration, state.duration.toString())
 
-                    PropertyLine(Res.string.spell_components, details.components)
+                    // PropertyLine(Res.string.spell_components, state.components)
 
-                    PropertyLine(Res.string.spell_casting_time, details.castingTime)
+                    PropertyLine(Res.string.spell_casting_time, state.castingTime.toString())
 
-                    if (details.material != null) {
-                        PropertyLine(Res.string.spell_materials, details.material)
-                    }
-
-                    if (details.areaOfEffect != null) {
-                        PropertyLine(Res.string.spell_area_of_effect, details.areaOfEffect)
-                    }
+                    // PropertyLine(Res.string.spell_materials, state.material)
 
                     TaperedRule(Modifier.padding(vertical = 8.dp), darkBlue)
 
@@ -217,9 +204,9 @@ class SpellDetailsScreen(private val index: String) : Screen {
                             .fillMaxWidth()
                             .weight(.6f)
                     ) {
-                        items(details.description) { text ->
+                        item {
                             Text(
-                                text,
+                                text = state.description.toString(),
                                 fontSize = 14.sp,
                                 style = TextStyle.Default.copy(lineBreak = LineBreak.Paragraph),
                                 fontFamily = FontFamily.Serif,
@@ -229,7 +216,7 @@ class SpellDetailsScreen(private val index: String) : Screen {
                     }
 
 
-                    if (details.savingThrow != null) {
+                    if (state.savingThrowAbility != null) {
                         TaperedRule(Modifier.padding(vertical = 8.dp), darkBlue)
 
                         Text(
@@ -237,7 +224,7 @@ class SpellDetailsScreen(private val index: String) : Screen {
                                 .clip(RoundedCornerShape(8.dp))
                                 .background(primary)
                                 .padding(4.dp),
-                            text = "${details.savingThrow} of...",
+                            text = "Saving Throw: " + stringResource(state.savingThrowAbility.stringRes),
                             color = darkBlue,
                             fontWeight = FontWeight.Bold,
                             fontFamily = FontFamily.Monospace,
@@ -246,7 +233,7 @@ class SpellDetailsScreen(private val index: String) : Screen {
                         )
                     }
 
-                    if (details.damageByLevel.isNotEmpty()) {
+                    if (state.castingOptions.isNotEmpty()) {
                         TaperedRule(Modifier.padding(vertical = 8.dp), darkBlue)
 
                         val animatedColorMinus by animateColorAsState(if (pagerState.canScrollBackward) secondary else lightGray)
@@ -254,8 +241,9 @@ class SpellDetailsScreen(private val index: String) : Screen {
 
                         Box(Modifier.fillMaxWidth()) {
                             HorizontalPager(state = pagerState) { pageIndex ->
-                                val (level, damage) = details.damageByLevel.toList()[pageIndex]
-                                DamageItem(level, damage.dice, damage.type)
+                                state.castingOptions.toList()[pageIndex].let {
+                                    DamageItem(it.level, it.damageRoll, it.damageTypes)
+                                }
                             }
 
                             IconButton(
@@ -292,8 +280,8 @@ class SpellDetailsScreen(private val index: String) : Screen {
     }
 
     @Composable
-    fun DamageItem(level: Level, dice: String, type: DamageType?) {
-        val damageBrush = Brush.linearGradient(listOf(darkBlue, darkBlue, level.color))
+    fun DamageItem(level: Level, dice: String?, type: List<DamageType> = emptyList()) {
+        val damageBrush = Brush.linearGradient(listOf(darkBlue, darkBlue, level.color()))
         Row(
             Modifier.height(70.dp).fillMaxWidth()
                 .clip(RoundedCornerShape(8.dp))
@@ -306,24 +294,27 @@ class SpellDetailsScreen(private val index: String) : Screen {
                 text = "Lv${level.level}",
                 style = SmallBoldDarkBlue,
                 modifier = Modifier.clip(RoundedCornerShape(8.dp))
-                    .background(level.color)
+                    .background(level.color())
                     .padding(8.dp)
 
             )
 
             Spacer(Modifier.width(4.dp))
 
-            Text(
-                text = dice,
-                style = SmallBoldDarkBlue.copy(color = darkBlue, fontSize = 14.sp),
-                modifier = Modifier.clip(RoundedCornerShape(8.dp))
-                    .background(secondary)
-                    .padding(8.dp)
-            )
+            if (dice != null) {
+                Text(
+                    text = dice,
+                    style = SmallBoldDarkBlue.copy(color = darkBlue, fontSize = 14.sp),
+                    modifier = Modifier.clip(RoundedCornerShape(8.dp))
+                        .background(secondary)
+                        .padding(8.dp)
+                )
+            }
 
-            if (type != null) {
-                Spacer(Modifier.width(4.dp))
-                type.generateIcon()
+            Spacer(Modifier.width(4.dp))
+
+            for (damageType in type) {
+                damageType.generateIcon()
             }
         }
     }

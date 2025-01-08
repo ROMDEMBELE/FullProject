@@ -1,8 +1,6 @@
 package di
 
 import IosContext
-import data.database.room.EncounterDatabase
-import data.database.room.getDatabaseBuilder
 import data.database.sqlDelight.DriverFactory
 import data.preference.SettingsStorage
 import io.ktor.client.engine.darwin.Darwin
@@ -39,10 +37,6 @@ actual fun platformModule(): Module = module {
     factoryOf(::MagicItemDetailsViewModel)
 
     single { SettingsStorage(IosContext) }
-
-    single { get<EncounterDatabase>().encounterDao() }
-    single { get<EncounterDatabase>().characterFighterDao() }
-    single { get<EncounterDatabase>().monsterFighterDao() }
 }
 
 object ViewModelProvider : KoinComponent {
@@ -50,7 +44,7 @@ object ViewModelProvider : KoinComponent {
     fun getSpellScreenDetailsViewModel() = SpellDetailsViewModel(get())
     fun getEditCharacterViewModel() = EditCharacterViewModel(get(), get(), get(), get(), get())
     fun getCharacterViewModel() = CharacterViewModel(get(), get())
-    fun getMonsterListViewModel() = MonsterListViewModel(get(), get())
+    fun getMonsterListViewModel() = MonsterListViewModel(get(), get(), get(), get())
     fun getMonsterDetailsViewModel() = MonsterDetailsViewModel(get())
     fun getMagicItemListViewModel() = MagicItemListViewModel(get())
     fun getMagicItemDetailsViewModel() = MagicItemDetailsViewModel(get())

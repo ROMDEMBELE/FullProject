@@ -2,32 +2,28 @@ package ui.monster.list
 
 import androidx.compose.ui.text.input.TextFieldValue
 import domain.model.monster.Challenge
-import domain.model.monster.Monster
 
 data class MonsterListUiState(
-    val monsterList: List<Monster> = emptyList(),
+    val monsterList: List<MonsterListItem> = emptyList(),
     val filterChallengeRange: ClosedFloatingPointRange<Float> = Challenge.CR_0.ordinal.toFloat()..Challenge.CR_30.ordinal.toFloat(),
     var textField: TextFieldValue = TextFieldValue(),
     val error: String? = null,
     val isReady: Boolean = false
 ) {
 
-    val favoriteMonsterByChallenge: Map<Challenge, List<Monster>>
+    val favoriteMonsterByChallenge: Map<Challenge, List<MonsterListItem>>
         get() = monsterList.filter { it.isFavorite }.sortedBy { it.challenge }
             .groupBy { it.challenge }
 
-    val monsterByChallenge: Map<Challenge, List<Monster>>
+    val monsterByChallenge: Map<Challenge, List<MonsterListItem>>
         get() {
-            val text = textField.text
             return monsterList
-                .filter { it.challenge.ordinal.toFloat() in filterChallengeRange }
-                .filter { it.name.contains(text, true) }
                 .sortedBy { it.challenge }
                 .groupBy { it.challenge }
         }
 
     val monsterCount: Int
-        get() = monsterByChallenge.flatMap { it.value }.size
+        get() = monsterList.size
 
     val hasError get() = error != null
 

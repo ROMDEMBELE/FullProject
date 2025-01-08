@@ -1,6 +1,5 @@
 package di
 
-import data.database.room.EncounterDatabase
 import data.database.sqlDelight.DriverFactory
 import data.preference.SettingsStorage
 import org.koin.android.ext.koin.androidContext

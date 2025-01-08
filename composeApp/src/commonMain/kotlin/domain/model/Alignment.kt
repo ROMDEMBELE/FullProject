@@ -2,56 +2,42 @@ package domain.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.dembeyo.shared.resources.Res
-import org.dembeyo.shared.resources.any_alignment
-import org.dembeyo.shared.resources.any_evil_alignment
-import org.dembeyo.shared.resources.chaotic_evil
-import org.dembeyo.shared.resources.chaotic_good
-import org.dembeyo.shared.resources.chaotic_neutral
-import org.dembeyo.shared.resources.lawful_evil
-import org.dembeyo.shared.resources.lawful_good
-import org.dembeyo.shared.resources.lawful_neutral
-import org.dembeyo.shared.resources.neutral
-import org.dembeyo.shared.resources.neutral_evil
-import org.dembeyo.shared.resources.neutral_good
-import org.dembeyo.shared.resources.unaligned
-import org.jetbrains.compose.resources.StringResource
 
 @Serializable
-enum class Alignment(val stringRes: StringResource) {
+enum class Alignment {
     @SerialName("any alignment")
-    ANY_ALIGNMENT(Res.string.any_alignment),
+    AnyAlignment,
 
     @SerialName("any evil alignment")
-    ANY_EVIL_ALIGNMENT(Res.string.any_evil_alignment),
+    AnyEvilAlignment,
 
     @SerialName("unaligned")
-    UNALIGNED(Res.string.unaligned),
+    Unaligned,
 
     @SerialName("chaotic evil")
-    CHAOTIC_EVIL(Res.string.chaotic_evil),
+    ChaoticEvil,
 
     @SerialName("chaotic good")
-    CHAOTIC_GOOD(Res.string.chaotic_good),
+    ChaoticGood,
 
     @SerialName("chaotic neutral")
-    CHAOTIC_NEUTRAL(Res.string.chaotic_neutral),
+    ChaoticNeutral,
 
     @SerialName("lawful evil")
-    LAWFUL_EVIL(Res.string.lawful_evil),
+    LawfulEvil,
 
     @SerialName("lawful good")
-    LAWFUL_GOOD(Res.string.lawful_good),
+    LawfulGood,
 
     @SerialName("lawful neutral")
-    LAWFUL_NEUTRAL(Res.string.lawful_neutral),
+    LawfulNeutral,
 
     @SerialName("neutral")
-    NEUTRAL(Res.string.neutral),
+    Neutral,
 
     @SerialName("neutral evil")
-    NEUTRAL_EVIL(Res.string.neutral_evil),
+    NeutralEvil,
 
     @SerialName("neutral good")
-    NEUTRAL_GOOD(Res.string.neutral_good);
+    NeutralGood;
 }

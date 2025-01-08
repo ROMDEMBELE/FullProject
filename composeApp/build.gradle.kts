@@ -1,7 +1,6 @@
 
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -11,15 +10,8 @@ plugins {
 
     kotlin("plugin.serialization")
 
-    // Realm
-    alias(libs.plugins.realm)
-
     // SqlDelight
     alias(libs.plugins.sqlDelight)
-
-    // Room
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -66,8 +58,6 @@ kotlin {
             implementation(libs.koin.androidx.compose)
 
             implementation(libs.android.driver)
-            // Room
-            implementation(libs.room.runtime.android)
         }
 
         iosMain.dependencies {
@@ -97,6 +87,7 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.client.logging)
 
             // Coroutines
             implementation(libs.kotlinx.coroutines.core)
@@ -120,9 +111,8 @@ kotlin {
 
             api(libs.logging)
 
-            // Room
-            implementation(libs.room.runtime)
-            implementation(libs.sqlite.bundled)
+            // Logging
+            implementation(libs.napier)
         }
     }
 }
@@ -176,20 +166,5 @@ sqldelight {
         create("MySqlDelightDatabase") {
             packageName = "org.dembeyo.data"
         }
-    }
-}
-
-room {
-    schemaDirectory("$projectDir/schemas")
-}
-
-dependencies {
-    // Room
-    add("kspCommonMainMetadata", libs.room.compiler)
-}
-
-tasks.withType<KotlinCompilationTask<*>>().configureEach {
-    if (name != "kspCommonMainKotlinMetadata" ) {
-        dependsOn("kspCommonMainKotlinMetadata")
     }
 }

@@ -1,0 +1,19 @@
+CREATE TABLE FavoriteDbo (
+    slug TEXT PRIMARY KEY
+);
+
+CREATE INDEX monster_index ON FavoriteDbo(slug);
+
+selectAll:
+SELECT * FROM FavoriteDbo;
+
+selectOne:
+SELECT *
+FROM FavoriteDbo
+WHERE slug == ?;
+
+insertOrIgnore:
+INSERT OR IGNORE INTO FavoriteDbo (slug) VALUES (?);
+
+delete:
+DELETE FROM FavoriteDbo WHERE slug == ?;

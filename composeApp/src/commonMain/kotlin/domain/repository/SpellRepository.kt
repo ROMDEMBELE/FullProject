@@ -1,117 +1,28 @@
 package domain.repository
 
-import data.api.Dnd5Api
-import data.database.sqlDelight.SqlDatabase
-import data.dto.SpellDto
-import data.dto.SpellDto.SpellDamageDto
-import data.dto.SpellDto.SpellDcDto
-import domain.model.Ability
-import domain.model.DamageType
 import domain.model.Level
-import domain.model.SavingThrow
-import domain.model.spell.MagicSchool
 import domain.model.spell.Spell
-import domain.model.spell.Spell.Details.SpellDamage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import io.ktor.client.plugins.ServerResponseException
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
-import org.dembeyo.data.SpellDbo
-import org.lighthousegames.logging.logging
+import kotlin.coroutines.cancellation.CancellationException
 
-class SpellRepository(private val spellApi: Dnd5Api, private val dataBase: SqlDatabase) {
+interface SpellRepository {
 
-    init {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                fetchData()
-            } catch (e: Exception) {
-                Log.w { "Unable to update the spell database" }
-            }
-        }
-    }
-
-    suspend fun fetchData() {
-        spellApi.getSpellByLevelOrSchool().results.forEach { dto ->
-            dataBase.insertSpell(
-                index = dto.index,
-                name = dto.name,
-                level = dto.level.toLong(),
-            )
-        }
-    }
-
-    fun setFavorite(index: String, isFavorite: Boolean) {
-        dataBase.updateSpellFavoriteStatus(index, isFavorite)
-    }
-
-    private fun SpellDbo.toDomain() = Spell(
-        index = id,
-        name = name,
-        isFavorite = isFavorite == 1L,
-        level = Level.fromInt(level.toInt()),
+    @Throws(
+        ServerResponseException::class,
+        CancellationException::class,
+        NoSuchElementException::class
     )
+    suspend fun getBySlug(slug: String): Spell
 
-    private fun SpellDamageDto.toDomain(): Map<Level, SpellDamage> {
-        val mapOfDamageByInt = damageAtSlotLevel ?: damageAtCharacterLevel ?: emptyMap()
-        val type = damageType?.let { type -> DamageType.fromIndex(type.index) }
-        return mapOfDamageByInt
-            .mapKeys { (level, _) -> Level.fromInt(level) }
-            .mapValues { (_, dice) -> SpellDamage(type = type, dice = dice) }
-    }
-
-    private fun SpellDcDto.toDomain() = SavingThrow(
-        value = null,
-        success = dcSuccess,
-        ability = Ability.valueOf(dcType.name)
+    @Throws(
+        ServerResponseException::class,
+        CancellationException::class
     )
-
-    private fun SpellDto.toDomain(isFavorite: Boolean): Spell {
-        val school = MagicSchool.fromIndex(school.index)
-            ?: throw IllegalArgumentException("Unknown school index ${school.index}")
-
-        return Spell(
-            index = index,
-            name = name,
-            level = Level.fromInt(level),
-            isFavorite = isFavorite,
-            details = Spell.Details(
-                description = desc + higherLevel,
-                range = range,
-                components = components.joinToString(),
-                material = material,
-                ritual = ritual,
-                duration = duration,
-                concentration = concentration,
-                areaOfEffect = areaOfEffect?.let { "${it.type} ${it.size}" },
-                castingTime = castingTime,
-                attackType = attackType,
-                damageByLevel = damage?.toDomain().orEmpty(),
-                savingThrow = dc?.toDomain(),
-                school = school
-            )
-        )
-    }
-
-    fun getList(): Flow<List<Spell>> =
-        dataBase.getAllSpells().map { it.map { dbo -> dbo.toDomain() } }
-
-    suspend fun getByIndex(index: String): Spell? {
-        try {
-            val dto = spellApi.getSpellByIndex(index)
-            val isFavorite = dataBase.getSpellById(index).firstOrNull()?.isFavorite == 1L
-            return dto.toDomain(isFavorite)
-        } catch (e: Exception) {
-            Log.e { "Unable to get spell by index $index" }
-            return null
-        }
-    }
-
-    companion object {
-        val Log = logging("SpellRepository")
-    }
+    suspend fun search(
+        name: String,
+        min: Level = Level.LEVEL_0,
+        max: Level = Level.LEVEL_10
+    ): Flow<List<Spell>>
 
 }

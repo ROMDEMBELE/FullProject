@@ -12,8 +12,7 @@ class AddMonsterToEncounterUseCase(
         encounterRepository.getById(encounterId).firstOrNull()
             ?: error("Encounter id: $encounterId not found")
 
-        val monster = monsterRepository.getByIndex(index)
-            ?: error("Monster with index:$index not found")
+        val monster = monsterRepository.getByKey(index)
 
         encounterRepository.insertMonsterFighter(
             encounterId = encounterId,

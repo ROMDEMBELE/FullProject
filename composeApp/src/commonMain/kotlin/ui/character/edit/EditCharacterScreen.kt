@@ -44,6 +44,7 @@ import org.dembeyo.shared.resources.species
 import org.dembeyo.shared.resources.spell_save
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
+import ui.color
 import ui.composable.CounterSelector
 import ui.composable.CustomAlertDialog
 import ui.composable.CustomAnimatedPlaceHolder
@@ -91,7 +92,7 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
 
         AnimatedVisibility(uiState.isReady, enter = fadeIn(), exit = fadeOut()) {
             val gradient = Brush.verticalGradient(
-                colors = listOf(secondary, uiState.level.color),
+                colors = listOf(secondary, uiState.level.color()),
             )
             LazyColumn(
                 modifier = Modifier.background(gradient).padding(8.dp),

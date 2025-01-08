@@ -12,12 +12,7 @@ class SpellDetailsViewModel(private val spellRepository: SpellRepository) : View
     val uiState = _uiState.asStateFlow()
 
     suspend fun fetchSpell(index: String) {
-        try {
-            val spell = spellRepository.getByIndex(index)
-            _uiState.update { it.copy(isReady = true, spell = spell) }
-        } catch (e: Exception) {
-            _uiState.update { it.copy(isReady = true, error = e.message) }
-        }
+
     }
 
     fun acknowledgeError() {

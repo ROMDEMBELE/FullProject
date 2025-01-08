@@ -60,6 +60,7 @@ import org.dembeyo.shared.resources.magic
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
+import ui.color
 import ui.composable.BigBold
 import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.CustomButton
@@ -177,7 +178,7 @@ class SpellListScreen() : Screen {
                 Text(
                     text = "Level ${level.level}",
                     modifier = Modifier.clip(CutCornerShape(8.dp))
-                        .background(level.color)
+                        .background(level.color())
                         .fillMaxWidth()
                         .border(2.dp, darkBlue, CutCornerShape(8.dp))
                         .padding(8.dp),
@@ -187,7 +188,7 @@ class SpellListScreen() : Screen {
             item = { spell ->
                 SpellItem(
                     spell = spell,
-                    onClick = { navigator.push(SpellDetailsScreen(spell.index)) },
+                    onClick = { navigator.push(SpellDetailsScreen(spell.slug)) },
                     onFavoriteClick = { viewModel.toggleSpellIsFavorite(spell) }
                 )
             }
@@ -204,7 +205,7 @@ class SpellListScreen() : Screen {
             colors = ButtonDefaults.buttonColors(darkBlue),
             onClick = onClick
         ) {
-            val brush = Brush.linearGradient(listOf(darkBlue, darkBlue, spell.level.color))
+            val brush = Brush.linearGradient(listOf(darkBlue, darkBlue, spell.level.color()))
             Box(Modifier.background(brush)) {
                 Image(
                     painterResource(Res.drawable.magic),

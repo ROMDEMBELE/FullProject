@@ -1,38 +1,34 @@
 package domain.model.spell
 
 import domain.model.DamageType
+import domain.model.Ability
 import domain.model.Level
-import domain.model.SavingThrow
 
-
-open class Spell(
-    open val index: String,
-    open val name: String,
-    open val level: Level,
-    open val isFavorite: Boolean = false,
-    open val details: Details? = null,
+data class Spell(
+    val slug: String,
+    val name: String,
+    val level: Level,
+    val description: String,
+    val range: String,
+    val verbal: Boolean = false,
+    val somatic: Boolean = false,
+    val material: Boolean = false,
+    val cost: String? = null,
+    val ritual: Boolean,
+    val duration: String,
+    val concentration: Boolean,
+    val castingTime: String,
+    val attackType: String? = null,
+    val castingOptions: List<SpellOption> = emptyList(),
+    val savingThrowAbility: Ability? = null,
+    val attackRoll: Boolean = false,
+    val school: MagicSchool,
+    var isFavorite: Boolean = false
 ) {
-
-    data class Details(
-        val description: List<String>,
-        val range: String,
-        val components: String,
-        val material: String? = null,
-        val ritual: Boolean,
-        val duration: String,
-        val concentration: Boolean,
-        val castingTime: String,
-        val attackType: String? = null,
-        val areaOfEffect: String? = null,
-        val damageByLevel: Map<Level, SpellDamage> = emptyMap(),
-        val savingThrow: SavingThrow? = null,
-        val school: MagicSchool,
-    ) {
-
-        data class SpellDamage(
-            val type: DamageType? = null,
-            val dice: String,
-        )
-    }
-
+    data class SpellOption(
+        val level: Level,
+        val damageTypes: List<DamageType> = emptyList(),
+        val damageRoll: String? = null,
+        val duration: String? = null
+    )
 }

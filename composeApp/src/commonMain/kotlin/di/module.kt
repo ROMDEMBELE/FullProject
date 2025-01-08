@@ -1,20 +1,28 @@
 package di
 
-import data.api.Dnd5Api
-import data.database.realm.RealmDataBase
-import data.database.room.EncounterDatabase
-import data.database.room.getDatabase
-import data.database.room.getDatabaseBuilder
+import data.api.ChatGptApi
+import data.api.MonsterApi
+import data.api.SpellApi
+import data.api.impl.ChatGptApiImpl
+import data.api.impl.MonsterApiImpl
+import data.api.impl.SpellApiImpl
 import data.database.sqlDelight.SqlDatabase
+import data.local.LocalDatasource
+import data.repository.FavoriteRepositoryImpl
+import data.repository.MonsterRepositoryImpl
+import data.repository.SpellRepositoryImpl
 import domain.repository.BackgroundRepository
 import domain.repository.CampaignRepository
 import domain.repository.CharacterRepository
 import domain.repository.EncounterRepository
+import domain.repository.FavoriteRepository
 import domain.repository.MagicItemRepository
 import domain.repository.MonsterRepository
 import domain.repository.SettingsRepository
 import domain.repository.SpeciesRepository
 import domain.repository.SpellRepository
+import domain.usecase.AddToFavoriteUseCase
+import domain.usecase.RemoveFromFavoriteUseCase
 import domain.usecase.campaign.DeleteCampaignUseCase
 import domain.usecase.campaign.GetCampaignsUseCase
 import domain.usecase.campaign.GetMainCampaignUseCase
@@ -22,8 +30,6 @@ import domain.usecase.campaign.SaveCampaignUseCase
 import domain.usecase.character.DeleteCharacterUseCase
 import domain.usecase.character.GetMainCampaignCharactersUseCase
 import domain.usecase.character.SaveCharacterUseCase
-import domain.usecase.common.AddToFavoriteUseCase
-import domain.usecase.common.RemoveFromFavoriteUseCase
 import domain.usecase.encounter.AddCharacterToEncounterUseCase
 import domain.usecase.encounter.AddMonsterToEncounterUseCase
 import domain.usecase.encounter.CreateEncounterUseCase
@@ -33,30 +39,75 @@ import domain.usecase.encounter.RemoveCharacterFromEncounterUseCase
 import domain.usecase.encounter.RemoveMonsterFromEncounterUseCase
 import domain.usecase.encounter.UpdateEncounterUseCase
 import domain.usecase.monster.ChallengeFilterUseCase
+import domain.usecase.monster.FilterMonstersListUseCase
+import domain.usecase.monster.GetMonsterByKeyUseCase
+import domain.usecase.spell.GetSpellByKeyUseCase
 import domain.usecase.spell.GetSpellFilterUseCase
 import domain.usecase.spell.SaveSpellFilterUseCase
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.cache.HttpCache
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.LogLevel.BODY
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.http.headers
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val dataModule = module {
-    singleOf(::Dnd5Api)
-    single { RealmDataBase() }
-    single { SqlDatabase(get()) }
     single {
-        val builder = getDatabaseBuilder(get())
-        getDatabase(builder)
+        HttpClient {
+            install(ContentNegotiation) {
+                json(Json {
+                    ignoreUnknownKeys = true
+                    prettyPrint = true
+                    isLenient = true
+                })
+            }
+            install(Logging) {
+                level = BODY
+                logger = object : Logger {
+                    override fun log(message: String) {
+                        Napier.v(tag = "Http Client", message = message)
+                    }
+                }
+
+            }
+            install(HttpCache) {
+
+            }
+            install(HttpTimeout) {
+                requestTimeoutMillis = 5 * 60 * 1000
+                socketTimeoutMillis = 5 * 60 * 1000
+                connectTimeoutMillis = 5 * 60 * 1000
+            }
+            headers {
+                append("Accept", "application/json")
+                append("Content-Type", "application/json")
+            }
+
+        }.also { Napier.base(DebugAntilog()) }
     }
-    single { get<EncounterDatabase>().encounterDao() }
-    single { get<EncounterDatabase>().characterFighterDao() }
-    single { get<EncounterDatabase>().monsterFighterDao() }
+    single<MonsterApi> { MonsterApiImpl(get()) }
+    single<SpellApi> { SpellApiImpl(get()) }
+    single<ChatGptApi> { ChatGptApiImpl(get()) }
+    singleOf(::LocalDatasource)
+
+    single { SqlDatabase(get()) }
 }
 
 val repositoryModule = module {
-    singleOf(::SpellRepository)
     singleOf(::CharacterRepository)
-    singleOf(::MonsterRepository)
+    single<FavoriteRepository> { FavoriteRepositoryImpl(get()) }
+    single<MonsterRepository> { MonsterRepositoryImpl(get(), get(), get()) }
+    single<SpellRepository> { SpellRepositoryImpl(get()) }
     singleOf(::SpeciesRepository)
     singleOf(::BackgroundRepository)
     singleOf(::CampaignRepository)
@@ -74,6 +125,9 @@ val repositoryModule = module {
 
     factoryOf(::AddToFavoriteUseCase)
     factoryOf(::RemoveFromFavoriteUseCase)
+    factoryOf(::FilterMonstersListUseCase)
+    factoryOf(::GetMonsterByKeyUseCase)
+    factoryOf(::GetSpellByKeyUseCase)
 
     factory { ChallengeFilterUseCase(get()) }
 

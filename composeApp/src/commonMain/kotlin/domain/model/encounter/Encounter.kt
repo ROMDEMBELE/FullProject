@@ -1,5 +1,6 @@
 package domain.model.encounter
 
+import domain.model.Condition
 import domain.model.Level
 import domain.model.monster.Challenge
 
@@ -50,6 +51,5 @@ data class MonsterFighter(
     override val maxHitPoint: Int,
     override val currentHitPoint: Int,
     val index: String,
-    val xp: Int,
     val challenge: Challenge
 ) : EncounterFighter()

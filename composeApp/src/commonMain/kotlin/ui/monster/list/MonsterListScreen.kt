@@ -51,13 +51,13 @@ import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import domain.model.monster.Challenge
-import domain.model.monster.Monster
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.error_dialog_title
 import org.dembeyo.shared.resources.monster
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
+import ui.color
 import ui.composable.BigBold
 import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.CustomButton
@@ -110,7 +110,7 @@ class MonsterListScreen() : Screen {
                 if (uiState.monsterList.isEmpty()) {
                     Text("The spells database is empty...", style = BigBold)
                     Spacer(Modifier.height(8.dp))
-                    CustomButton(onClick = { viewModel.refresh() }) {
+                    CustomButton(onClick = { }) {
                         Text("Refresh", style = MediumBoldSecondary)
                     }
                 } else {
@@ -181,7 +181,7 @@ class MonsterListScreen() : Screen {
 
     @Composable
     fun ListOfMonster(
-        monsterByChallenge: Map<Challenge, List<Monster>>,
+        monsterByChallenge: Map<Challenge, List<MonsterListItem>>,
         viewModel: MonsterListViewModel
     ) {
         val navigator = LocalNavigator.currentOrThrow
@@ -192,7 +192,7 @@ class MonsterListScreen() : Screen {
                 Text(
                     text = "CR ${challenge.rating} (${monsterByChallenge[challenge]?.size ?: 0})",
                     modifier = Modifier.clip(CutCornerShape(8.dp))
-                        .background(challenge.color)
+                        .background(challenge.color())
                         .border(2.dp, darkBlue, CutCornerShape(8.dp))
                         .fillMaxWidth()
                         .padding(8.dp),
@@ -203,10 +203,14 @@ class MonsterListScreen() : Screen {
                 MonsterItem(
                     monster = monster,
                     onClick = {
-                        navigator.push(MonsterDetailScreen(monster.index))
+                        navigator.push(MonsterDetailScreen(monster.slug))
                     },
                     onFavoriteClick = {
-                        viewModel.toggleMonsterFavorite(monster)
+                        if (monster.isFavorite) {
+                            viewModel.removeFavorite(monster.slug)
+                        } else {
+                            viewModel.addFavorite(monster.slug)
+                        }
                     })
             },
         )
@@ -214,7 +218,7 @@ class MonsterListScreen() : Screen {
     }
 
     @Composable
-    fun MonsterItem(monster: Monster, onClick: () -> Unit, onFavoriteClick: () -> Unit) {
+    fun MonsterItem(monster: MonsterListItem, onClick: () -> Unit, onFavoriteClick: () -> Unit) {
         Button(
             shape = roundCornerShape,
             border = BorderStroke(2.dp, primary),
@@ -227,7 +231,7 @@ class MonsterListScreen() : Screen {
                 Brush.linearGradient(
                     listOf(
                         darkBlue,
-                        monster.challenge.color
+                        monster.challenge.color()
                     )
                 )
             Box(

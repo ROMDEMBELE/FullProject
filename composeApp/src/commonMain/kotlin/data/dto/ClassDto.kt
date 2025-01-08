@@ -8,13 +8,10 @@ data class ClassDto(
     val name: String,
     val hitDie: Int? = null,
     val proficiencyChoices: List<ProficiencyChoiceDto>? = null,
-    val proficiencies: List<ReferenceDto>? = null,
-    val savingThrows: List<ReferenceDto>? = null,
     val startingEquipment: List<StartingEquipmentDto>? = null,
     val startingEquipmentOptions: List<StartingEquipmentOptionDto>? = null,
     val classLevels: String? = null,
     val multiClassing: MultiClassingDto? = null,
-    val subclasses: List<ReferenceDto>? = null
 ) {
     @Serializable
     data class ProficiencyChoiceDto(
@@ -33,9 +30,7 @@ data class ClassDto(
     @Serializable
     data class OptionDto(
         val optionType: String,
-        val item: ReferenceDto? = null,
         val count: Int? = null,
-        val of: ReferenceDto? = null,
         val choice: ChoiceDto? = null
     )
 
@@ -49,7 +44,6 @@ data class ClassDto(
 
     @Serializable
     data class StartingEquipmentDto(
-        val equipment: ReferenceDto,
         val quantity: Int
     )
 
@@ -64,12 +58,10 @@ data class ClassDto(
     @Serializable
     data class MultiClassingDto(
         val prerequisites: List<MultiClassingPrerequisiteDto>,
-        val proficiencies: List<ReferenceDto>
     )
 
     @Serializable
     data class MultiClassingPrerequisiteDto(
-        val abilityScore: ReferenceDto,
         val minimumScore: Int
     )
 }
