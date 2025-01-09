@@ -1,4 +1,4 @@
-package ui.magicItem.list
+package ui.magicItem.search
 
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
@@ -15,10 +15,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MagicItemListViewModel(private val repository: MagicItemRepository) : ViewModel() {
+class SearchMagicItemViewModel(private val repository: MagicItemRepository) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(MagicItemListUiState())
-    val uiState: StateFlow<MagicItemListUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(SearchMagicItemUiState())
+    val uiState: StateFlow<SearchMagicItemUiState> = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {

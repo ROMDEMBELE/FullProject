@@ -24,9 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
+import androidx.navigation.NavHostController
 import domain.model.Campaign
 import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
@@ -47,111 +45,112 @@ import ui.composable.primary
 import ui.composable.roundCornerShape
 import ui.composable.secondary
 
-class EditCampaignScreen(val campaign: Campaign? = null) : Screen {
+@Composable
+fun EditCampaignScreen(
+    navHostController: NavHostController,
+    campaign: Campaign? = null
+) {
+    val scope = rememberCoroutineScope()
+    val viewModel: EditCampaignViewModel = koinInject()
+    val uiState by viewModel.uiState.collectAsState()
+    var deleteDialogDisplay by remember { mutableStateOf(false) }
 
-    @Composable
-    override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        val scope = rememberCoroutineScope()
-        val viewModel: EditCampaignViewModel = koinInject()
-        val uiState by viewModel.uiState.collectAsState()
-        var deleteDialogDisplay by remember { mutableStateOf(false) }
-
-        LaunchedEffect(campaign) {
-            if (campaign != null) {
-                viewModel.setEdit(campaign)
-            }
-        }
-
-
-        AnimatedVisibility(deleteDialogDisplay) {
-            CustomAlertDialog(
-                title = stringResource(Res.string.delete_campaign),
-                content = stringResource(
-                    Res.string.delete_campaign_confirm,
-                ),
-                onConfirm = {
-                    deleteDialogDisplay = false
-                    scope.launch {
-                        if (viewModel.deleteCampaign(false)) {
-                            navigator.pop()
-                        }
-                    }
-
-                },
-                onDismiss = {
-                    deleteDialogDisplay = false
-                }
-            )
-        }
-
-
-        Column(
-            modifier = Modifier.fillMaxSize().background(darkBlue).padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Text(stringResource(Res.string.edit_campaign_title), style = MediumBoldSecondary)
-
-            TextField(
-                value = uiState.name,
-                shape = roundCornerShape,
-                singleLine = true,
-                onValueChange = { viewModel.updateName(it) },
-                placeholder = { Text("ex : Le Murmure de la Forêt") },
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = secondary,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    textColor = darkBlue
-                )
-            )
-
-            Text(stringResource(Res.string.edit_campaign_description), style = MediumBoldSecondary)
-
-            TextField(
-                value = uiState.description,
-                shape = roundCornerShape,
-                onValueChange = { viewModel.updateDescription(it) },
-                placeholder = { Text("Une ancienne forêt s’est éveillée avec des esprits malveillants et des murmures étranges. Les aventuriers doivent découvrir l’histoire sombre qui a réveillé ces esprits et affronter le cœur maléfique de la forêt pour restaurer la paix dans la région.") },
-                modifier = Modifier.height(400.dp).fillMaxWidth(),
-                singleLine = false,
-                maxLines = 30,
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = secondary,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    textColor = darkBlue
-                )
-            )
-
-            CustomButton(
-                enabled = uiState.isValid,
-                onClick = {
-                    scope.launch {
-                        viewModel.save()
-                        navigator.pop()
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(Res.string.save_button))
-            }
-            if (campaign != null) {
-                CustomButton(
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = primary,
-                        contentColor = darkPrimary
-                    ),
-                    onClick = { deleteDialogDisplay = true },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(stringResource(Res.string.delete_button))
-                }
-            }
-
+    LaunchedEffect(campaign)
+    {
+        if (campaign != null) {
+            viewModel.setEdit(campaign)
         }
     }
 
+
+    AnimatedVisibility(deleteDialogDisplay)
+    {
+        CustomAlertDialog(
+            title = stringResource(Res.string.delete_campaign),
+            content = stringResource(
+                Res.string.delete_campaign_confirm,
+            ),
+            onConfirm = {
+                deleteDialogDisplay = false
+                scope.launch {
+                    if (viewModel.deleteCampaign(false)) {
+                        navHostController.popBackStack()
+                    }
+                }
+
+            },
+            onDismiss = {
+                deleteDialogDisplay = false
+            }
+        )
+    }
+
+
+    Column(
+        modifier = Modifier.fillMaxSize().background(darkBlue).padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly
+    )
+    {
+        Text(stringResource(Res.string.edit_campaign_title), style = MediumBoldSecondary)
+
+        TextField(
+            value = uiState.name,
+            shape = roundCornerShape,
+            singleLine = true,
+            onValueChange = { viewModel.updateName(it) },
+            placeholder = { Text("ex : Le Murmure de la Forêt") },
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = secondary,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                textColor = darkBlue
+            )
+        )
+
+        Text(stringResource(Res.string.edit_campaign_description), style = MediumBoldSecondary)
+
+        TextField(
+            value = uiState.description,
+            shape = roundCornerShape,
+            onValueChange = { viewModel.updateDescription(it) },
+            placeholder = { Text("Une ancienne forêt s’est éveillée avec des esprits malveillants et des murmures étranges. Les aventuriers doivent découvrir l’histoire sombre qui a réveillé ces esprits et affronter le cœur maléfique de la forêt pour restaurer la paix dans la région.") },
+            modifier = Modifier.height(400.dp).fillMaxWidth(),
+            singleLine = false,
+            maxLines = 30,
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = secondary,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                textColor = darkBlue
+            )
+        )
+
+        CustomButton(
+            enabled = uiState.isValid,
+            onClick = {
+                scope.launch {
+                    viewModel.save()
+                    navHostController.popBackStack()
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(stringResource(Res.string.save_button))
+        }
+        if (campaign != null) {
+            CustomButton(
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = primary,
+                    contentColor = darkPrimary
+                ),
+                onClick = { deleteDialogDisplay = true },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringResource(Res.string.delete_button))
+            }
+        }
+
+    }
 }

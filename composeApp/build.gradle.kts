@@ -82,6 +82,7 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.navigation.compose)
 
             // Ktor
             implementation(libs.ktor.client.core)
@@ -94,11 +95,6 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.coroutines.extensions)
-
-            // Voyager
-            implementation(libs.voyager.navigator)
-            implementation(libs.voyager.transitions)
-            implementation(libs.voyager.koin)
 
             // Koin
             implementation(libs.koin.core)

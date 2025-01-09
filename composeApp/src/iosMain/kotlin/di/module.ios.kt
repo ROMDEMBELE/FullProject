@@ -14,18 +14,18 @@ import ui.campaign.main.CampaignViewModel
 import ui.character.CharacterViewModel
 import ui.character.edit.EditCharacterViewModel
 import ui.magicItem.details.MagicItemDetailsViewModel
-import ui.magicItem.list.MagicItemListViewModel
+import ui.magicItem.search.SearchMagicItemViewModel
 import ui.monster.details.MonsterDetailsViewModel
 import ui.monster.search.SearchMonsterViewModel
 import ui.spell.details.SpellDetailsViewModel
-import ui.spell.list.SpellListViewModel
+import ui.spell.search.SearchSpellViewModel
 
 actual fun platformModule(): Module = module {
     single {
         Darwin.create()
     }
     single { DriverFactory() }
-    factoryOf(::SpellListViewModel)
+    factoryOf(::SearchSpellViewModel)
     factoryOf(::SpellDetailsViewModel)
     factoryOf(::EditCharacterViewModel)
     factoryOf(::CharacterViewModel)
@@ -33,19 +33,19 @@ actual fun platformModule(): Module = module {
     factoryOf(::MonsterDetailsViewModel)
     factoryOf(::EditCampaignViewModel)
     factoryOf(::CampaignViewModel)
-    factoryOf(::MagicItemListViewModel)
+    factoryOf(::SearchMagicItemViewModel)
     factoryOf(::MagicItemDetailsViewModel)
 
     single { SettingsStorage(IosContext) }
 }
 
 object ViewModelProvider : KoinComponent {
-    fun getSpellScreenListViewModel() = SpellListViewModel(get(), get(), get())
+    fun getSpellScreenListViewModel() = SearchSpellViewModel(get(), get(), get())
     fun getSpellScreenDetailsViewModel() = SpellDetailsViewModel(get())
     fun getEditCharacterViewModel() = EditCharacterViewModel(get(), get(), get(), get(), get())
     fun getCharacterViewModel() = CharacterViewModel(get(), get())
     fun getMonsterListViewModel() = SearchMonsterViewModel(get(), get(), get(), get(), get())
     fun getMonsterDetailsViewModel() = MonsterDetailsViewModel(get())
-    fun getMagicItemListViewModel() = MagicItemListViewModel(get())
+    fun getMagicItemListViewModel() = SearchMagicItemViewModel(get())
     fun getMagicItemDetailsViewModel() = MagicItemDetailsViewModel(get())
 }

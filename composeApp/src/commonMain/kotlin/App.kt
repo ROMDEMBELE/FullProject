@@ -1,3 +1,8 @@
+import AppRoute.HOME
+import AppRoute.MONSTER
+import AppRoute.SEARCH_MONSTER
+import AppRoute.SEARCH_SPELL
+import AppRoute.SPELL
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -13,11 +18,11 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -26,132 +31,163 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.navigator.CurrentScreen
-import cafe.adriel.voyager.navigator.Navigator
+import androidx.navigation.NamedNavArgument
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.adventure
 import org.dembeyo.shared.resources.ancient
 import org.dembeyo.shared.resources.castle_empty
-import org.dembeyo.shared.resources.edit_campaign_screen
-import org.dembeyo.shared.resources.menu_campaign
-import org.dembeyo.shared.resources.menu_character
-import org.dembeyo.shared.resources.menu_magic_item
-import org.dembeyo.shared.resources.menu_monster
 import org.dembeyo.shared.resources.menu_screen_title
-import org.dembeyo.shared.resources.menu_spell
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import ui.campaign.edit.EditCampaignScreen
-import ui.campaign.main.CampaignScreen
-import ui.character.CharacterListScreen
-import ui.character.edit.EditCharacterScreen
+import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
 import ui.composable.darkBlue
-import ui.composable.darkGray
 import ui.composable.primary
 import ui.composable.secondary
 import ui.home.MenuDrawer
 import ui.home.MenuScreen
-import ui.magicItem.details.MagicItemDetailsScreen
-import ui.magicItem.list.MagicItemListScreen
 import ui.monster.details.MonsterDetailScreen
+import ui.monster.details.MonsterDetailsViewModel
 import ui.monster.search.SearchMonsterScreen
+import ui.monster.search.SearchMonsterViewModel
 import ui.spell.details.SpellDetailsScreen
-import ui.spell.list.SpellListScreen
+import ui.spell.details.SpellDetailsViewModel
+import ui.spell.search.SearchSpellScreen
+import ui.spell.search.SearchSpellViewModel
 
 @Composable
 @Preview
 fun App() {
-    var lang by remember { mutableStateOf(Language.French.isoFormat) }
+    val lang by remember { mutableStateOf(Language.French.isoFormat) }
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
     val scope = rememberCoroutineScope()
+    val navController = rememberNavController()
+    val currentScreen by navController.currentBackStackEntryFlow.collectAsState(null)
+
+    val openDrawer: () -> Unit = {
+        scope.launch {
+            scaffoldState.drawerState.open()
+        }
+    }
+
+    val closeDrawer: () -> Unit = {
+        scope.launch {
+            scaffoldState.drawerState.close()
+        }
+    }
+
     LocalizedApp(lang) {
-        Navigator(
-            screen = MenuScreen(),
-            onBackPressed = {
-                if (scaffoldState.drawerState.isOpen) {
-                    scope.launch { scaffoldState.drawerState.close() }
-                    false
-                } else {
-                    true
-                }
-            }) { navigator ->
-            Scaffold(
-                scaffoldState = scaffoldState,
-                drawerBackgroundColor = secondary,
-                drawerContent = {
-                    MenuDrawer(navigator) {
-                        scope.launch {
-                            scaffoldState.drawerState.close()
+        Scaffold(
+            scaffoldState = scaffoldState,
+            drawerBackgroundColor = secondary,
+            drawerContent = {
+                MenuDrawer(navController, closeDrawer)
+            },
+            topBar = {
+                TopAppBar(backgroundColor = darkBlue) {
+                    Box(Modifier.fillMaxSize()) {
+                        IconButton(
+                            modifier = Modifier.align(Alignment.CenterStart),
+                            onClick = openDrawer
+                        ) {
+                            Image(
+                                painter = painterResource(Res.drawable.adventure),
+                                contentDescription = null,
+                                colorFilter = ColorFilter.tint(primary),
+                                modifier = Modifier.size(24.dp).aspectRatio(1f)
+                            )
                         }
-                    }
-                },
-                topBar = {
-                    TopAppBar(backgroundColor = darkBlue) {
-                        Box(Modifier.fillMaxSize()) {
+                        AnimatedContent(
+                            currentScreen,
+                            Modifier.fillMaxWidth().align(Alignment.Center)
+                        ) { currentScreen ->
+                            val title =
+                                currentScreen?.destination?.route?.let {
+                                    AppRoute.entries.find { route ->
+                                        route.isRouteMatching(
+                                            it
+                                        )
+                                    }?.title
+                                } ?: Res.string.menu_screen_title
+                            Text(
+                                stringResource(title),
+                                fontSize = 30.sp,
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = FontFamily(Font(Res.font.ancient)),
+                                color = primary,
+                            )
                             IconButton(
-                                modifier = Modifier.align(Alignment.CenterStart),
+                                enabled = true,
+                                modifier = Modifier.align(Alignment.CenterEnd),
                                 onClick = {
-                                    scope.launch {
-                                        scaffoldState.drawerState.open()
-                                    }
+                                    // TODO navigate to Campaign Screen
                                 }) {
                                 Image(
-                                    painter = painterResource(Res.drawable.adventure),
+                                    painter = painterResource(Res.drawable.castle_empty),
                                     contentDescription = null,
                                     colorFilter = ColorFilter.tint(primary),
                                     modifier = Modifier.size(24.dp).aspectRatio(1f)
                                 )
                             }
-                            AnimatedContent(
-                                navigator.lastItem,
-                                Modifier.fillMaxWidth().align(Alignment.Center)
-                            ) { currentScreen ->
-                                val title = when (currentScreen) {
-                                    is EditCampaignScreen -> Res.string.edit_campaign_screen
-                                    is CampaignScreen -> Res.string.menu_campaign
-                                    is SpellListScreen, is SpellDetailsScreen -> Res.string.menu_spell
-                                    is SearchMonsterScreen, is MonsterDetailScreen -> Res.string.menu_monster
-                                    is CharacterListScreen, is EditCharacterScreen -> Res.string.menu_character
-                                    is MagicItemListScreen, is MagicItemDetailsScreen -> Res.string.menu_magic_item
-                                    else -> Res.string.menu_screen_title
-                                }
-                                Text(
-                                    stringResource(title),
-                                    fontSize = 30.sp,
-                                    textAlign = TextAlign.Center,
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = FontFamily(Font(Res.font.ancient)),
-                                    color = primary,
-                                )
-                            }
-                            val campaignButtonEnabled = navigator.lastItem !is CampaignScreen
-                            IconButton(
-                                enabled = campaignButtonEnabled,
-                                modifier = Modifier.align(Alignment.CenterEnd),
-                                onClick = {
-                                    scope.launch {
-                                        navigator.push(CampaignScreen())
-                                    }
-                                }) {
-                                Image(
-                                    painter = painterResource(Res.drawable.castle_empty),
-                                    contentDescription = null,
-                                    colorFilter = ColorFilter.tint(if (campaignButtonEnabled) primary else darkGray),
-                                    modifier = Modifier.size(24.dp).aspectRatio(1f)
-                                )
-                            }
                         }
-
                     }
                 }
-            ) { _ ->
-                Box {
-                    CurrentScreen()
+            }
+        ) { _ ->
+            Box {
+                NavHost(
+                    navController = navController,
+                    startDestination = HOME.route,
+                ) {
+                    composable(HOME.route) {
+                        MenuScreen(navController)
+                    }
+                    composable(SEARCH_SPELL.route) {
+                        val viewModel: SearchSpellViewModel = koinInject()
+                        SearchSpellScreen(navController, viewModel)
+                    }
+                    composable(
+                        route = SPELL.route,
+                        arguments = listOf(index)
+                    ) {
+                        val index = it.arguments?.getString("index")
+                            ?: throw IllegalStateException("Nav argument 'index' is required to display a spell")
+                        val viewModel: SpellDetailsViewModel = koinInject { parametersOf(index) }
+                        SpellDetailsScreen(viewModel)
+                    }
+                    composable(SEARCH_MONSTER.route) {
+
+                        val viewModel: SearchMonsterViewModel = koinInject()
+                        SearchMonsterScreen(navController, viewModel)
+                    }
+                    composable(
+                        route = MONSTER.route,
+                        arguments = listOf(index)
+                    ) {
+                        val index = it.arguments?.getString("index")
+                            ?: throw IllegalStateException("Nav argument 'index' is required to display a monster")
+                        val viewModel: MonsterDetailsViewModel = koinInject()
+
+                        MonsterDetailScreen(index, viewModel)
+                    }
                 }
             }
         }
     }
 }
+
+val index: NamedNavArgument = navArgument("index") {
+    type = NavType.StringType
+    nullable = false
+}
+
+enum class MenuItem

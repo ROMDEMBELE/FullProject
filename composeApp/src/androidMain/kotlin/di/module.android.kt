@@ -12,14 +12,14 @@ import ui.character.CharacterViewModel
 import ui.character.edit.EditCharacterViewModel
 import ui.encounter.EncounterListViewModel
 import ui.magicItem.details.MagicItemDetailsViewModel
-import ui.magicItem.list.MagicItemListViewModel
+import ui.magicItem.search.SearchMagicItemViewModel
 import ui.monster.details.MonsterDetailsViewModel
 import ui.monster.search.SearchMonsterViewModel
 import ui.spell.details.SpellDetailsViewModel
-import ui.spell.list.SpellListViewModel
+import ui.spell.search.SearchSpellViewModel
 
 actual fun platformModule(): Module = module {
-    viewModelOf(::SpellListViewModel)
+    viewModelOf(::SearchSpellViewModel)
     viewModelOf(::SpellDetailsViewModel)
     viewModelOf(::EditCharacterViewModel)
     viewModelOf(::SearchMonsterViewModel)
@@ -27,7 +27,7 @@ actual fun platformModule(): Module = module {
     viewModelOf(::CharacterViewModel)
     viewModelOf(::EditCampaignViewModel)
     viewModelOf(::CampaignViewModel)
-    viewModelOf(::MagicItemListViewModel)
+    viewModelOf(::SearchMagicItemViewModel)
     viewModelOf(::MagicItemDetailsViewModel)
     viewModelOf(::EncounterListViewModel)
 

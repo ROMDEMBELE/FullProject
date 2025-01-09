@@ -1,5 +1,6 @@
 package ui.home
 
+import AppRoute
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
@@ -45,38 +46,16 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.core.screen.ScreenKey
-import cafe.adriel.voyager.core.screen.uniqueScreenKey
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
+import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.ancient
-import org.dembeyo.shared.resources.battle
-import org.dembeyo.shared.resources.home
-import org.dembeyo.shared.resources.knight
-import org.dembeyo.shared.resources.magic
-import org.dembeyo.shared.resources.magic_item
-import org.dembeyo.shared.resources.menu_battle
-import org.dembeyo.shared.resources.menu_character
-import org.dembeyo.shared.resources.menu_equipment
-import org.dembeyo.shared.resources.menu_home
-import org.dembeyo.shared.resources.menu_magic_item
-import org.dembeyo.shared.resources.menu_monster
-import org.dembeyo.shared.resources.menu_spell
-import org.dembeyo.shared.resources.monster
-import org.dembeyo.shared.resources.sword_tie
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.Font
-import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import ui.encounter.EncounterListScreen
-import ui.character.CharacterListScreen
 import ui.composable.bounceClick
 import ui.composable.darkBlue
 import ui.composable.darkGray
@@ -84,123 +63,107 @@ import ui.composable.darkPrimary
 import ui.composable.primary
 import ui.composable.roundCornerShape
 import ui.composable.secondary
-import ui.magicItem.list.MagicItemListScreen
-import ui.monster.search.SearchMonsterScreen
-import ui.spell.list.SpellListScreen
 
-class MenuScreen : Screen {
+@Composable
+fun MenuScreen(navController: NavHostController) {
 
-    override val key: ScreenKey
-        get() = uniqueScreenKey
+    val scope = rememberCoroutineScope()
 
-    @Composable
-    override fun Content() {
-        val scope = rememberCoroutineScope()
-        val navigator = LocalNavigator.currentOrThrow
-        LazyVerticalGrid(
-            modifier = Modifier.background(secondary).fillMaxSize().padding(16.dp),
-            columns = GridCells.Fixed(2),
-            verticalArrangement = Arrangement.SpaceEvenly,
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            items(MenuItem.entries.filter { it != MenuItem.HOME }) { menu ->
-                MenuItemView(menu) {
-                    scope.launch {
-                        delay(200)
-                        when (menu) {
-                            MenuItem.MAGIC_SPELLS -> navigator.push(SpellListScreen())
-                            MenuItem.BATTLE -> navigator.push(EncounterListScreen())
-                            MenuItem.MONSTERS -> navigator.push(SearchMonsterScreen())
-                            MenuItem.MAGIC_ITEMS -> navigator.push(MagicItemListScreen())
-                            MenuItem.CHARACTERS -> navigator.push(CharacterListScreen())
-                            MenuItem.EQUIPMENTS -> {}
-                            MenuItem.HOME -> {}
-                        }
-                    }
+    LazyVerticalGrid(
+        modifier = Modifier.background(secondary).fillMaxSize().padding(16.dp),
+        columns = GridCells.Fixed(2),
+        verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+
+        items(
+            listOf(
+                AppRoute.SEARCH_SPELL,
+                AppRoute.SEARCH_MONSTER,
+                AppRoute.SEARCH_MAGIC_ITEM,
+                AppRoute.SEARCH_CHARACTER,
+                AppRoute.SEARCH_EQUIPMENT
+            )
+        ) { route ->
+            MenuItemView(route) {
+                scope.launch {
+                    delay(200)
+                    navController.navigate(route.route)
                 }
             }
         }
-    }
-
-    internal class NoRippleInteractionSource : MutableInteractionSource {
-
-        override val interactions: Flow<Interaction> = emptyFlow()
-
-        override suspend fun emit(interaction: Interaction) {}
-
-        override fun tryEmit(interaction: Interaction) = true
-    }
-
-    @Composable
-    fun MenuItemView(menu: MenuItem, onClick: () -> Unit) {
-        val infiniteTransition = rememberInfiniteTransition()
-        val colorAnimation by infiniteTransition.animateColor(
-            primary,
-            darkPrimary,
-            infiniteRepeatable(tween(10000), RepeatMode.Reverse)
-        )
-        val interactionSource = remember { NoRippleInteractionSource() }
-        Button(
-            modifier = Modifier.height(220.dp).bounceClick(),
-            shape = roundCornerShape,
-            interactionSource = interactionSource,
-            border = BorderStroke(2.dp, secondary),
-            elevation = ButtonDefaults.elevation(4.dp),
-            contentPadding = PaddingValues(0.dp),
-            colors = ButtonDefaults.buttonColors(darkBlue),
-            onClick = onClick,
-        ) {
-            val surfaceColorGradient =
-                Brush.linearGradient(listOf(darkBlue, darkBlue, darkGray, darkBlue, darkBlue))
-            Surface(
-                color = Color.Transparent,
-                shape = RoundedCornerShape(10.dp),
-                border = BorderStroke(2.dp, secondary),
-                modifier = Modifier.padding(8.dp).clip(RoundedCornerShape(10.dp))
-                    .background(surfaceColorGradient)
-            ) {
-                Box(Modifier.fillMaxSize().padding(8.dp)) {
-                    Image(
-                        painter = painterResource(menu.icon),
-                        contentDescription = menu.icon.toString(),
-                        modifier = Modifier.padding(16.dp).fillMaxSize()
-                            .aspectRatio(1f)
-                            .alpha(0.6f)
-                            .drawWithContent {
-                                drawContent()
-                                drawRect(colorAnimation, blendMode = BlendMode.SrcAtop)
-                            }
-                            .align(Alignment.Center)
-                    )
-
-                    Text(
-                        text = stringResource(menu.title),
-                        modifier = Modifier.align(Alignment.Center).fillMaxWidth(),
-                        color = secondary,
-                        textAlign = TextAlign.Center,
-                        fontSize = 30.sp,
-                        fontFamily = FontFamily(Font(Res.font.ancient)),
-                        style = TextStyle(
-                            shadow = Shadow(
-                                color = primary,
-                                offset = Offset(5f, 5f),
-                                blurRadius = 12f
-                            )
-                        )
-                    )
-
-                }
-            }
-        }
-    }
-
-    enum class MenuItem(val title: StringResource, val icon: DrawableResource) {
-        HOME(Res.string.menu_home, Res.drawable.home),
-        MAGIC_SPELLS(Res.string.menu_spell, Res.drawable.magic),
-        MONSTERS(Res.string.menu_monster, Res.drawable.monster),
-        BATTLE(Res.string.menu_battle, Res.drawable.battle),
-        MAGIC_ITEMS(Res.string.menu_magic_item, Res.drawable.magic_item),
-        CHARACTERS(Res.string.menu_character, Res.drawable.knight),
-        EQUIPMENTS(Res.string.menu_equipment, Res.drawable.sword_tie)
     }
 }
+
+internal class NoRippleInteractionSource : MutableInteractionSource {
+
+    override val interactions: Flow<Interaction> = emptyFlow()
+
+    override suspend fun emit(interaction: Interaction) {}
+
+    override fun tryEmit(interaction: Interaction) = true
+}
+
+@Composable
+fun MenuItemView(route: AppRoute, onClick: () -> Unit) {
+    val infiniteTransition = rememberInfiniteTransition()
+    val colorAnimation by infiniteTransition.animateColor(
+        primary,
+        darkPrimary,
+        infiniteRepeatable(tween(10000), RepeatMode.Reverse)
+    )
+    val interactionSource = remember { NoRippleInteractionSource() }
+    Button(
+        modifier = Modifier.height(220.dp).bounceClick(),
+        shape = roundCornerShape,
+        interactionSource = interactionSource,
+        border = BorderStroke(2.dp, secondary),
+        elevation = ButtonDefaults.elevation(4.dp),
+        contentPadding = PaddingValues(0.dp),
+        colors = ButtonDefaults.buttonColors(darkBlue),
+        onClick = onClick,
+    ) {
+        val surfaceColorGradient =
+            Brush.linearGradient(listOf(darkBlue, darkBlue, darkGray, darkBlue, darkBlue))
+        Surface(
+            color = Color.Transparent,
+            shape = RoundedCornerShape(10.dp),
+            border = BorderStroke(2.dp, secondary),
+            modifier = Modifier.padding(8.dp).clip(RoundedCornerShape(10.dp))
+                .background(surfaceColorGradient)
+        ) {
+            Box(Modifier.fillMaxSize().padding(8.dp)) {
+                Image(
+                    painter = painterResource(route.icon),
+                    contentDescription = route.icon.toString(),
+                    modifier = Modifier.padding(16.dp).fillMaxSize()
+                        .aspectRatio(1f)
+                        .alpha(0.6f)
+                        .drawWithContent {
+                            drawContent()
+                            drawRect(colorAnimation, blendMode = BlendMode.SrcAtop)
+                        }
+                        .align(Alignment.Center)
+                )
+
+                Text(
+                    text = stringResource(route.title),
+                    modifier = Modifier.align(Alignment.Center).fillMaxWidth(),
+                    color = secondary,
+                    textAlign = TextAlign.Center,
+                    fontSize = 30.sp,
+                    fontFamily = FontFamily(Font(Res.font.ancient)),
+                    style = TextStyle(
+                        shadow = Shadow(
+                            color = primary,
+                            offset = Offset(5f, 5f),
+                            blurRadius = 12f
+                        )
+                    )
+                )
+
+            }
+        }
+    }
+}
+

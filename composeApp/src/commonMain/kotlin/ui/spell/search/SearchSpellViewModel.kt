@@ -1,4 +1,4 @@
-package ui.spell.list
+package ui.spell.search
 
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SpellListViewModel(
+class SearchSpellViewModel(
     private val spellRepository: SpellRepository,
     private val saveSpellFilter: SaveSpellFilterUseCase,
     private val getSpellFilter: GetSpellFilterUseCase
@@ -59,13 +59,21 @@ class SpellListViewModel(
     fun refresh() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                _uiState.update { it.copy(isReady = false) }
+                _uiState.update { it.copy(isLoading = false) }
                 try {
 
                 } catch (e: Exception) {
-                    _uiState.update { it.copy(isReady = true, error = e.message) }
+                    _uiState.update { it.copy(isLoading = true, error = e.message) }
                 }
             }
         }
+    }
+
+    fun removeFavorite(key: String) {
+        TODO("Not yet implemented")
+    }
+
+    fun addFavorite(key: String) {
+        TODO("Not yet implemented")
     }
 }

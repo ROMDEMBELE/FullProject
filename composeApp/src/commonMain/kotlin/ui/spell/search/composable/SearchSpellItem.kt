@@ -1,4 +1,4 @@
-package ui.monster.search.composable
+package ui.spell.search.composable
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -23,57 +23,45 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import org.dembeyo.shared.resources.Res
-import org.dembeyo.shared.resources.monster
+import org.dembeyo.shared.resources.magic
 import org.jetbrains.compose.resources.painterResource
 import ui.color
 import ui.composable.bounceClick
 import ui.composable.darkBlue
 import ui.composable.darkGray
 import ui.composable.item
+import ui.composable.primary
 import ui.composable.roundCornerShape
-import ui.monster.search.SearchMonsterItem
-
+import ui.composable.yellow
+import ui.spell.search.SearchSpellItem
 
 @Composable
-fun SearchMonsterItem(
-    monster: SearchMonsterItem,
-    onClick: () -> Unit,
-    onFavoriteClick: () -> Unit
-) {
+fun SearchSpellItem(spell: SearchSpellItem, onClick: () -> Unit, onFavoriteClick: () -> Unit) {
     Button(
         shape = roundCornerShape,
-        border = BorderStroke(2.dp, darkBlue),
+        border = BorderStroke(2.dp, primary),
         contentPadding = PaddingValues(),
         modifier = Modifier.padding(4.dp).fillMaxWidth().height(66.dp).bounceClick(),
-        colors = ButtonDefaults.buttonColors(Color.Transparent),
+        colors = ButtonDefaults.buttonColors(darkBlue),
         onClick = onClick
     ) {
-        val boxMonsterBrush =
-            Brush.linearGradient(
-                listOf(
-                    darkBlue,
-                    monster.challenge.color()
-                )
-            )
-        Box(
-            Modifier.background(boxMonsterBrush)
-        ) {
+        val brush = Brush.linearGradient(listOf(darkBlue, darkBlue, spell.level.color()))
+        Box(Modifier.background(brush)) {
             Image(
-                painterResource(Res.drawable.monster),
+                painterResource(Res.drawable.magic),
                 null,
-                colorFilter = ColorFilter.tint(darkBlue),
+                colorFilter = ColorFilter.tint(primary),
                 modifier = Modifier.fillMaxHeight()
-                    .rotate(-20f)
+                    .rotate(20f)
                     .scale(1.5f)
                     .align(Alignment.Center)
                     .alpha(.5f)
             )
             Text(
-                monster.name,
+                spell.name,
                 style = item,
                 modifier = Modifier.padding(8.dp)
                     .fillMaxWidth()
@@ -84,9 +72,9 @@ fun SearchMonsterItem(
                 modifier = Modifier.align(Alignment.CenterEnd).padding(10.dp)
             ) {
                 Icon(
-                    Icons.Filled.Star,
+                    Icons.Default.Star,
                     null,
-                    tint = if (monster.isFavorite) Color.Yellow else darkGray
+                    tint = if (spell.isFavorite) yellow else darkGray
                 )
             }
         }

@@ -39,9 +39,6 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.core.screen.ScreenKey
-import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import domain.model.Ability
 import domain.model.Ability.Companion.getAbilityBonus
 import domain.model.monster.Action
@@ -80,7 +77,6 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import ui.color
 import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.MediumBoldSecondary
@@ -101,406 +97,400 @@ import ui.getAbilityBonusColor
 import ui.joinToString
 import ui.stringRes
 
-class MonsterDetailScreen(private val index: String) : Screen {
+@Composable
+fun MonsterDetailScreen(index: String, viewModel: MonsterDetailsViewModel) {
 
-    override val key: ScreenKey
-        get() = uniqueScreenKey
+    val uiState by viewModel.uiState.collectAsState()
 
-    @Composable
-    override fun Content() {
-        val viewModel: MonsterDetailsViewModel = koinInject()
-        val uiState by viewModel.uiState.collectAsState()
+    LaunchedEffect(index) {
+        viewModel.fetchMonster(index)
+    }
 
-        LaunchedEffect(index) {
-            viewModel.fetchMonster(index)
-        }
+    AnimatedContent(uiState, transitionSpec = { fadeIn().togetherWith(fadeOut()) }) { state ->
+        if (!state.isReady) {
+            CustomAnimatedPlaceHolder()
+        } else {
+            val brush =
+                Brush.linearGradient(listOf(lightGray, secondary, state.challenge.color()))
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+                    .background(brush)
+                    .padding(horizontal = 8.dp)
+            ) {
+                item {
+                    CustomDivider()
+                    // Monster X
+                    Text(text = state.name.toString(), style = monsterTitle)
+                    Spacer(Modifier.height(4.dp))
+                    // Size, Type of Creature, Alignment
+                    val alignmentText = stringResource(state.alignment.stringRes())
+                    val sizeText = stringResource(state.size.stringRes())
+                    val typeText = stringResource(state.type.stringRes())
+                    Text(text = "$sizeText $typeText, $alignmentText", style = monsterSubTitle)
+                    TaperedRule()
 
-        AnimatedContent(uiState, transitionSpec = { fadeIn().togetherWith(fadeOut()) }) { state ->
-            if (!state.isReady) {
-                CustomAnimatedPlaceHolder()
-            } else {
-                val brush =
-                    Brush.linearGradient(listOf(lightGray, secondary, state.challenge.color()))
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize()
-                        .background(brush)
-                        .padding(horizontal = 8.dp)
-                ) {
-                    item {
-                        CustomDivider()
-                        // Monster X
-                        Text(text = state.name.toString(), style = monsterTitle)
-                        Spacer(Modifier.height(4.dp))
-                        // Size, Type of Creature, Alignment
-                        val alignmentText = stringResource(state.alignment.stringRes())
-                        val sizeText = stringResource(state.size.stringRes())
-                        val typeText = stringResource(state.type.stringRes())
-                        Text(text = "$sizeText $typeText, $alignmentText", style = monsterSubTitle)
-                        TaperedRule()
+                    // Armor Class 16 ( Plate Armor )
+                    PropertyLine(Res.string.monster_armor_class, state.armorsClass.toString())
 
-                        // Armor Class 16 ( Plate Armor )
-                        PropertyLine(Res.string.monster_armor_class, state.armorsClass.toString())
+                    // Hit Points 10 3d6 + 12
+                    PropertyLine(Res.string.monster_hit_points, state.hitPoints.toString())
 
-                        // Hit Points 10 3d6 + 12
-                        PropertyLine(Res.string.monster_hit_points, state.hitPoints.toString())
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth()
-                                .padding(vertical = 2.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(secondary),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = stringResource(Res.string.monster_speed),
-                                style = propertyTitle,
-                                modifier = Modifier.padding(4.dp).weight(1f)
-                            )
-                            speed(Res.string.walk, state.walkSpeed, Res.drawable.walk)
-                            if (state.swimSpeed > 10) {
-                                speed(
-                                    Res.string.swim,
-                                    state.swimSpeed,
-                                    Res.drawable.swim
-                                )
-                            }
-                            if (state.flySpeed > 10) {
-                                speed(
-                                    Res.string.fly,
-                                    state.flySpeed,
-                                    Res.drawable.wing
-                                )
-                            }
-                            if (state.burrowSpeed > 10) {
-                                speed(
-                                    Res.string.burrow,
-                                    state.burrowSpeed,
-                                    Res.drawable.ghost
-                                )
-                            }
-
-                            if (state.climbSpeed > 10) {
-                                speed(
-                                    Res.string.climb,
-                                    state.climbSpeed,
-                                    Res.drawable.climb
-                                )
-                            }
-                            if (state.hover) {
-                                speed(Res.string.hover, 0.0, Res.drawable.ghost)
-                            }
-
-                        }
-
-                        TaperedRule()
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Ability.entries.forEach { ability ->
-                                when (ability) {
-                                    Ability.STR -> AbilityChip(ability.name, state.strength)
-                                    Ability.DEX -> AbilityChip(ability.name, state.dexterity)
-                                    Ability.CON -> AbilityChip(ability.name, state.constitution)
-                                    Ability.INT -> AbilityChip(ability.name, state.intelligence)
-                                    Ability.WIS -> AbilityChip(ability.name, state.wisdom)
-                                    Ability.CHA -> AbilityChip(ability.name, state.charisma)
-                                }
-                            }
-                        }
-
-                        TaperedRule()
-
-                        if (state.nonMagicalAttackResistance) {
-                            PropertyLine(Res.string.non_magical_attack_resistance, "")
-                        }
-
-                        if (state.nonMagicalAttackImmunity) {
-                            PropertyLine(Res.string.non_magical_attack_immunity, "")
-                        }
-
-                        if (state.hasVulnerabilities) {
-                            val vulnerabilities =
-                                state.damageVulnerabilities.joinToString(",") { stringResource(it.stringRes()) }
-                            PropertyLine(Res.string.monster_damage_vulnerabilities, vulnerabilities)
-                        }
-                        if (state.hasImmunities) {
-                            val immunities =
-                                state.damageImmunities.joinToString(",") { stringResource(it.stringRes()) }
-                            PropertyLine(Res.string.monster_damage_immunities, immunities)
-                        }
-                        if (state.hasResistances) {
-                            val resistances =
-                                state.damageResistances.joinToString(",") { stringResource(it.stringRes()) }
-                            PropertyLine(Res.string.monster_damage_resistances, resistances)
-                        }
-                        if (state.hasConditionImmunities) {
-                            val conditionImmunities =
-                                state.conditionImmunities.joinToString(",") { stringResource(it.stringRes()) }
-                            PropertyLine(
-                                Res.string.monster_condition_immunities,
-                                conditionImmunities
-                            )
-                        }
-
-                        PropertyLine(
-                            Res.string.monster_senses_passive_perception,
-                            state.passivePerception.toString()
-                        )
-
-                        val senses = buildString {
-                            if (state.darkVision != null) {
-                                append("${stringResource(Res.string.monster_senses_dark_vision)} ${state.darkVision}")
-                            }
-                            if (state.trueSight != null) {
-                                append("${stringResource(Res.string.monster_senses_true_sight)} ${state.trueSight} ")
-                            }
-                            if (state.tremorSense != null) {
-                                append("${stringResource(Res.string.monster_senses_tremor_sense)} ${state.tremorSense} ")
-                            }
-                            if (state.blindSight != null) {
-                                append("${stringResource(Res.string.monster_senses_blind_sight)} ${state.blindSight} ")
-                            }
-                        }
-
-                        PropertyLine(Res.string.monster_senses, senses)
-
-                        if (state.languages.isNotEmpty()) {
-                            PropertyLine(
-                                Res.string.monster_languages,
-                                state.languages.joinToString()
-                            )
-                        }
-
-                        if (state.skills.isNotEmpty()) {
-                            PropertyLine(Res.string.monster_proficiencies,
-                                state.skills.entries.joinToString { "${it.key} ${it.value}" })
-                        }
-
-                        if (state.hasSavingThrows) {
-                            val savingThrows = buildString {
-                                if (state.strengthSave != null) append("STR ${state.strengthSave} ")
-                                if (state.dexteritySave != null) append("DEX ${state.dexteritySave} ")
-                                if (state.constitutionSave != null) append("CON ${state.constitutionSave} ")
-                                if (state.intelligenceSave != null) append("INT ${state.intelligenceSave} ")
-                                if (state.wisdomSave != null) append("WIS ${state.wisdomSave} ")
-                                if (state.charismaSave != null) append("CHA ${state.charismaSave} ")
-                            }
-                            PropertyLine(Res.string.monster_saving_throws, savingThrows)
-                        }
-
-                        TaperedRule()
-
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(vertical = 2.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(secondary),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(
-                            text = stringResource(Res.string.monster_special_abilities),
-                            fontSize = 21.sp,
-                            fontWeight = FontWeight.Normal,
-                            fontFamily = FontFamily.Serif,
-                            color = darkPrimary,
-                            modifier = Modifier.padding(vertical = 12.dp)
+                            text = stringResource(Res.string.monster_speed),
+                            style = propertyTitle,
+                            modifier = Modifier.padding(4.dp).weight(1f)
                         )
-
-                        if (state.trait.isNotEmpty()) {
-                            state.trait.forEach { ability ->
-                                traitItem(ability)
-                            }
-                            TaperedRule()
-                        }
-
-                        Text(
-                            text = stringResource(Res.string.monster_actions),
-                            fontSize = 21.sp,
-                            fontWeight = FontWeight.Normal,
-                            fontFamily = FontFamily.Serif,
-                            color = darkPrimary,
-                            modifier = Modifier.padding(vertical = 12.dp)
-                        )
-
-                        state.actions.forEach { action ->
-                            actionItem(action)
-                        }
-
-                        state.bonusActions.forEach { action ->
-                            actionItem(action)
-                        }
-
-                        state.reactions.forEach { action ->
-                            actionItem(action)
-                        }
-
-                        if (state.legendaryActions.isNotEmpty()) {
-                            TaperedRule()
-                            Text(
-                                text = stringResource(Res.string.monster_legendary_actions),
-                                fontSize = 21.sp,
-                                fontWeight = FontWeight.Normal,
-                                fontFamily = FontFamily.Serif,
-                                color = darkPrimary,
-                                modifier = Modifier.padding(vertical = 12.dp)
+                        speed(Res.string.walk, state.walkSpeed, Res.drawable.walk)
+                        if (state.swimSpeed > 10) {
+                            speed(
+                                Res.string.swim,
+                                state.swimSpeed,
+                                Res.drawable.swim
                             )
-
-                            state.legendaryActions.forEach { action ->
-                                actionItem(action)
-                            }
                         }
-                        CustomDivider()
+                        if (state.flySpeed > 10) {
+                            speed(
+                                Res.string.fly,
+                                state.flySpeed,
+                                Res.drawable.wing
+                            )
+                        }
+                        if (state.burrowSpeed > 10) {
+                            speed(
+                                Res.string.burrow,
+                                state.burrowSpeed,
+                                Res.drawable.ghost
+                            )
+                        }
+
+                        if (state.climbSpeed > 10) {
+                            speed(
+                                Res.string.climb,
+                                state.climbSpeed,
+                                Res.drawable.climb
+                            )
+                        }
+                        if (state.hover) {
+                            speed(Res.string.hover, 0.0, Res.drawable.ghost)
+                        }
+
                     }
-                }
-            }
-        }
-    }
 
+                    TaperedRule()
 
-    @Composable
-    fun RowScope.AbilityChip(abilityName: String, abilityValue: Int) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(horizontal = 1.dp).weight(1f).clip(RoundedCornerShape(4.dp))
-                .background(darkPrimary)
-        ) {
-            Text(
-                text = "$abilityName ($abilityValue)",
-                style = SmallBoldSecondary,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().padding(2.dp)
-            )
-            val bonus = abilityValue.getAbilityBonus()
-            val signedBonus = if (bonus > 0) "+$bonus" else "$bonus"
-            Text(
-                text = signedBonus,
-                modifier = Modifier.fillMaxWidth().background(bonus.getAbilityBonusColor())
-                    .padding(2.dp),
-                textAlign = TextAlign.Center,
-                style = MediumBoldSecondary.copy(color = darkPrimary)
-            )
-        }
-    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Ability.entries.forEach { ability ->
+                            when (ability) {
+                                Ability.STR -> AbilityChip(ability.name, state.strength)
+                                Ability.DEX -> AbilityChip(ability.name, state.dexterity)
+                                Ability.CON -> AbilityChip(ability.name, state.constitution)
+                                Ability.INT -> AbilityChip(ability.name, state.intelligence)
+                                Ability.WIS -> AbilityChip(ability.name, state.wisdom)
+                                Ability.CHA -> AbilityChip(ability.name, state.charisma)
+                            }
+                        }
+                    }
 
-    @Composable
-    fun CustomDivider() {
-        Divider(
-            color = orange, thickness = 5.dp, modifier = Modifier.padding(vertical = 8.dp)
-        )
-    }
+                    TaperedRule()
 
-    @Composable
-    fun PropertyLine(title: StringResource, value: String) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)
-                .clip(RoundedCornerShape(8.dp)).background(secondary),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(title),
-                style = propertyTitle,
-                modifier = Modifier.padding(4.dp)
-            )
-            Text(
-                text = value.capitalize(Locale.current),
-                modifier = Modifier.padding(4.dp),
-                textAlign = TextAlign.End,
-                style = propertyText,
-            )
-        }
-    }
+                    if (state.nonMagicalAttackResistance) {
+                        PropertyLine(Res.string.non_magical_attack_resistance, "")
+                    }
 
-    @Composable
-    fun traitItem(trait: Trait) {
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)
-                .clip(RoundedCornerShape(8.dp)).background(secondary),
-        ) {
-            Text(
-                text = trait.name,
-                style = SmallBoldSecondary.copy(color = secondary),
-                modifier = Modifier.fillMaxWidth().background(darkPrimary).padding(4.dp)
-            )
-            Text(
-                text = trait.desc.capitalize(Locale.current),
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                style = propertyText.copy(textAlign = TextAlign.Center)
-            )
-        }
-    }
+                    if (state.nonMagicalAttackImmunity) {
+                        PropertyLine(Res.string.non_magical_attack_immunity, "")
+                    }
 
-    @Composable
-    fun actionItem(action: Action) {
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)
-                .clip(RoundedCornerShape(8.dp)).background(secondary),
-        ) {
-            Text(
-                text = action.name,
-                style = SmallBoldSecondary,
-                modifier = Modifier.fillMaxWidth().background(darkBlue).padding(4.dp)
-            )
+                    if (state.hasVulnerabilities) {
+                        val vulnerabilities =
+                            state.damageVulnerabilities.joinToString(",") { stringResource(it.stringRes()) }
+                        PropertyLine(Res.string.monster_damage_vulnerabilities, vulnerabilities)
+                    }
+                    if (state.hasImmunities) {
+                        val immunities =
+                            state.damageImmunities.joinToString(",") { stringResource(it.stringRes()) }
+                        PropertyLine(Res.string.monster_damage_immunities, immunities)
+                    }
+                    if (state.hasResistances) {
+                        val resistances =
+                            state.damageResistances.joinToString(",") { stringResource(it.stringRes()) }
+                        PropertyLine(Res.string.monster_damage_resistances, resistances)
+                    }
+                    if (state.hasConditionImmunities) {
+                        val conditionImmunities =
+                            state.conditionImmunities.joinToString(",") { stringResource(it.stringRes()) }
+                        PropertyLine(
+                            Res.string.monster_condition_immunities,
+                            conditionImmunities
+                        )
+                    }
 
-            Text(
-                text = action.desc.capitalize(Locale.current),
-                modifier = Modifier.padding(8.dp),
-                style = propertyText.copy(textAlign = TextAlign.Center)
-            )
+                    PropertyLine(
+                        Res.string.monster_senses_passive_perception,
+                        state.passivePerception.toString()
+                    )
 
-            if (action.attacks.isNotEmpty()) {
-                for (attack in action.attacks) {
-                    val actionBonus = attack.attackBonus
-                    val damageDice = attack.damageDice
-                    val attackText = if (actionBonus > 0) "+$actionBonus" else "$actionBonus"
+                    val senses = buildString {
+                        if (state.darkVision != null) {
+                            append("${stringResource(Res.string.monster_senses_dark_vision)} ${state.darkVision}")
+                        }
+                        if (state.trueSight != null) {
+                            append("${stringResource(Res.string.monster_senses_true_sight)} ${state.trueSight} ")
+                        }
+                        if (state.tremorSense != null) {
+                            append("${stringResource(Res.string.monster_senses_tremor_sense)} ${state.tremorSense} ")
+                        }
+                        if (state.blindSight != null) {
+                            append("${stringResource(Res.string.monster_senses_blind_sight)} ${state.blindSight} ")
+                        }
+                    }
+
+                    PropertyLine(Res.string.monster_senses, senses)
+
+                    if (state.languages.isNotEmpty()) {
+                        PropertyLine(
+                            Res.string.monster_languages,
+                            state.languages.joinToString()
+                        )
+                    }
+
+                    if (state.skills.isNotEmpty()) {
+                        PropertyLine(Res.string.monster_proficiencies,
+                            state.skills.entries.joinToString { "${it.key} ${it.value}" })
+                    }
+
+                    if (state.hasSavingThrows) {
+                        val savingThrows = buildString {
+                            if (state.strengthSave != null) append("STR ${state.strengthSave} ")
+                            if (state.dexteritySave != null) append("DEX ${state.dexteritySave} ")
+                            if (state.constitutionSave != null) append("CON ${state.constitutionSave} ")
+                            if (state.intelligenceSave != null) append("INT ${state.intelligenceSave} ")
+                            if (state.wisdomSave != null) append("WIS ${state.wisdomSave} ")
+                            if (state.charismaSave != null) append("CHA ${state.charismaSave} ")
+                        }
+                        PropertyLine(Res.string.monster_saving_throws, savingThrows)
+                    }
+
+                    TaperedRule()
 
                     Text(
-                        text = "$attackText ($damageDice)",
-                        style = SmallBoldSecondary,
-                        modifier = Modifier.fillMaxWidth().background(darkGray).padding(4.dp)
+                        text = stringResource(Res.string.monster_special_abilities),
+                        fontSize = 21.sp,
+                        fontWeight = FontWeight.Normal,
+                        fontFamily = FontFamily.Serif,
+                        color = darkPrimary,
+                        modifier = Modifier.padding(vertical = 12.dp)
                     )
+
+                    if (state.trait.isNotEmpty()) {
+                        state.trait.forEach { ability ->
+                            traitItem(ability)
+                        }
+                        TaperedRule()
+                    }
+
+                    Text(
+                        text = stringResource(Res.string.monster_actions),
+                        fontSize = 21.sp,
+                        fontWeight = FontWeight.Normal,
+                        fontFamily = FontFamily.Serif,
+                        color = darkPrimary,
+                        modifier = Modifier.padding(vertical = 12.dp)
+                    )
+
+                    state.actions.forEach { action ->
+                        actionItem(action)
+                    }
+
+                    state.bonusActions.forEach { action ->
+                        actionItem(action)
+                    }
+
+                    state.reactions.forEach { action ->
+                        actionItem(action)
+                    }
+
+                    if (state.legendaryActions.isNotEmpty()) {
+                        TaperedRule()
+                        Text(
+                            text = stringResource(Res.string.monster_legendary_actions),
+                            fontSize = 21.sp,
+                            fontWeight = FontWeight.Normal,
+                            fontFamily = FontFamily.Serif,
+                            color = darkPrimary,
+                            modifier = Modifier.padding(vertical = 12.dp)
+                        )
+
+                        state.legendaryActions.forEach { action ->
+                            actionItem(action)
+                        }
+                    }
+                    CustomDivider()
                 }
             }
         }
     }
+}
 
-    @Composable
-    fun header(text: String) {
+
+@Composable
+fun RowScope.AbilityChip(abilityName: String, abilityValue: Int) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(horizontal = 1.dp).weight(1f).clip(RoundedCornerShape(4.dp))
+            .background(darkPrimary)
+    ) {
         Text(
-            text = text.capitalize(Locale.current),
-            modifier = Modifier.height(30.dp).background(darkGray).fillMaxWidth().padding(6.dp),
-            color = secondary,
-            fontWeight = FontWeight.Bold,
+            text = "$abilityName ($abilityValue)",
+            style = SmallBoldSecondary,
             textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().padding(2.dp)
+        )
+        val bonus = abilityValue.getAbilityBonus()
+        val signedBonus = if (bonus > 0) "+$bonus" else "$bonus"
+        Text(
+            text = signedBonus,
+            modifier = Modifier.fillMaxWidth().background(bonus.getAbilityBonusColor())
+                .padding(2.dp),
+            textAlign = TextAlign.Center,
+            style = MediumBoldSecondary.copy(color = darkPrimary)
         )
     }
+}
 
-    @Composable
-    fun speed(movement: StringResource, value: Double, icon: DrawableResource) {
-        Icon(
-            modifier = Modifier.size(20.dp).aspectRatio(1f).padding(2.dp),
-            painter = painterResource(icon),
-            contentDescription = null,
-            tint = darkPrimary
-        )
-        val movementText = stringResource(movement)
+@Composable
+fun CustomDivider() {
+    Divider(
+        color = orange, thickness = 5.dp, modifier = Modifier.padding(vertical = 8.dp)
+    )
+}
+
+@Composable
+fun PropertyLine(title: StringResource, value: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)
+            .clip(RoundedCornerShape(8.dp)).background(secondary),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text(
-            text = "$movementText $value",
+            text = stringResource(title),
+            style = propertyTitle,
+            modifier = Modifier.padding(4.dp)
+        )
+        Text(
+            text = value.capitalize(Locale.current),
             modifier = Modifier.padding(4.dp),
             textAlign = TextAlign.End,
             style = propertyText,
         )
     }
+}
 
-    @Composable
-    fun spell(text: String, color: Color, onClick: () -> Unit) {
-        TextButton(
-            modifier = Modifier.padding(8.dp).height(40.dp).fillMaxWidth(),
-            shape = roundCornerShape,
-            colors = ButtonDefaults.textButtonColors(
-                backgroundColor = color, contentColor = darkPrimary
-            ),
-            onClick = onClick
-        ) {
-            Text(text = text.capitalize(Locale.current))
+@Composable
+fun traitItem(trait: Trait) {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)
+            .clip(RoundedCornerShape(8.dp)).background(secondary),
+    ) {
+        Text(
+            text = trait.name,
+            style = SmallBoldSecondary.copy(color = secondary),
+            modifier = Modifier.fillMaxWidth().background(darkPrimary).padding(4.dp)
+        )
+        Text(
+            text = trait.desc.capitalize(Locale.current),
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            style = propertyText.copy(textAlign = TextAlign.Center)
+        )
+    }
+}
+
+@Composable
+fun actionItem(action: Action) {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)
+            .clip(RoundedCornerShape(8.dp)).background(secondary),
+    ) {
+        Text(
+            text = action.name,
+            style = SmallBoldSecondary,
+            modifier = Modifier.fillMaxWidth().background(darkBlue).padding(4.dp)
+        )
+
+        Text(
+            text = action.desc.capitalize(Locale.current),
+            modifier = Modifier.padding(8.dp),
+            style = propertyText.copy(textAlign = TextAlign.Center)
+        )
+
+        if (action.attacks.isNotEmpty()) {
+            for (attack in action.attacks) {
+                val actionBonus = attack.attackBonus
+                val damageDice = attack.damageDice
+                val attackText = if (actionBonus > 0) "+$actionBonus" else "$actionBonus"
+
+                Text(
+                    text = "$attackText ($damageDice)",
+                    style = SmallBoldSecondary,
+                    modifier = Modifier.fillMaxWidth().background(darkGray).padding(4.dp)
+                )
+            }
         }
+    }
+}
+
+@Composable
+fun header(text: String) {
+    Text(
+        text = text.capitalize(Locale.current),
+        modifier = Modifier.height(30.dp).background(darkGray).fillMaxWidth().padding(6.dp),
+        color = secondary,
+        fontWeight = FontWeight.Bold,
+        textAlign = TextAlign.Center,
+    )
+}
+
+@Composable
+fun speed(movement: StringResource, value: Double, icon: DrawableResource) {
+    Icon(
+        modifier = Modifier.size(20.dp).aspectRatio(1f).padding(2.dp),
+        painter = painterResource(icon),
+        contentDescription = null,
+        tint = darkPrimary
+    )
+    val movementText = stringResource(movement)
+    Text(
+        text = "$movementText $value",
+        modifier = Modifier.padding(4.dp),
+        textAlign = TextAlign.End,
+        style = propertyText,
+    )
+}
+
+@Composable
+fun spell(text: String, color: Color, onClick: () -> Unit) {
+    TextButton(
+        modifier = Modifier.padding(8.dp).height(40.dp).fillMaxWidth(),
+        shape = roundCornerShape,
+        colors = ButtonDefaults.textButtonColors(
+            backgroundColor = color, contentColor = darkPrimary
+        ),
+        onClick = onClick
+    ) {
+        Text(text = text.capitalize(Locale.current))
     }
 }

@@ -8,6 +8,7 @@ import domain.model.Alignment
 import domain.model.Condition
 import domain.model.DamageType
 import domain.model.Level
+import domain.model.magicItem.Rarity
 import domain.model.monster.Challenge
 import domain.model.monster.CreatureSize
 import domain.model.monster.CreatureType
@@ -25,11 +26,13 @@ import org.dembeyo.shared.resources.any_evil_alignment
 import org.dembeyo.shared.resources.any_good_alignment
 import org.dembeyo.shared.resources.any_non_good_alignment
 import org.dembeyo.shared.resources.any_non_lawful_alignment
+import org.dembeyo.shared.resources.artifact
 import org.dembeyo.shared.resources.beast
 import org.dembeyo.shared.resources.celestial
 import org.dembeyo.shared.resources.chaotic_evil
 import org.dembeyo.shared.resources.chaotic_good
 import org.dembeyo.shared.resources.chaotic_neutral
+import org.dembeyo.shared.resources.common
 import org.dembeyo.shared.resources.condition_blinded
 import org.dembeyo.shared.resources.condition_charmed
 import org.dembeyo.shared.resources.condition_deafened
@@ -70,6 +73,7 @@ import org.dembeyo.shared.resources.large
 import org.dembeyo.shared.resources.lawful_evil
 import org.dembeyo.shared.resources.lawful_good
 import org.dembeyo.shared.resources.lawful_neutral
+import org.dembeyo.shared.resources.legendary
 import org.dembeyo.shared.resources.medium
 import org.dembeyo.shared.resources.monstrosity
 import org.dembeyo.shared.resources.neutral
@@ -77,12 +81,36 @@ import org.dembeyo.shared.resources.neutral_evil
 import org.dembeyo.shared.resources.neutral_good
 import org.dembeyo.shared.resources.ooze
 import org.dembeyo.shared.resources.plant
+import org.dembeyo.shared.resources.rare
 import org.dembeyo.shared.resources.small
 import org.dembeyo.shared.resources.tiny
 import org.dembeyo.shared.resources.titanic
 import org.dembeyo.shared.resources.unaligned
+import org.dembeyo.shared.resources.uncommon
 import org.dembeyo.shared.resources.undead
+import org.dembeyo.shared.resources.varies
+import org.dembeyo.shared.resources.very_rare
 import org.jetbrains.compose.resources.StringResource
+
+fun Rarity.stringRes(): StringResource = when (this) {
+    Rarity.COMMON -> Res.string.common
+    Rarity.UNCOMMON -> Res.string.uncommon
+    Rarity.RARE -> Res.string.rare
+    Rarity.VERY_RARE -> Res.string.very_rare
+    Rarity.LEGENDARY -> Res.string.legendary
+    Rarity.ARTIFACT -> Res.string.artifact
+    Rarity.VARIES -> Res.string.varies
+}
+
+fun Rarity.getRarityColor(): Color = when (this) {
+    Rarity.COMMON -> Color(0xFFB69470)
+    Rarity.UNCOMMON -> Color(0xFFCD8E4B)
+    Rarity.RARE -> Color(0xFFEABA25)
+    Rarity.VERY_RARE -> Color(0xFFEF9315)
+    Rarity.LEGENDARY -> Color(0xFFEF5B15)
+    Rarity.ARTIFACT -> Color(0xFFD61070)
+    Rarity.VARIES -> Color(0xFFD7C1CC)
+}
 
 fun Ability.stringRes(): StringResource = when (this) {
     Ability.CHA -> Res.string.ability_cha

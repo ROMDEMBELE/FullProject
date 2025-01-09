@@ -23,9 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
+import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.armor_class
@@ -43,7 +41,6 @@ import org.dembeyo.shared.resources.save_button
 import org.dembeyo.shared.resources.species
 import org.dembeyo.shared.resources.spell_save
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import ui.color
 import ui.composable.CounterSelector
 import ui.composable.CustomAlertDialog
@@ -59,194 +56,193 @@ import ui.composable.primary
 import ui.composable.secondary
 import ui.stringRes
 
-class EditCharacterScreen(val id: Long? = null) : Screen {
+@Composable
+fun EditCharacterScreen(
+    navHostController: NavHostController,
+    viewModel: EditCharacterViewModel
+) {
 
-    @Composable
-    override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        val scope = rememberCoroutineScope()
-        val viewModel: EditCharacterViewModel = koinInject()
-        val uiState by viewModel.uiState.collectAsState()
-        var deleteDialogDisplay by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val uiState by viewModel.uiState.collectAsState()
+    var deleteDialogDisplay by remember { mutableStateOf(false) }
 
-        AnimatedVisibility(deleteDialogDisplay) {
-            CustomAlertDialog(
-                onDismiss = { deleteDialogDisplay = false },
-                title = "Delete Character",
-                content = "Are you sure you want to delete this character?",
-                confirmText = stringResource(Res.string.delete_button),
-                onConfirm = {
-                    deleteDialogDisplay = false
-                    viewModel.deleteCharacter()
-                    navigator.pop()
+    AnimatedVisibility(deleteDialogDisplay) {
+        CustomAlertDialog(
+            onDismiss = { deleteDialogDisplay = false },
+            title = "Delete Character",
+            content = "Are you sure you want to delete this character?",
+            confirmText = stringResource(Res.string.delete_button),
+            onConfirm = {
+                deleteDialogDisplay = false
+                viewModel.deleteCharacter()
+                navHostController.popBackStack()
+            })
+    }
 
-                })
-        }
+    LaunchedEffect(uiState.isReady) {
+        // TODO fetch data
+    }
 
-        LaunchedEffect(uiState.isReady) {
-            if (id != null && uiState.isReady) {
-                viewModel.loadCharacterToEdit(id)
-            }
-        }
+    CustomAnimatedPlaceHolder()
 
-        CustomAnimatedPlaceHolder()
+    AnimatedVisibility(uiState.isReady, enter = fadeIn(), exit = fadeOut()) {
+        val gradient = Brush.verticalGradient(
+            colors = listOf(secondary, uiState.level.color()),
+        )
+        LazyColumn(
+            modifier = Modifier.background(gradient).padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            item {
+                Text(
+                    stringResource(Res.string.edit_character_information),
+                    style = MediumBoldDarkBlue
+                )
 
-        AnimatedVisibility(uiState.isReady, enter = fadeIn(), exit = fadeOut()) {
-            val gradient = Brush.verticalGradient(
-                colors = listOf(secondary, uiState.level.color()),
-            )
-            LazyColumn(
-                modifier = Modifier.background(gradient).padding(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                item {
-                    Text(
-                        stringResource(Res.string.edit_character_information),
-                        style = MediumBoldDarkBlue
-                    )
+                Spacer(Modifier.height(8.dp))
 
+                CustomTextField(
+                    textFieldValue = uiState.playerName,
+                    onTextChange = { viewModel.updatePlayerName(it) },
+                    placeholder = stringResource(Res.string.player_name),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                CustomTextField(
+                    textFieldValue = uiState.characterName,
+                    onTextChange = { viewModel.updateCharacterName(it) },
+                    placeholder = stringResource(Res.string.character_name),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                CustomTextField(
+                    textFieldValue = uiState.characterClass,
+                    onTextChange = { viewModel.updateCharacterClass(it) },
+                    placeholder = stringResource(Res.string.character_class),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                DropDownTextField(
+                    value = uiState.characterBackground,
+                    display = { this?.name ?: "" },
+                    label = stringResource(Res.string.background),
+                    list = uiState.backgrounds.values.toList()
+                ) {
+                    if (it != null) {
+                        viewModel.updateCharacterBackground(it)
+                    }
+                }
+
+                Spacer(Modifier.height(8.dp))
+
+                DropDownTextField(
+                    value = uiState.characterSpecies,
+                    display = { this?.fullName ?: "" },
+                    label = stringResource(Res.string.species),
+                    list = uiState.species.values.toList()
+                ) {
+                    if (it != null) {
+                        viewModel.updateCharacterSpecies(it)
+                    }
+                }
+
+                Spacer(Modifier.height(8.dp))
+
+                Text(
+                    stringResource(Res.string.edit_character_statistics),
+                    style = MediumBoldDarkBlue
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                CounterSelector(
+                    stringResource(Res.string.level),
+                    minimum = 1,
+                    maximum = 20,
+                    value = uiState.level.level
+                ) {
+                    viewModel.updateLevel(it)
+                }
+
+                Spacer(Modifier.height(8.dp))
+
+                CounterSelector(
+                    stringResource(Res.string.armor_class),
+                    value = uiState.armorClass,
+                    maximum = 30
+                ) {
+                    viewModel.updateArmorClass(it)
+                }
+
+                Spacer(Modifier.height(8.dp))
+
+                SliderSelector(
+                    label = stringResource(Res.string.hit_points),
+                    value = uiState.hitPoint,
+                    minimum = 1,
+                    maximum = 999,
+                ) {
+                    viewModel.updateHitPoint(it)
+                }
+
+                Spacer(Modifier.height(8.dp))
+
+                CounterSelector(
+                    stringResource(Res.string.spell_save),
+                    value = uiState.spellSave,
+                    maximum = 30
+                ) {
+                    viewModel.updateSpellSave(it)
+                }
+
+                Spacer(Modifier.height(8.dp))
+
+                Text(
+                    stringResource(Res.string.edit_character_abilities),
+                    style = MediumBoldDarkBlue
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                uiState.abilities.forEach { (ability, value) ->
+                    val abilityName = stringResource(ability.stringRes())
+                    CounterSelector(abilityName, value = value) {
+                        viewModel.updateAbilityScores(ability, it)
+                    }
                     Spacer(Modifier.height(8.dp))
+                }
 
-                    CustomTextField(
-                        textFieldValue = uiState.playerName,
-                        onTextChange = { viewModel.updatePlayerName(it) },
-                        placeholder = stringResource(Res.string.player_name),
-                        modifier = Modifier.fillMaxWidth(),
-                    )
+                TaperedRule(color = darkPrimary)
 
-                    Spacer(Modifier.height(8.dp))
-
-                    CustomTextField(
-                        textFieldValue = uiState.characterName,
-                        onTextChange = { viewModel.updateCharacterName(it) },
-                        placeholder = stringResource(Res.string.character_name),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(Modifier.height(8.dp))
-
-                    CustomTextField(
-                        textFieldValue = uiState.characterClass,
-                        onTextChange = { viewModel.updateCharacterClass(it) },
-                        placeholder = stringResource(Res.string.character_class),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(Modifier.height(8.dp))
-
-                    DropDownTextField(
-                        value = uiState.characterBackground,
-                        display = { this?.name ?: "" },
-                        label = stringResource(Res.string.background),
-                        list = uiState.backgrounds.values.toList()
-                    ) {
-                        if (it != null) {
-                            viewModel.updateCharacterBackground(it)
+                CustomButton(
+                    enabled = uiState.isValid,
+                    onClick = {
+                        scope.launch {
+                            viewModel.save()
+                            navHostController.popBackStack()
                         }
-                    }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(stringResource(Res.string.save_button))
+                }
 
-                    Spacer(Modifier.height(8.dp))
-
-                    DropDownTextField(
-                        value = uiState.characterSpecies,
-                        display = { this?.fullName ?: "" },
-                        label = stringResource(Res.string.species),
-                        list = uiState.species.values.toList()
-                    ) {
-                        if (it != null) {
-                            viewModel.updateCharacterSpecies(it)
-                        }
-                    }
-
-                    Spacer(Modifier.height(8.dp))
-
-                    Text(
-                        stringResource(Res.string.edit_character_statistics),
-                        style = MediumBoldDarkBlue
-                    )
-
-                    Spacer(Modifier.height(8.dp))
-
-                    CounterSelector(
-                        stringResource(Res.string.level),
-                        minimum = 1,
-                        maximum = 20,
-                        value = uiState.level.level
-                    ) {
-                        viewModel.updateLevel(it)
-                    }
-
-                    Spacer(Modifier.height(8.dp))
-
-                    CounterSelector(
-                        stringResource(Res.string.armor_class),
-                        value = uiState.armorClass,
-                        maximum = 30
-                    ) {
-                        viewModel.updateArmorClass(it)
-                    }
-
-                    Spacer(Modifier.height(8.dp))
-
-                    SliderSelector(
-                        label = stringResource(Res.string.hit_points),
-                        value = uiState.hitPoint,
-                        minimum = 1,
-                        maximum = 999,
-                    ) {
-                        viewModel.updateHitPoint(it)
-                    }
-
-                    Spacer(Modifier.height(8.dp))
-
-                    CounterSelector(
-                        stringResource(Res.string.spell_save),
-                        value = uiState.spellSave,
-                        maximum = 30
-                    ) {
-                        viewModel.updateSpellSave(it)
-                    }
-
-                    Spacer(Modifier.height(8.dp))
-
-                    Text(stringResource(Res.string.edit_character_abilities), style = MediumBoldDarkBlue)
-
-                    Spacer(Modifier.height(8.dp))
-
-                    uiState.abilities.forEach { (ability, value) ->
-                        val abilityName = stringResource(ability.stringRes())
-                        CounterSelector(abilityName, value = value) {
-                            viewModel.updateAbilityScores(ability, it)
-                        }
-                        Spacer(Modifier.height(8.dp))
-                    }
-
-                    TaperedRule(color = darkPrimary)
-
+                AnimatedVisibility(uiState.canBeDeleted) {
                     CustomButton(
-                        enabled = uiState.isValid,
-                        onClick = {
-                            scope.launch {
-                                viewModel.save()
-                                navigator.pop()
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth()
+                        onClick = { deleteDialogDisplay = true },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = primary,
+                            contentColor = secondary
+                        ),
                     ) {
-                        Text(stringResource(Res.string.save_button))
-                    }
-
-                    AnimatedVisibility(uiState.canBeDeleted) {
-                        CustomButton(
-                            onClick = { deleteDialogDisplay = true },
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = primary,
-                                contentColor = secondary
-                            ),
-                        ) {
-                            Text(stringResource(Res.string.delete_button))
-                        }
+                        Text(stringResource(Res.string.delete_button))
                     }
                 }
             }

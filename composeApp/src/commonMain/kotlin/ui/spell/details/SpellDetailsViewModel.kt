@@ -6,12 +6,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class SpellDetailsViewModel(private val spellRepository: SpellRepository) : ViewModel() {
+class SpellDetailsViewModel(val index: String, private val spellRepository: SpellRepository) :
+    ViewModel() {
 
     private val _uiState = MutableStateFlow(SpellDetailsUiState())
     val uiState = _uiState.asStateFlow()
 
-    suspend fun fetchSpell(index: String) {
+    init {
+        fetchSpell(index)
+    }
+
+    fun fetchSpell(index: String) {
 
     }
 

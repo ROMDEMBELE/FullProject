@@ -10,22 +10,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import domain.model.monster.Challenge
 import ui.color
 import ui.composable.CustomLazyHeaderList
 import ui.composable.MediumBoldSecondary
 import ui.composable.darkBlue
-import ui.monster.details.MonsterDetailScreen
 import ui.monster.search.SearchMonsterItem
 
 @Composable
-fun listOfMonster(
+fun MonsterList(
     monsterByChallenge: Map<Challenge, List<SearchMonsterItem>>,
-    onToggleFavorite: (SearchMonsterItem) -> Unit,
+    onFavoriteClick: (SearchMonsterItem) -> Unit,
+    onMonsterClick: (SearchMonsterItem) -> Unit
 ) {
-    val navigator = LocalNavigator.currentOrThrow
     CustomLazyHeaderList(
         mapOfValue = monsterByChallenge,
         stickyMode = false,
@@ -42,13 +39,13 @@ fun listOfMonster(
             )
         },
         item = { monster ->
-            searchMonsterItem(
+            SearchMonsterItem(
                 monster = monster,
                 onClick = {
-                    navigator.push(MonsterDetailScreen(monster.slug))
+                   onMonsterClick(monster)
                 },
                 onFavoriteClick = {
-                    onToggleFavorite(monster)
+                    onFavoriteClick(monster)
                 }
             )
         },
