@@ -1,8 +1,6 @@
 package data.api.impl
 
 import data.api.ChatGptApi
-import data.api.dto.MonsterDto
-import data.api.dto.SearchResultDto
 import data.api.dto.chatGpt.ChatGptMessageDto
 import data.api.dto.chatGpt.ChatGptRequestDto
 import data.api.dto.chatGpt.ChatGptResponseDto
@@ -25,7 +23,7 @@ class ChatGptApiImpl(private val client: HttpClient) : ChatGptApi {
     override suspend fun processMonster(
         jsonObject: JsonObject,
         format: ChatGptResponseFormatDto
-    ): MonsterDto {
+    ) {
         val request = ChatGptRequestDto(
             model = DEFAULT_MODEL,
             responseFormat = format,
@@ -36,7 +34,11 @@ class ChatGptApiImpl(private val client: HttpClient) : ChatGptApi {
                 ),
                 ChatGptMessageDto(
                     role = "user",
-                    content = "Here is a raw JSON string representing a monster: ${Json.encodeToString(jsonObject)}"
+                    content = "Here is a raw JSON string representing a monster: ${
+                        Json.encodeToString(
+                            jsonObject
+                        )
+                    }"
                 )
             )
         )
@@ -58,7 +60,7 @@ class ChatGptApiImpl(private val client: HttpClient) : ChatGptApi {
     override suspend fun processMonsters(
         monsters: List<JsonObject>,
         format: ChatGptResponseFormatDto
-    ): SearchResultDto<MonsterDto> {
+    ) {
         val request = ChatGptRequestDto(
             model = DEFAULT_MODEL,
             messages = listOf(
@@ -68,7 +70,11 @@ class ChatGptApiImpl(private val client: HttpClient) : ChatGptApi {
                 ),
                 ChatGptMessageDto(
                     role = "user",
-                    content = "Here is a raw JSON string representing ${monsters.size} monsters: ${Json.encodeToString(monsters)}."
+                    content = "Here is a raw JSON string representing ${monsters.size} monsters: ${
+                        Json.encodeToString(
+                            monsters
+                        )
+                    }."
                 )
             ),
             responseFormat = format
@@ -82,7 +88,6 @@ class ChatGptApiImpl(private val client: HttpClient) : ChatGptApi {
 
         if (response.status.isSuccess()) {
             val correctedJson = response.body<ChatGptResponseDto>().choices.first().message.content
-            return Json.decodeFromString<SearchResultDto<MonsterDto>>(correctedJson)
         } else {
             throw ServerResponseException(
                 response, "Failed to process $request: ${response.status}"

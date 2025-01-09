@@ -57,7 +57,7 @@ import ui.home.MenuScreen
 import ui.magicItem.details.MagicItemDetailsScreen
 import ui.magicItem.list.MagicItemListScreen
 import ui.monster.details.MonsterDetailScreen
-import ui.monster.list.MonsterListScreen
+import ui.monster.search.SearchMonsterScreen
 import ui.spell.details.SpellDetailsScreen
 import ui.spell.list.SpellListScreen
 
@@ -113,7 +113,7 @@ fun App() {
                                     is EditCampaignScreen -> Res.string.edit_campaign_screen
                                     is CampaignScreen -> Res.string.menu_campaign
                                     is SpellListScreen, is SpellDetailsScreen -> Res.string.menu_spell
-                                    is MonsterListScreen, is MonsterDetailScreen -> Res.string.menu_monster
+                                    is SearchMonsterScreen, is MonsterDetailScreen -> Res.string.menu_monster
                                     is CharacterListScreen, is EditCharacterScreen -> Res.string.menu_character
                                     is MagicItemListScreen, is MagicItemDetailsScreen -> Res.string.menu_magic_item
                                     else -> Res.string.menu_screen_title

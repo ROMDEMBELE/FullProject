@@ -1,8 +1,11 @@
-package ui.monster.list
+package ui.monster.search
 
 import domain.model.monster.Challenge
 
-data class MonsterListItem(
+/**
+ * Item of the monster list to display in the search screen.
+ */
+data class SearchMonsterItem(
     val slug: String,
     val name: String,
     val isFavorite: Boolean,

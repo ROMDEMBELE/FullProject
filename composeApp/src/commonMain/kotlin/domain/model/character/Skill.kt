@@ -2,25 +2,28 @@ package domain.model.character
 
 import domain.model.Ability
 
-enum class Skill(val id: String, val displayName: String, val abilityScore: Ability) {
-    DECEPTION("deception", "Deception", Ability.CHA),
-    INTIMIDATION("intimidation", "Intimidation", Ability.CHA),
-    PERFORMANCE("performance", "Performance", Ability.CHA),
-    PERSUASION("persuasion", "Persuasion", Ability.CHA),
-    ACROBATICS("acrobatics", "Acrobatics", Ability.DEX),
-    SLEIGHT_OF_HAND("sleight_of_hand", "Sleight of Hand", Ability.DEX),
-    STEALTH("stealth", "Stealth", Ability.DEX),
-    ARCANA("arcana", "Arcana", Ability.INT),
-    HISTORY("history", "History", Ability.INT),
-    INVESTIGATION("investigation", "Investigation", Ability.INT),
-    NATURE("nature", "Nature", Ability.INT),
-    RELIGION("religion", "Religion", Ability.INT),
-    ATHLETICS("athletics", "Athletics", Ability.STR),
-    ANIMAL_HANDLING("animal_handling", "Animal Handling", Ability.WIS),
-    INSIGHT("insight", "Insight", Ability.WIS),
-    MEDICINE("medicine", "Medicine", Ability.WIS),
-    PERCEPTION("perception", "Perception", Ability.WIS),
-    SURVIVAL("survival", "Survival", Ability.WIS);
+enum class Skill(
+    val id: String,
+    val abilityScore: Ability
+) {
+    DECEPTION("deception", Ability.CHA),
+    INTIMIDATION("intimidation", Ability.CHA),
+    PERFORMANCE("performance", Ability.CHA),
+    PERSUASION("persuasion", Ability.CHA),
+    ACROBATICS("acrobatics", Ability.DEX),
+    SLEIGHT_OF_HAND("sleight_of_hand", Ability.DEX),
+    STEALTH("stealth", Ability.DEX),
+    ARCANA("arcana", Ability.INT),
+    HISTORY("history", Ability.INT),
+    INVESTIGATION("investigation", Ability.INT),
+    NATURE("nature", Ability.INT),
+    RELIGION("religion", Ability.INT),
+    ATHLETICS("athletics", Ability.STR),
+    ANIMAL_HANDLING("animal_handling", Ability.WIS),
+    INSIGHT("insight", Ability.WIS),
+    MEDICINE("medicine", Ability.WIS),
+    PERCEPTION("perception", Ability.WIS),
+    SURVIVAL("survival", Ability.WIS);
 
     companion object {
         fun fromId(id: String): Skill? = entries.find { it.id == id }

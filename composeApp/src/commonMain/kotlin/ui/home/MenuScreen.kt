@@ -85,7 +85,7 @@ import ui.composable.primary
 import ui.composable.roundCornerShape
 import ui.composable.secondary
 import ui.magicItem.list.MagicItemListScreen
-import ui.monster.list.MonsterListScreen
+import ui.monster.search.SearchMonsterScreen
 import ui.spell.list.SpellListScreen
 
 class MenuScreen : Screen {
@@ -110,7 +110,7 @@ class MenuScreen : Screen {
                         when (menu) {
                             MenuItem.MAGIC_SPELLS -> navigator.push(SpellListScreen())
                             MenuItem.BATTLE -> navigator.push(EncounterListScreen())
-                            MenuItem.MONSTERS -> navigator.push(MonsterListScreen())
+                            MenuItem.MONSTERS -> navigator.push(SearchMonsterScreen())
                             MenuItem.MAGIC_ITEMS -> navigator.push(MagicItemListScreen())
                             MenuItem.CHARACTERS -> navigator.push(CharacterListScreen())
                             MenuItem.EQUIPMENTS -> {}

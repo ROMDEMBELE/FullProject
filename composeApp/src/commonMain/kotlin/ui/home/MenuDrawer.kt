@@ -25,7 +25,7 @@ import ui.home.MenuScreen.MenuItem.MAGIC_ITEMS
 import ui.home.MenuScreen.MenuItem.MAGIC_SPELLS
 import ui.home.MenuScreen.MenuItem.MONSTERS
 import ui.magicItem.list.MagicItemListScreen
-import ui.monster.list.MonsterListScreen
+import ui.monster.search.SearchMonsterScreen
 import ui.spell.list.SpellListScreen
 
 @Composable
@@ -36,7 +36,7 @@ fun MenuDrawer(navigator: Navigator, onDismiss: () -> Unit) {
                 when (menu) {
                     HOME -> navigator.popUntil { it is MenuScreen }
                     MAGIC_SPELLS -> navigator.replaceAll(listOf(MenuScreen(), SpellListScreen()))
-                    MONSTERS -> navigator.replaceAll(listOf(MenuScreen(), MonsterListScreen()))
+                    MONSTERS -> navigator.replaceAll(listOf(MenuScreen(), SearchMonsterScreen()))
                     MAGIC_ITEMS -> navigator.replaceAll(listOf(MenuScreen(), MagicItemListScreen()))
                     CHARACTERS -> navigator.replaceAll(listOf(MenuScreen(), CharacterListScreen()))
                     BATTLE -> navigator.replaceAll(listOf(MenuScreen(), EncounterListScreen()))

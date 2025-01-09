@@ -87,6 +87,10 @@
 
     <string name="any_alignment">N'importe quel alignement</string>
     <string name="any_evil_alignment">N'importe quel alignement mauvais</string>
+    <string name="any_good_alignment">N'importe quel alignement bon</string>
+    <string name="any_non_lawful_alignment">N'importe quel alignement non Loyal</string>
+    <string name="any_chaotic_alignment">N'importe quel alignement Chaotique</string>
+    <string name="any_non_good_alignment">N'importe quel alignement non Bon</string>
     <string name="unaligned">Non aligné</string>
     <string name="chaotic_evil">Chaotique mauvais</string>
     <string name="chaotic_good">Chaotique bon</string>
@@ -124,12 +128,48 @@
     <string name="fly">Voler</string>
     <string name="swim">Nager</string>
 
-    <string name="tiny">Minuscule</string>
-    <string name="small">Petite</string>
-    <string name="medium">Moyenne</string>
-    <string name="large">Grande</string>
-    <string name="huge">Énorme</string>
+    <string name="tiny">Minuscul</string>
+    <string name="small">Petit</string>
+    <string name="medium">Moyen</string>
+    <string name="large">Grand</string>
+    <string name="huge">Huge</string>
     <string name="gargantuan">Gargantuesque</string>
+    <string name="titanic">Titanesque</string>
+
+    <string name="condition_blinded">Incapacité</string>
+    <string name="condition_charmed">Charmé</string>
+    <string name="condition_deafened">Immobilisé</string>
+    <string name="condition_frightened">Effrayé</string>
+    <string name="condition_grappled">Attrapé</string>
+    <string name="condition_incapacitated">Incapacité</string>
+    <string name="condition_invisible">Invisible</string>
+    <string name="condition_paralyzed">Paralysé</string>
+    <string name="condition_exhaustion">Epuisé</string>
+    <string name="condition_poisoned">Empoisonné</string>
+    <string name="condition_prone">A Terre</string>
+    <string name="condition_stunned">étourdis</string>
+    <string name="condition_unconscious">Inconscient</string>
+    <string name="condition_restrained">Restraint</string>
+    <string name="condition_petrified">Pétrifié</string>
+
+
+
+    <string name="non_magical_attack_resistance">Résistance aux attaques non Magiques</string>
+    <string name="non_magical_attack_immunity">Immunité aux attaques non Magiques</string>
+
+    <string name="damage_acid">Acid</string>
+    <string name="damage_bludgeoning">Contendant</string>
+    <string name="damage_cold">Froid</string>
+    <string name="damage_fire">Feu</string>
+    <string name="damage_force">Force</string>
+    <string name="damage_lightning">Électrique</string>
+    <string name="damage_necrotic">Nécrotique</string>
+    <string name="damage_piercing">Pierçant</string>
+    <string name="damage_poison">Poison</string>
+    <string name="damage_psychic">Psychique</string>
+    <string name="damage_radiant">Radiant</string>
+    <string name="damage_slashing">Tranchant</string>
+    <string name="damage_thunder">Foudre</string>
 
     <string name="aberration">Aberration</string>
     <string name="beast">Bête</string>

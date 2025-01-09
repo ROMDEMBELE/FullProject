@@ -57,6 +57,7 @@ import ui.composable.TaperedRule
 import ui.composable.darkPrimary
 import ui.composable.primary
 import ui.composable.secondary
+import ui.stringRes
 
 class EditCharacterScreen(val id: Long? = null) : Screen {
 
@@ -213,7 +214,7 @@ class EditCharacterScreen(val id: Long? = null) : Screen {
                     Spacer(Modifier.height(8.dp))
 
                     uiState.abilities.forEach { (ability, value) ->
-                        val abilityName = stringResource(ability.stringRes)
+                        val abilityName = stringResource(ability.stringRes())
                         CounterSelector(abilityName, value = value) {
                             viewModel.updateAbilityScores(ability, it)
                         }

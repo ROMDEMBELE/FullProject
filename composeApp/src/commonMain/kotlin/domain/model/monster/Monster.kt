@@ -2,8 +2,6 @@ package domain.model.monster
 
 import domain.model.Alignment
 import domain.model.Condition
-import domain.model.CreatureSize
-import domain.model.CreatureType
 import domain.model.DamageType
 import domain.model.Environment
 
@@ -71,5 +69,17 @@ data class Monster(
     val reactions: List<Action>,
     val legendaryActions: List<Action>,
     val environments: List<Environment>,
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Monster) return false
+        if (this.key != other.key) return false
+        if (this.isFavorite != other.isFavorite) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return key.hashCode() + isFavorite.hashCode()
+    }
+}
 

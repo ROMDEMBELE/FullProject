@@ -44,9 +44,10 @@ import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import domain.model.Ability
 import domain.model.Ability.Companion.getAbilityBonus
-import domain.model.Ability.Companion.getAbilityBonusColor
 import domain.model.monster.Action
+import domain.model.monster.Trait
 import org.dembeyo.shared.resources.Res
+import org.dembeyo.shared.resources.burrow
 import org.dembeyo.shared.resources.climb
 import org.dembeyo.shared.resources.fly
 import org.dembeyo.shared.resources.ghost
@@ -63,8 +64,15 @@ import org.dembeyo.shared.resources.monster_legendary_actions
 import org.dembeyo.shared.resources.monster_proficiencies
 import org.dembeyo.shared.resources.monster_saving_throws
 import org.dembeyo.shared.resources.monster_senses
+import org.dembeyo.shared.resources.monster_senses_blind_sight
+import org.dembeyo.shared.resources.monster_senses_dark_vision
+import org.dembeyo.shared.resources.monster_senses_passive_perception
+import org.dembeyo.shared.resources.monster_senses_tremor_sense
+import org.dembeyo.shared.resources.monster_senses_true_sight
 import org.dembeyo.shared.resources.monster_special_abilities
 import org.dembeyo.shared.resources.monster_speed
+import org.dembeyo.shared.resources.non_magical_attack_immunity
+import org.dembeyo.shared.resources.non_magical_attack_resistance
 import org.dembeyo.shared.resources.swim
 import org.dembeyo.shared.resources.walk
 import org.dembeyo.shared.resources.wing
@@ -89,6 +97,8 @@ import ui.composable.propertyText
 import ui.composable.propertyTitle
 import ui.composable.roundCornerShape
 import ui.composable.secondary
+import ui.getAbilityBonusColor
+import ui.joinToString
 import ui.stringRes
 
 class MonsterDetailScreen(private val index: String) : Screen {
@@ -99,20 +109,22 @@ class MonsterDetailScreen(private val index: String) : Screen {
     @Composable
     override fun Content() {
         val viewModel: MonsterDetailsViewModel = koinInject()
-        val _state by viewModel.uiState.collectAsState()
+        val uiState by viewModel.uiState.collectAsState()
 
         LaunchedEffect(index) {
             viewModel.fetchMonster(index)
         }
 
-        AnimatedContent(_state, transitionSpec = { fadeIn().togetherWith(fadeOut()) }) { state ->
+        AnimatedContent(uiState, transitionSpec = { fadeIn().togetherWith(fadeOut()) }) { state ->
             if (!state.isReady) {
                 CustomAnimatedPlaceHolder()
             } else {
                 val brush =
                     Brush.linearGradient(listOf(lightGray, secondary, state.challenge.color()))
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize().background(brush).padding(horizontal = 8.dp)
+                    modifier = Modifier.fillMaxSize()
+                        .background(brush)
+                        .padding(horizontal = 8.dp)
                 ) {
                     item {
                         CustomDivider()
@@ -127,16 +139,16 @@ class MonsterDetailScreen(private val index: String) : Screen {
                         TaperedRule()
 
                         // Armor Class 16 ( Plate Armor )
-                        val armor = "${state.armorsClass} ( ${state.armorDesc} )"
-                        PropertyLine(Res.string.monster_armor_class, armor)
+                        PropertyLine(Res.string.monster_armor_class, state.armorsClass.toString())
 
                         // Hit Points 10 3d6 + 12
-                        val life = "${state.hitPoints} ( ${state.hitDice} )"
-                        PropertyLine(Res.string.monster_hit_points, life)
+                        PropertyLine(Res.string.monster_hit_points, state.hitPoints.toString())
 
                         Row(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)
-                                .clip(RoundedCornerShape(8.dp)).background(secondary),
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(vertical = 2.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(secondary),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -146,23 +158,29 @@ class MonsterDetailScreen(private val index: String) : Screen {
                                 modifier = Modifier.padding(4.dp).weight(1f)
                             )
                             speed(Res.string.walk, state.walkSpeed, Res.drawable.walk)
-                            if (state.swimSpeed > 0) {
+                            if (state.swimSpeed > 10) {
                                 speed(
                                     Res.string.swim,
                                     state.swimSpeed,
                                     Res.drawable.swim
                                 )
                             }
-                            if (state.flySpeed > 0) {
+                            if (state.flySpeed > 10) {
                                 speed(
                                     Res.string.fly,
                                     state.flySpeed,
                                     Res.drawable.wing
                                 )
                             }
-                            //TODO: add burrow speed
+                            if (state.burrowSpeed > 10) {
+                                speed(
+                                    Res.string.burrow,
+                                    state.burrowSpeed,
+                                    Res.drawable.ghost
+                                )
+                            }
 
-                            if (state.climbSpeed > 0) {
+                            if (state.climbSpeed > 10) {
                                 speed(
                                     Res.string.climb,
                                     state.climbSpeed,
@@ -196,32 +214,65 @@ class MonsterDetailScreen(private val index: String) : Screen {
 
                         TaperedRule()
 
-                        if (state.damageVulnerabilities.isNotEmpty()) {
-                            PropertyLine(
-                                Res.string.monster_damage_vulnerabilities,
-                                state.damageVulnerabilities
-                            )
+                        if (state.nonMagicalAttackResistance) {
+                            PropertyLine(Res.string.non_magical_attack_resistance, "")
                         }
-                        if (state.damageImmunities.isNotEmpty()) {
-                            PropertyLine(
-                                Res.string.monster_damage_immunities, state.damageImmunities
-                            )
+
+                        if (state.nonMagicalAttackImmunity) {
+                            PropertyLine(Res.string.non_magical_attack_immunity, "")
                         }
-                        if (state.damageResistances.isNotEmpty()) {
-                            PropertyLine(
-                                Res.string.monster_damage_resistances, state.damageResistances
-                            )
+
+                        if (state.hasVulnerabilities) {
+                            val vulnerabilities =
+                                state.damageVulnerabilities.joinToString(",") { stringResource(it.stringRes()) }
+                            PropertyLine(Res.string.monster_damage_vulnerabilities, vulnerabilities)
                         }
-                        if (state.conditionImmunities.isNotEmpty()) {
+                        if (state.hasImmunities) {
+                            val immunities =
+                                state.damageImmunities.joinToString(",") { stringResource(it.stringRes()) }
+                            PropertyLine(Res.string.monster_damage_immunities, immunities)
+                        }
+                        if (state.hasResistances) {
+                            val resistances =
+                                state.damageResistances.joinToString(",") { stringResource(it.stringRes()) }
+                            PropertyLine(Res.string.monster_damage_resistances, resistances)
+                        }
+                        if (state.hasConditionImmunities) {
+                            val conditionImmunities =
+                                state.conditionImmunities.joinToString(",") { stringResource(it.stringRes()) }
                             PropertyLine(
-                                Res.string.monster_condition_immunities, state.conditionImmunities
+                                Res.string.monster_condition_immunities,
+                                conditionImmunities
                             )
                         }
 
-                        PropertyLine(Res.string.monster_senses, state.senses)
+                        PropertyLine(
+                            Res.string.monster_senses_passive_perception,
+                            state.passivePerception.toString()
+                        )
+
+                        val senses = buildString {
+                            if (state.darkVision != null) {
+                                append("${stringResource(Res.string.monster_senses_dark_vision)} ${state.darkVision}")
+                            }
+                            if (state.trueSight != null) {
+                                append("${stringResource(Res.string.monster_senses_true_sight)} ${state.trueSight} ")
+                            }
+                            if (state.tremorSense != null) {
+                                append("${stringResource(Res.string.monster_senses_tremor_sense)} ${state.tremorSense} ")
+                            }
+                            if (state.blindSight != null) {
+                                append("${stringResource(Res.string.monster_senses_blind_sight)} ${state.blindSight} ")
+                            }
+                        }
+
+                        PropertyLine(Res.string.monster_senses, senses)
 
                         if (state.languages.isNotEmpty()) {
-                            PropertyLine(Res.string.monster_languages, state.languages)
+                            PropertyLine(
+                                Res.string.monster_languages,
+                                state.languages.joinToString()
+                            )
                         }
 
                         if (state.skills.isNotEmpty()) {
@@ -252,9 +303,9 @@ class MonsterDetailScreen(private val index: String) : Screen {
                             modifier = Modifier.padding(vertical = 12.dp)
                         )
 
-                        if (state.specialAbilities.isNotEmpty()) {
-                            state.specialAbilities.forEach { ability ->
-                                SpecialAbilityItem(ability)
+                        if (state.trait.isNotEmpty()) {
+                            state.trait.forEach { ability ->
+                                traitItem(ability)
                             }
                             TaperedRule()
                         }
@@ -267,8 +318,17 @@ class MonsterDetailScreen(private val index: String) : Screen {
                             color = darkPrimary,
                             modifier = Modifier.padding(vertical = 12.dp)
                         )
+
                         state.actions.forEach { action ->
-                            ActionItem(action)
+                            actionItem(action)
+                        }
+
+                        state.bonusActions.forEach { action ->
+                            actionItem(action)
+                        }
+
+                        state.reactions.forEach { action ->
+                            actionItem(action)
                         }
 
                         if (state.legendaryActions.isNotEmpty()) {
@@ -283,7 +343,7 @@ class MonsterDetailScreen(private val index: String) : Screen {
                             )
 
                             state.legendaryActions.forEach { action ->
-                                ActionItem(action)
+                                actionItem(action)
                             }
                         }
                         CustomDivider()
@@ -303,16 +363,16 @@ class MonsterDetailScreen(private val index: String) : Screen {
                 .background(darkPrimary)
         ) {
             Text(
-                text = "$abilityName $abilityValue",
+                text = "$abilityName ($abilityValue)",
                 style = SmallBoldSecondary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().padding(2.dp)
             )
-            val signedBonus =
-                if (abilityValue.getAbilityBonus() > 0) "+${abilityValue.getAbilityBonus()}" else "${abilityValue.getAbilityBonus()}"
+            val bonus = abilityValue.getAbilityBonus()
+            val signedBonus = if (bonus > 0) "+$bonus" else "$bonus"
             Text(
                 text = signedBonus,
-                modifier = Modifier.fillMaxWidth().background(abilityValue.getAbilityBonusColor())
+                modifier = Modifier.fillMaxWidth().background(bonus.getAbilityBonusColor())
                     .padding(2.dp),
                 textAlign = TextAlign.Center,
                 style = MediumBoldSecondary.copy(color = darkPrimary)
@@ -350,18 +410,18 @@ class MonsterDetailScreen(private val index: String) : Screen {
     }
 
     @Composable
-    fun SpecialAbilityItem(ability: Action) {
+    fun traitItem(trait: Trait) {
         Column(
             modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)
                 .clip(RoundedCornerShape(8.dp)).background(secondary),
         ) {
             Text(
-                text = ability.name,
+                text = trait.name,
                 style = SmallBoldSecondary.copy(color = secondary),
                 modifier = Modifier.fillMaxWidth().background(darkPrimary).padding(4.dp)
             )
             Text(
-                text = ability.desc.capitalize(Locale.current),
+                text = trait.desc.capitalize(Locale.current),
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
                 style = propertyText.copy(textAlign = TextAlign.Center)
             )
@@ -369,7 +429,7 @@ class MonsterDetailScreen(private val index: String) : Screen {
     }
 
     @Composable
-    fun ActionItem(action: Action) {
+    fun actionItem(action: Action) {
         Column(
             modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)
                 .clip(RoundedCornerShape(8.dp)).background(secondary),

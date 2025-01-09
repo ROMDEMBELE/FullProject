@@ -29,6 +29,11 @@ enum class Challenge(val rating: Double) {
     CR_22(22.0), // Black
     CR_23(23.0), // Black
     CR_24(24.0), // Black
+    CR_25(25.0), // Black
+    CR_26(26.0), // Black
+    CR_27(27.0), // Black
+    CR_28(28.0), // Black
+    CR_29(29.0), // Black
     CR_30(30.0); // Black
 
     companion object {

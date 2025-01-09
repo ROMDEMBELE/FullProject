@@ -94,6 +94,7 @@ import ui.composable.primary
 import ui.composable.propertyText
 import ui.composable.propertyTitle
 import ui.composable.secondary
+import ui.stringRes
 
 
 class SpellDetailsScreen(private val index: String) : Screen {
@@ -224,7 +225,7 @@ class SpellDetailsScreen(private val index: String) : Screen {
                                 .clip(RoundedCornerShape(8.dp))
                                 .background(primary)
                                 .padding(4.dp),
-                            text = "Saving Throw: " + stringResource(state.savingThrowAbility.stringRes),
+                            text = "Saving Throw: " + stringResource(state.savingThrowAbility.stringRes()),
                             color = darkBlue,
                             fontWeight = FontWeight.Bold,
                             fontFamily = FontFamily.Monospace,

@@ -1,9 +1,7 @@
 package domain.model
 
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
-@Serializable
 enum class DamageType {
 
     @SerialName("acid")
@@ -46,6 +44,25 @@ enum class DamageType {
     THUNDER;
 
     companion object {
+        fun fromUrl(url: String): DamageType {
+            return when {
+                url.contains("acid", ignoreCase = true) -> ACID
+                url.contains("bludgeoning", ignoreCase = true) -> BLUDGEONING
+                url.contains("cold", ignoreCase = true) -> COLD
+                url.contains("fire", ignoreCase = true) -> FIRE
+                url.contains("force", ignoreCase = true) -> FORCE
+                url.contains("lightning", ignoreCase = true) -> LIGHTNING
+                url.contains("necrotic", ignoreCase = true) -> NECROTIC
+                url.contains("piercing", ignoreCase = true) -> PIERCING
+                url.contains("poison", ignoreCase = true) -> POISON
+                url.contains("psychic", ignoreCase = true) -> PSYCHIC
+                url.contains("radiant", ignoreCase = true) -> RADIANT
+                url.contains("slashing", ignoreCase = true) -> SLASHING
+                url.contains("thunder", ignoreCase = true) -> THUNDER
+                else -> throw IllegalArgumentException("Unknown damage type: $url")
+            }
+        }
+
         fun fromString(value: String): DamageType {
             return when (value) {
                 "acid" -> ACID

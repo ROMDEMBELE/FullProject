@@ -19,7 +19,7 @@ class MonsterDetailsViewModel(
             _uiState.update {
                 it.copy(
                     isReady = true,
-                    slug = monster.key,
+                    key = monster.key,
                     name = monster.name,
                     challenge = monster.challenge,
                     isFavorite = monster.isFavorite,
@@ -27,9 +27,7 @@ class MonsterDetailsViewModel(
                     type = monster.type,
                     alignment = monster.alignment,
                     armorsClass = monster.armorsClass,
-                    armorDesc = null,
                     hitPoints = monster.hitPoints,
-                    hitDice = null,
                     walkSpeed = monster.walkSpeed,
                     swimSpeed = monster.swimSpeed,
                     flySpeed = monster.flySpeed,
@@ -47,10 +45,25 @@ class MonsterDetailsViewModel(
                     strength = monster.strength,
                     strengthSave = monster.strengthSave,
                     wisdom = monster.wisdom,
+                    damageImmunities = monster.damageImmunities,
+                    damageResistances = monster.damageResistances,
+                    damageVulnerabilities = monster.damageVulnerabilities,
+                    conditionImmunities = monster.conditionImmunities,
+                    passivePerception = monster.passivePerception,
+                    darkVision = monster.darkVisionRange,
+                    trueSight = monster.trueSightRange,
+                    tremorSense = monster.tremorSenseRange,
+                    blindSight = monster.blindSightRange,
+                    languages = monster.languages,
+                    trait = monster.traits,
+                    actions = monster.actions,
+                    bonusActions = monster.bonusActions,
+                    reactions = monster.reactions,
+                    legendaryActions = monster.legendaryActions,
                 )
             }
         } catch (e: Exception) {
-            _uiState.update { it.copy(isReady = true, error = e.message) }
+            _uiState.update { it.copy(isReady = true) }
         }
     }
 }

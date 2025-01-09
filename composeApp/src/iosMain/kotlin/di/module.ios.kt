@@ -16,7 +16,7 @@ import ui.character.edit.EditCharacterViewModel
 import ui.magicItem.details.MagicItemDetailsViewModel
 import ui.magicItem.list.MagicItemListViewModel
 import ui.monster.details.MonsterDetailsViewModel
-import ui.monster.list.MonsterListViewModel
+import ui.monster.search.SearchMonsterViewModel
 import ui.spell.details.SpellDetailsViewModel
 import ui.spell.list.SpellListViewModel
 
@@ -29,7 +29,7 @@ actual fun platformModule(): Module = module {
     factoryOf(::SpellDetailsViewModel)
     factoryOf(::EditCharacterViewModel)
     factoryOf(::CharacterViewModel)
-    factoryOf(::MonsterListViewModel)
+    factoryOf(::SearchMonsterViewModel)
     factoryOf(::MonsterDetailsViewModel)
     factoryOf(::EditCampaignViewModel)
     factoryOf(::CampaignViewModel)
@@ -44,7 +44,7 @@ object ViewModelProvider : KoinComponent {
     fun getSpellScreenDetailsViewModel() = SpellDetailsViewModel(get())
     fun getEditCharacterViewModel() = EditCharacterViewModel(get(), get(), get(), get(), get())
     fun getCharacterViewModel() = CharacterViewModel(get(), get())
-    fun getMonsterListViewModel() = MonsterListViewModel(get(), get(), get(), get())
+    fun getMonsterListViewModel() = SearchMonsterViewModel(get(), get(), get(), get(), get())
     fun getMonsterDetailsViewModel() = MonsterDetailsViewModel(get())
     fun getMagicItemListViewModel() = MagicItemListViewModel(get())
     fun getMagicItemDetailsViewModel() = MagicItemDetailsViewModel(get())

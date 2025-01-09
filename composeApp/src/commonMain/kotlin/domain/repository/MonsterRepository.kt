@@ -2,12 +2,19 @@ package domain.repository
 
 import domain.model.monster.Challenge
 import domain.model.monster.Monster
-import domain.model.monster.MonsterReference
 import io.ktor.client.plugins.ServerResponseException
 import kotlinx.coroutines.flow.Flow
 import kotlin.coroutines.cancellation.CancellationException
 
 interface MonsterRepository {
+
+    suspend fun addFavorite(monster: Monster)
+
+    suspend fun removeFavorite(key: String)
+
+    suspend fun getFavorites(): Flow<List<Monster>>
+
+    suspend fun getFavorite(key: String): Monster?
 
     @Throws(
         ServerResponseException::class,
@@ -24,5 +31,5 @@ interface MonsterRepository {
         name: String,
         min: Challenge = Challenge.CR_0,
         max: Challenge = Challenge.CR_30
-    ): Flow<List<MonsterReference>>
+    ): Flow<List<Monster>>
 }

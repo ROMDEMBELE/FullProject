@@ -14,7 +14,7 @@ import ui.encounter.EncounterListViewModel
 import ui.magicItem.details.MagicItemDetailsViewModel
 import ui.magicItem.list.MagicItemListViewModel
 import ui.monster.details.MonsterDetailsViewModel
-import ui.monster.list.MonsterListViewModel
+import ui.monster.search.SearchMonsterViewModel
 import ui.spell.details.SpellDetailsViewModel
 import ui.spell.list.SpellListViewModel
 
@@ -22,7 +22,7 @@ actual fun platformModule(): Module = module {
     viewModelOf(::SpellListViewModel)
     viewModelOf(::SpellDetailsViewModel)
     viewModelOf(::EditCharacterViewModel)
-    viewModelOf(::MonsterListViewModel)
+    viewModelOf(::SearchMonsterViewModel)
     viewModelOf(::MonsterDetailsViewModel)
     viewModelOf(::CharacterViewModel)
     viewModelOf(::EditCampaignViewModel)

@@ -1,0 +1,105 @@
+import domain.model.Alignment;
+import domain.model.Condition;
+import domain.model.monster.CreatureSize;
+import domain.model.monster.CreatureType;
+import domain.model.DamageType;
+import domain.model.Environment;
+import domain.model.monster.Action;
+import domain.model.monster.Challenge;
+import domain.model.monster.Trait;
+import kotlin.Boolean;
+import kotlin.String;
+import kotlin.collections.List;
+
+CREATE TABLE MonsterDbo (
+    key TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    challenge REAL AS Challenge NOT NULL,
+    size TEXT AS CreatureSize NOT NULL,
+    type TEXT AS CreatureType NOT NULL,
+    alignment TEXT AS Alignment NOT NULL,
+    armors_class INTEGER NOT NULL,
+    hit_points INTEGER NOT NULL,
+    charisma INTEGER NOT NULL,
+    charisma_save INTEGER,
+    dexterity INTEGER NOT NULL,
+    dexterity_save INTEGER,
+    constitution INTEGER NOT NULL,
+    constitution_save INTEGER,
+    intelligence INTEGER NOT NULL,
+    intelligence_save INTEGER,
+    strength INTEGER NOT NULL,
+    strength_save INTEGER,
+    wisdom INTEGER NOT NULL,
+    wisdom_save INTEGER,
+    walk_speed REAL NOT NULL,
+    swim_speed REAL NOT NULL,
+    fly_speed REAL NOT NULL,
+    climb_speed REAL NOT NULL,
+    burrow_speed REAL NOT NULL,
+    hover INTEGER AS Boolean NOT NULL DEFAULT 0,
+    arcana INTEGER,
+    acrobatics INTEGER,
+    animal_handling INTEGER,
+    deception INTEGER,
+    history INTEGER,
+    insight INTEGER,
+    intimidation INTEGER,
+    investigation INTEGER,
+    medicine INTEGER,
+    nature INTEGER,
+    perception INTEGER,
+    performance INTEGER,
+    persuasion INTEGER,
+    religion INTEGER,
+    sleight_of_hand INTEGER,
+    stealth INTEGER,
+    survival INTEGER,
+    non_magical_attack_resistance INTEGER AS Boolean NOT NULL DEFAULT 0,
+    non_magical_attack_immunity INTEGER AS Boolean NOT NULL DEFAULT 0,
+    damage_vulnerabilities TEXT AS List<DamageType> NOT NULL,
+    damage_resistances TEXT  AS List<DamageType>NOT NULL,
+    damage_immunities TEXT AS List<DamageType> NOT NULL,
+    condition_immunities TEXT AS List<Condition> NOT NULL,
+    passive_perception INTEGER NOT NULL,
+    sight_range REAL NOT NULL,
+    dark_vision_range REAL,
+    blind_sight_range REAL,
+    tremor_sense_range REAL,
+    true_sight_range REAL,
+    languages TEXT AS List<String> NOT NULL,
+    traits TEXT AS List<Trait> NOT NULL,
+    actions TEXT AS List<Action> NOT NULL,
+    bonus_actions TEXT AS List<Action> NOT NULL,
+    reactions TEXT AS List<Action> NOT NULL,
+    legendary_actions TEXT AS List<Action> NOT NULL,
+    environments TEXT AS List<Environment> NOT NULL
+);
+
+insertOrReplace:
+INSERT OR REPLACE INTO MonsterDbo (
+    key, name, challenge, size, type, alignment, armors_class,
+    hit_points, charisma, charisma_save, dexterity, dexterity_save, constitution,
+    constitution_save, intelligence, intelligence_save, strength, strength_save,
+    wisdom, wisdom_save, walk_speed, swim_speed, fly_speed, climb_speed, burrow_speed,
+    hover, arcana, acrobatics, animal_handling, deception, history, insight,
+    intimidation, investigation, medicine, nature, perception, performance, persuasion,
+    religion, sleight_of_hand, stealth, survival, non_magical_attack_resistance,
+    non_magical_attack_immunity, damage_vulnerabilities, damage_resistances,
+    damage_immunities, condition_immunities, passive_perception, sight_range,
+    dark_vision_range, blind_sight_range, tremor_sense_range, true_sight_range,
+    languages, traits, actions, bonus_actions, reactions, legendary_actions, environments
+) VALUES (
+     ?,  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+);
+
+deleteByKey:
+DELETE FROM MonsterDbo
+WHERE key = ?;
+
+getByKey:
+SELECT * FROM MonsterDbo
+WHERE key = ?;
+
+getAll:
+SELECT * FROM MonsterDbo;

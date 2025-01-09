@@ -8,21 +8,17 @@ import data.api.impl.MonsterApiImpl
 import data.api.impl.SpellApiImpl
 import data.database.sqlDelight.SqlDatabase
 import data.local.LocalDatasource
-import data.repository.FavoriteRepositoryImpl
 import data.repository.MonsterRepositoryImpl
 import data.repository.SpellRepositoryImpl
 import domain.repository.BackgroundRepository
 import domain.repository.CampaignRepository
 import domain.repository.CharacterRepository
 import domain.repository.EncounterRepository
-import domain.repository.FavoriteRepository
 import domain.repository.MagicItemRepository
 import domain.repository.MonsterRepository
 import domain.repository.SettingsRepository
 import domain.repository.SpeciesRepository
 import domain.repository.SpellRepository
-import domain.usecase.AddToFavoriteUseCase
-import domain.usecase.RemoveFromFavoriteUseCase
 import domain.usecase.campaign.DeleteCampaignUseCase
 import domain.usecase.campaign.GetCampaignsUseCase
 import domain.usecase.campaign.GetMainCampaignUseCase
@@ -38,9 +34,12 @@ import domain.usecase.encounter.GetMainCampaignEncounterUseCase
 import domain.usecase.encounter.RemoveCharacterFromEncounterUseCase
 import domain.usecase.encounter.RemoveMonsterFromEncounterUseCase
 import domain.usecase.encounter.UpdateEncounterUseCase
+import domain.usecase.monster.AddMonsterToFavoriteUseCase
 import domain.usecase.monster.ChallengeFilterUseCase
-import domain.usecase.monster.FilterMonstersListUseCase
+import domain.usecase.monster.GetFavoritesMonsterUseCase
 import domain.usecase.monster.GetMonsterByKeyUseCase
+import domain.usecase.monster.RemoveMonsterFromFavoriteUseCase
+import domain.usecase.monster.SearchMonstersUseCase
 import domain.usecase.spell.GetSpellByKeyUseCase
 import domain.usecase.spell.GetSpellFilterUseCase
 import domain.usecase.spell.SaveSpellFilterUseCase
@@ -105,8 +104,7 @@ val dataModule = module {
 
 val repositoryModule = module {
     singleOf(::CharacterRepository)
-    single<FavoriteRepository> { FavoriteRepositoryImpl(get()) }
-    single<MonsterRepository> { MonsterRepositoryImpl(get(), get(), get()) }
+    single<MonsterRepository> { MonsterRepositoryImpl(get(), get()) }
     single<SpellRepository> { SpellRepositoryImpl(get()) }
     singleOf(::SpeciesRepository)
     singleOf(::BackgroundRepository)
@@ -114,6 +112,9 @@ val repositoryModule = module {
     singleOf(::SettingsRepository)
     singleOf(::MagicItemRepository)
     singleOf(::EncounterRepository)
+}
+
+val useCaseModule: Module = module {
 
     factoryOf(::GetMainCampaignUseCase)
     factoryOf(::GetMainCampaignCharactersUseCase)
@@ -123,11 +124,12 @@ val repositoryModule = module {
     factoryOf(::SaveCharacterUseCase)
     factoryOf(::DeleteCharacterUseCase)
 
-    factoryOf(::AddToFavoriteUseCase)
-    factoryOf(::RemoveFromFavoriteUseCase)
-    factoryOf(::FilterMonstersListUseCase)
+    factoryOf(::SearchMonstersUseCase)
     factoryOf(::GetMonsterByKeyUseCase)
     factoryOf(::GetSpellByKeyUseCase)
+    factoryOf(::AddMonsterToFavoriteUseCase)
+    factoryOf(::RemoveMonsterFromFavoriteUseCase)
+    factoryOf(::GetFavoritesMonsterUseCase)
 
     factory { ChallengeFilterUseCase(get()) }
 
