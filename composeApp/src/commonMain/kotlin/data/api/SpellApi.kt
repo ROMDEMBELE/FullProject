@@ -13,14 +13,21 @@ interface SpellApi {
         CancellationException::class,
         JsonConvertException::class
     )
-    suspend fun findSpell(slug: String): SearchResultDto<JsonObject>
+    suspend fun findSpell(key: String): SearchResultDto<JsonObject>
 
     @Throws(
         ServerResponseException::class,
         CancellationException::class,
         JsonConvertException::class
     )
-    suspend fun searchSpells(query: String, minLv: Int, maxLv: Int): SearchResultDto<JsonObject>
+    suspend fun search(query: String, minLv: Int, maxLv: Int): SearchResultDto<JsonObject>
+
+    @Throws(
+        ServerResponseException::class,
+        CancellationException::class,
+        JsonConvertException::class
+    )
+    suspend fun getByLevel(level: Int): SearchResultDto<JsonObject>
 
     @Throws(
         ServerResponseException::class,

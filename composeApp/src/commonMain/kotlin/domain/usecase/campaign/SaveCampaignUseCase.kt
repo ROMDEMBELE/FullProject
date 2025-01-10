@@ -23,7 +23,7 @@ class SaveCampaignUseCase(
             ?: throw IllegalStateException("Campaign not created nor updated")
 
         // Replace current main id
-        if (isMain) settingsRepository.setMainCampaignId(newId)
+        //if (isMain) settingsRepository.setMainCampaignId(newId)
 
         return campaignRepository.getById(newId).firstOrNull()
     }

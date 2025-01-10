@@ -10,6 +10,10 @@ enum class Ability(val id: String, val fullName: String) {
     WIS("wis", "wisdom");
 
     companion object {
+        fun fromFullName(fullName: String): Ability =
+            entries.firstOrNull { it.fullName.equals(fullName, ignoreCase = true) }
+                ?: throw IllegalArgumentException("No Ability found for $fullName")
+
         fun Int.getAbilityBonus(): Int = when (this) {
             in 0..1 -> -5
             in 2..3 -> -4

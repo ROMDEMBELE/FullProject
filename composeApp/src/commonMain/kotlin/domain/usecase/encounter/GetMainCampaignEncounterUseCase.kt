@@ -4,7 +4,7 @@ import domain.model.encounter.Encounter
 import domain.repository.EncounterRepository
 import domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emptyFlow
 
 class GetMainCampaignEncounterUseCase(
     private val settingsRepository: SettingsRepository,
@@ -12,9 +12,6 @@ class GetMainCampaignEncounterUseCase(
 ) {
 
     operator fun invoke(): Flow<List<Encounter>> {
-        return combine(
-            settingsRepository.getMainCampaignId(),
-            encounterRepository.getAll()
-        ) { id, list -> if (id != null) list.filter { it.campaignId == id } else emptyList() }
+        return emptyFlow()
     }
 }

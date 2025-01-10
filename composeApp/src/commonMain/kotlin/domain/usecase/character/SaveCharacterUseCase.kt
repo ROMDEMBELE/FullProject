@@ -37,8 +37,7 @@ class SaveCharacterUseCase(
         require(armorClass >= 0) { "Armor class must be non-negative" }
         require(hitPoint >= 0) { "Hit point must be non-negative" }
 
-        val campaignId = settingsRepository.getMainCampaignId().firstOrNull()
-            ?: throw IllegalStateException("Character cannot be created without a campaign")
+        val campaignId = 1L
 
         val newId = characterRepository.createOrUpdateCharacter(
             id = id,

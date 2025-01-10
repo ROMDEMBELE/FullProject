@@ -14,6 +14,7 @@ import domain.model.monster.Action
 import domain.model.monster.Challenge
 import domain.model.monster.Monster
 import domain.model.monster.Trait
+import domain.model.spell.Spell
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
@@ -25,6 +26,7 @@ import org.dembeyo.data.CharacterDbo
 import org.dembeyo.data.MonsterDbo
 import org.dembeyo.data.MySqlDelightDatabase
 import org.dembeyo.data.RaceDbo
+import org.dembeyo.data.SpellDbo
 
 class SqlDatabase(driverFactory: DriverFactory) {
 
@@ -104,10 +106,10 @@ class SqlDatabase(driverFactory: DriverFactory) {
             if (databaseValue.isEmpty()) {
                 listOf()
             } else {
-                databaseValue.split(",").map { DamageType.valueOf(it) }
+                databaseValue.split("|").map { DamageType.valueOf(it) }
             }
 
-        override fun encode(value: List<DamageType>): String = value.joinToString(",")
+        override fun encode(value: List<DamageType>): String = value.joinToString("|")
     }
 
     /**
@@ -142,6 +144,19 @@ class SqlDatabase(driverFactory: DriverFactory) {
         }
     }
 
+    private val listOfSpellOptionAdapter = object : ColumnAdapter<List<Spell.SpellOption>, String> {
+        override fun decode(databaseValue: String): List<Spell.SpellOption> =
+            if (databaseValue.isEmpty()) {
+                emptyList()
+            } else {
+                databaseValue.split("|").map { Json.decodeFromString(it) }
+            }
+
+        override fun encode(value: List<Spell.SpellOption>): String {
+            return value.joinToString("|") { Json.encodeToString(it) }
+        }
+    }
+
     private val database = MySqlDelightDatabase(
         driver = driverFactory.createDriver(),
         CharacterDboAdapter = CharacterDbo.Adapter(
@@ -166,6 +181,13 @@ class SqlDatabase(driverFactory: DriverFactory) {
             legendary_actionsAdapter = listOfActionAdapter,
             bonus_actionsAdapter = listOfActionAdapter,
             traitsAdapter = listOfTraitAdapter
+        ),
+        SpellDboAdapter = SpellDbo.Adapter(
+            levelAdapter = EnumColumnAdapter(),
+            schoolAdapter = EnumColumnAdapter(),
+            saving_throw_abilityAdapter = EnumColumnAdapter(),
+            casting_optionsAdapter = listOfSpellOptionAdapter,
+            damage_typeAdapter = listOfDamageTypeAdapter
         )
     )
 
@@ -244,6 +266,38 @@ class SqlDatabase(driverFactory: DriverFactory) {
         )
     }
 
+    fun getAllSpells(): Flow<List<SpellDbo>> =
+        database.spellQueries.getAll().asFlow().mapToList(Dispatchers.IO)
+
+    fun getSpellById(id: String): SpellDbo? =
+        database.spellQueries.getByKey(id).executeAsOneOrNull()
+
+    fun deleteSpellById(id: String) = database.spellQueries.deleteByKey(id)
+
+    fun insertOrUpdateSpell(spell: Spell) {
+        database.spellQueries.insertOrReplace(
+            key = spell.key,
+            name = spell.name,
+            level = spell.level,
+            description = spell.description,
+            higher_level = spell.higherLevel,
+            school = spell.school,
+            range = spell.range,
+            verbal = spell.verbal,
+            somatic = spell.somatic,
+            material = spell.material,
+            cost = spell.cost,
+            ritual = spell.ritual,
+            duration = spell.duration,
+            concentration = spell.concentration,
+            casting_time = spell.castingTime,
+            saving_throw_ability = spell.savingThrowAbility,
+            attack_roll = spell.attackRoll,
+            damage_type = spell.damageType,
+            target_count = spell.targetCount?.toLong(),
+            casting_options = spell.castingOptions
+        )
+    }
 
 // section Character
 

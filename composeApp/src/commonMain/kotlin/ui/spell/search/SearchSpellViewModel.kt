@@ -5,75 +5,130 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import domain.model.Level
 import domain.model.spell.Spell
-import domain.repository.SpellRepository
-import domain.usecase.spell.GetSpellFilterUseCase
-import domain.usecase.spell.SaveSpellFilterUseCase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import domain.usecase.spell.AddSpellToFavoritesUseCase
+import domain.usecase.spell.GetFavoritesSpellUseCase
+import domain.usecase.spell.LevelFilterUseCase
+import domain.usecase.spell.RemoveSpellFromFavoritesUseCase
+import domain.usecase.spell.SearchSpellUseCase
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SearchSpellViewModel(
-    private val spellRepository: SpellRepository,
-    private val saveSpellFilter: SaveSpellFilterUseCase,
-    private val getSpellFilter: GetSpellFilterUseCase
+    private val getFavoritesUseCase: GetFavoritesSpellUseCase,
+    private val searchSpellUseCase: SearchSpellUseCase,
+    private val levelFilterUseCase: LevelFilterUseCase,
+    private val addSpellToFavoritesUseCase: AddSpellToFavoritesUseCase,
+    private val removeSpellFromFavoritesUseCase: RemoveSpellFromFavoritesUseCase,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(SpellListUiState())
-    val uiState = _uiState.asStateFlow()
+    private val _state = MutableStateFlow(SearchSpellUiState())
+    val state = _state.asStateFlow()
+
+    private var searchJob: Job? = null
+
+    private fun Spell.toSearchSpellItem() = SearchSpellItem(
+        key = key,
+        name = name,
+        level = level,
+        isFavorite = isFavorite,
+    )
 
     init {
+        fetchFavorites()
+
+        fetchSpellFilter()
+    }
+
+    private fun fetchFavorites() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-
-            }
-        }
-    }
-
-    fun toggleSpellIsFavorite(spell: Spell) {
-
-    }
-
-    fun filterByLevel(filter: Level, enable: Boolean) {
-        _uiState.update {
-            it.copy(filterByLevel = it.filterByLevel.toMutableMap().apply {
-                this[filter] = enable
-            })
-        }
-        saveSpellFilter(_uiState.value.filterByLevel)
-    }
-
-    fun filterByText(textFieldValue: TextFieldValue) {
-        _uiState.update {
-            it.copy(textField = textFieldValue)
-        }
-    }
-
-    fun acknowledgeError() {
-        _uiState.update { it.copy(error = null) }
-    }
-
-    fun refresh() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                _uiState.update { it.copy(isLoading = false) }
-                try {
-
-                } catch (e: Exception) {
-                    _uiState.update { it.copy(isLoading = true, error = e.message) }
+            getFavoritesUseCase().collect { favorites ->
+                _state.update { state ->
+                    state.copy(
+                        favorites = favorites.map { spell -> spell.toSearchSpellItem() },
+                        searchResult = state.searchResult.map { spell ->
+                            if (favorites.any { it.key == spell.key }) {
+                                spell.copy(isFavorite = true)
+                            } else {
+                                spell.copy(isFavorite = false)
+                            }
+                        }
+                    )
                 }
             }
         }
     }
 
+    private fun fetchSpellFilter() {
+        viewModelScope.launch {
+            val filter = levelFilterUseCase.get()
+            _state.update { it.copy(filterLevelRange = filter) }
+        }
+    }
+
+    private fun fetchSpell(text: TextFieldValue, minLevel: Level, maxLevel: Level) {
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            searchSpellUseCase(text, minLevel, maxLevel).collect {
+                _state.update { state ->
+                    val newSpells = it.map { spell -> spell.toSearchSpellItem() }
+                    state.copy(searchResult = state.searchResult.plus(newSpells), isLoading = false)
+                }
+            }
+        }
+    }
+
+    private fun searchSpells() {
+        searchJob?.cancel()
+        val min = state.value.minLevel
+        val max = state.value.maxLevel
+        val text = state.value.searchTextField
+        if (text.text.isNotBlank()) {
+            _state.update { it.copy(searchResult = emptyList(), isLoading = true) }
+            fetchSpell(text, min, max)
+        } else {
+            _state.update { it.copy(isLoading = false) }
+        }
+    }
+
+    fun cancelSearch() {
+        searchJob?.cancel()
+    }
+
+    fun filterByText(textFieldValue: TextFieldValue) {
+        viewModelScope.launch {
+            _state.update { it.copy(searchTextField = textFieldValue) }
+            delay(500)
+            searchSpells()
+        }
+    }
+
     fun removeFavorite(key: String) {
-        TODO("Not yet implemented")
+        viewModelScope.launch {
+            removeSpellFromFavoritesUseCase(key)
+        }
     }
 
     fun addFavorite(key: String) {
-        TODO("Not yet implemented")
+        viewModelScope.launch {
+            addSpellToFavoritesUseCase(key)
+        }
+    }
+
+    fun setLevelRange(range: ClosedFloatingPointRange<Float>) {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(filterLevelRange = range)
+            }
+            val min = _state.value.minLevel
+            val max = _state.value.maxLevel
+            levelFilterUseCase.save(min, max)
+            delay(500)
+            searchSpells()
+        }
     }
 }

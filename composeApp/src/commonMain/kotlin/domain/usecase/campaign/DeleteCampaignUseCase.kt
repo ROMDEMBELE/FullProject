@@ -42,7 +42,7 @@ class DeleteCampaignUseCase(
 
 
         // Delete id
-        settingsRepository.setMainCampaignId(null)
+        // settingsRepository.setMainCampaignId(null)
 
         // Delete the campaign
         campaignRepository.delete(id)

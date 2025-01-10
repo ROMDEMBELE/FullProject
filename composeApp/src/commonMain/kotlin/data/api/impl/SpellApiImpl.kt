@@ -11,7 +11,7 @@ import kotlinx.serialization.json.JsonObject
 
 class SpellApiImpl(private val client: HttpClient) : SpellApi {
 
-    override suspend fun searchSpells(
+    override suspend fun search(
         query: String,
         minLv: Int,
         maxLv: Int
@@ -33,10 +33,10 @@ class SpellApiImpl(private val client: HttpClient) : SpellApi {
             )
     }
 
-    override suspend fun findSpell(slug: String): SearchResultDto<JsonObject> {
+    override suspend fun findSpell(key: String): SearchResultDto<JsonObject> {
         val response = client.get(BASE_URL) {
             url {
-                parameters.append("slug", slug)
+                parameters.append("key", key)
             }
         }
         if (response.status.isSuccess())
@@ -44,8 +44,24 @@ class SpellApiImpl(private val client: HttpClient) : SpellApi {
         else
             throw ServerResponseException(
                 response,
-                "find spell by slug $slug failed : ${response.status}"
+                "find spell by slug $key failed : ${response.status}"
             )
+    }
+
+    override suspend fun getByLevel(level: Int): SearchResultDto<JsonObject> {
+        val response = client.get(BASE_URL) {
+            url {
+                parameters.append("level", level.toString())
+            }
+        }
+        if (response.status.isSuccess()) {
+            return response.body()
+        } else {
+            throw ServerResponseException(
+                response,
+                "get by level $level failed : ${response.status}"
+            )
+        }
     }
 
     override suspend fun getPreviousPage(url: String): SearchResultDto<JsonObject> {

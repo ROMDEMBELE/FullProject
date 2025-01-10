@@ -6,7 +6,7 @@ import domain.repository.CharacterRepository
 import domain.repository.EncounterRepository
 import domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emptyFlow
 
 class GetCampaignsUseCase(
     private val campaignRepository: CampaignRepository,
@@ -16,19 +16,6 @@ class GetCampaignsUseCase(
 ) {
 
     operator fun invoke(): Flow<List<Campaign>> {
-        return combine(
-            settingsRepository.getMainCampaignId(),
-            campaignRepository.getAll(),
-            encounterRepository.getAll(),
-            characterRepository.getAll()
-        ) { mainCampaignId, campaigns, encounters, characters ->
-            campaigns.map { campaign ->
-                campaign.copy(
-                    inProgress = campaign.id == mainCampaignId,
-                    characters = characters.filter { it.campaignId == campaign.id },
-                    encounters = encounters.filter { it.campaignId == campaign.id }
-                )
-            }
-        }
+        return emptyFlow()
     }
 }

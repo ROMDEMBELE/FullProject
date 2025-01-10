@@ -9,6 +9,7 @@ import data.api.impl.SpellApiImpl
 import data.database.sqlDelight.SqlDatabase
 import data.local.LocalDatasource
 import data.repository.MonsterRepositoryImpl
+import data.repository.SettingsRepositoryImpl
 import data.repository.SpellRepositoryImpl
 import domain.repository.BackgroundRepository
 import domain.repository.CampaignRepository
@@ -40,9 +41,12 @@ import domain.usecase.monster.GetFavoritesMonsterUseCase
 import domain.usecase.monster.GetMonsterByKeyUseCase
 import domain.usecase.monster.RemoveMonsterFromFavoriteUseCase
 import domain.usecase.monster.SearchMonstersUseCase
+import domain.usecase.spell.AddSpellToFavoritesUseCase
+import domain.usecase.spell.GetFavoritesSpellUseCase
 import domain.usecase.spell.GetSpellByKeyUseCase
-import domain.usecase.spell.GetSpellFilterUseCase
-import domain.usecase.spell.SaveSpellFilterUseCase
+import domain.usecase.spell.LevelFilterUseCase
+import domain.usecase.spell.RemoveSpellFromFavoritesUseCase
+import domain.usecase.spell.SearchSpellUseCase
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
@@ -105,11 +109,11 @@ val dataModule = module {
 val repositoryModule = module {
     singleOf(::CharacterRepository)
     single<MonsterRepository> { MonsterRepositoryImpl(get(), get()) }
-    single<SpellRepository> { SpellRepositoryImpl(get()) }
+    single<SpellRepository> { SpellRepositoryImpl(get(), get()) }
+    single<SettingsRepository> { SettingsRepositoryImpl(get()) }
     singleOf(::SpeciesRepository)
     singleOf(::BackgroundRepository)
     singleOf(::CampaignRepository)
-    singleOf(::SettingsRepository)
     singleOf(::MagicItemRepository)
     singleOf(::EncounterRepository)
 }
@@ -130,11 +134,14 @@ val useCaseModule: Module = module {
     factoryOf(::AddMonsterToFavoriteUseCase)
     factoryOf(::RemoveMonsterFromFavoriteUseCase)
     factoryOf(::GetFavoritesMonsterUseCase)
+    factoryOf(::ChallengeFilterUseCase)
 
-    factory { ChallengeFilterUseCase(get()) }
-
-    factory { SaveSpellFilterUseCase(get()) }
-    factory { GetSpellFilterUseCase(get()) }
+    factoryOf(::AddSpellToFavoritesUseCase)
+    factoryOf(::GetFavoritesSpellUseCase)
+    factoryOf(::GetSpellByKeyUseCase)
+    factoryOf(::RemoveSpellFromFavoritesUseCase)
+    factoryOf(::LevelFilterUseCase)
+    factoryOf(::SearchSpellUseCase)
 
     factoryOf(::AddCharacterToEncounterUseCase)
     factoryOf(::AddMonsterToEncounterUseCase)

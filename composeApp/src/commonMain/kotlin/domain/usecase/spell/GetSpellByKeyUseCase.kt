@@ -7,8 +7,6 @@ class GetSpellByKeyUseCase(
     private val spellRepository: SpellRepository
 ) {
 
-    suspend operator fun invoke(key: String): Spell {
-        val spell = spellRepository.getBySlug(key)
-        return spell
-    }
+    suspend operator fun invoke(key: String): Spell =
+        spellRepository.getFavorite(key) ?: spellRepository.getByKey(key)
 }

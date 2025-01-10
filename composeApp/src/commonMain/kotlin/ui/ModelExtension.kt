@@ -12,6 +12,7 @@ import domain.model.magicItem.Rarity
 import domain.model.monster.Challenge
 import domain.model.monster.CreatureSize
 import domain.model.monster.CreatureType
+import domain.model.spell.MagicSchool
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.aberration
 import org.dembeyo.shared.resources.ability_cha
@@ -20,6 +21,7 @@ import org.dembeyo.shared.resources.ability_dex
 import org.dembeyo.shared.resources.ability_int
 import org.dembeyo.shared.resources.ability_str
 import org.dembeyo.shared.resources.ability_wis
+import org.dembeyo.shared.resources.abjuration
 import org.dembeyo.shared.resources.any_alignment
 import org.dembeyo.shared.resources.any_chaotic_alignment
 import org.dembeyo.shared.resources.any_evil_alignment
@@ -47,6 +49,7 @@ import org.dembeyo.shared.resources.condition_prone
 import org.dembeyo.shared.resources.condition_restrained
 import org.dembeyo.shared.resources.condition_stunned
 import org.dembeyo.shared.resources.condition_unconscious
+import org.dembeyo.shared.resources.conjuration
 import org.dembeyo.shared.resources.construct
 import org.dembeyo.shared.resources.damage_acid
 import org.dembeyo.shared.resources.damage_bludgeoning
@@ -61,14 +64,18 @@ import org.dembeyo.shared.resources.damage_psychic
 import org.dembeyo.shared.resources.damage_radiant
 import org.dembeyo.shared.resources.damage_slashing
 import org.dembeyo.shared.resources.damage_thunder
+import org.dembeyo.shared.resources.divination
 import org.dembeyo.shared.resources.dragon
 import org.dembeyo.shared.resources.elemental
+import org.dembeyo.shared.resources.enchantment
+import org.dembeyo.shared.resources.evocation
 import org.dembeyo.shared.resources.fey
 import org.dembeyo.shared.resources.fiend
 import org.dembeyo.shared.resources.gargantuan
 import org.dembeyo.shared.resources.giant
 import org.dembeyo.shared.resources.huge
 import org.dembeyo.shared.resources.humanoid
+import org.dembeyo.shared.resources.illusion
 import org.dembeyo.shared.resources.large
 import org.dembeyo.shared.resources.lawful_evil
 import org.dembeyo.shared.resources.lawful_good
@@ -76,6 +83,7 @@ import org.dembeyo.shared.resources.lawful_neutral
 import org.dembeyo.shared.resources.legendary
 import org.dembeyo.shared.resources.medium
 import org.dembeyo.shared.resources.monstrosity
+import org.dembeyo.shared.resources.necromancy
 import org.dembeyo.shared.resources.neutral
 import org.dembeyo.shared.resources.neutral_evil
 import org.dembeyo.shared.resources.neutral_good
@@ -85,12 +93,35 @@ import org.dembeyo.shared.resources.rare
 import org.dembeyo.shared.resources.small
 import org.dembeyo.shared.resources.tiny
 import org.dembeyo.shared.resources.titanic
+import org.dembeyo.shared.resources.transmutation
 import org.dembeyo.shared.resources.unaligned
 import org.dembeyo.shared.resources.uncommon
 import org.dembeyo.shared.resources.undead
 import org.dembeyo.shared.resources.varies
 import org.dembeyo.shared.resources.very_rare
 import org.jetbrains.compose.resources.StringResource
+
+fun MagicSchool.stringRes(): StringResource = when (this) {
+    MagicSchool.ABJURATION -> Res.string.abjuration
+    MagicSchool.CONJURATION -> Res.string.conjuration
+    MagicSchool.DIVINATION -> Res.string.divination
+    MagicSchool.ENCHANTMENT -> Res.string.enchantment
+    MagicSchool.EVOCATION -> Res.string.evocation
+    MagicSchool.ILLUSION -> Res.string.illusion
+    MagicSchool.NECROMANCY -> Res.string.necromancy
+    MagicSchool.TRANSMUTATION -> Res.string.transmutation
+}
+
+fun MagicSchool.color(): Color = when (this) {
+    MagicSchool.ABJURATION -> Color(0xFFAEDFF7) // Pastel Blue
+    MagicSchool.CONJURATION -> Color(0xFFD8BFD8) // Pastel Purple
+    MagicSchool.DIVINATION -> Color(0xFFFFFFFF) // White
+    MagicSchool.ENCHANTMENT -> Color(0xFFFFE4E1) // Pastel Pink
+    MagicSchool.EVOCATION -> Color(0xFFFFA07A) // Pastel Red
+    MagicSchool.ILLUSION -> Color(0xFFE0E0E0) // Pastel Silver
+    MagicSchool.NECROMANCY -> Color(0xFFA9A9A9) // Pastel Black (Grey)
+    MagicSchool.TRANSMUTATION -> Color(0xFF90EE90) // Pastel Green
+}
 
 fun Rarity.stringRes(): StringResource = when (this) {
     Rarity.COMMON -> Res.string.common

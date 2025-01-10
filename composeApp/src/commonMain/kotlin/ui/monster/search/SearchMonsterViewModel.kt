@@ -109,7 +109,9 @@ class SearchMonsterViewModel(
             _state.update {
                 it.copy(filterChallengeRange = range)
             }
-            challengeFilter.save(range)
+            val min = _state.value.minChallenge
+            val max = _state.value.maxChallenge
+            challengeFilter.save(min, max)
             delay(500)
             searchMonsters()
         }

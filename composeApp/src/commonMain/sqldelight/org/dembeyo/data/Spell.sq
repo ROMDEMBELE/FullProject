@@ -1,0 +1,67 @@
+import domain.model.Ability;
+import domain.model.DamageType;
+import domain.model.Level;
+import domain.model.spell.MagicSchool;
+import domain.model.spell.Spell.SpellOption;
+import kotlin.Boolean;
+import kotlin.collections.List;
+
+CREATE TABLE SpellDbo (
+    key TEXT NOT NULL PRIMARY KEY, -- Unique identifier for the spell
+    name TEXT NOT NULL, -- Spell name
+    level TEXT AS Level NOT NULL, -- Spell level
+    description TEXT NOT NULL, -- Spell description
+    higher_level TEXT, -- Additional description for higher levels
+    school TEXT AS MagicSchool NOT NULL, -- Magic school of the spell
+    range TEXT NOT NULL, -- Range of the spell
+    verbal INTEGER AS Boolean NOT NULL DEFAULT 0, -- Verbal component
+    somatic INTEGER AS Boolean NOT NULL DEFAULT 0, -- Somatic component
+    material INTEGER AS Boolean NOT NULL DEFAULT 0, -- Material component
+    cost TEXT, -- Material cost, if any
+    ritual INTEGER AS Boolean NOT NULL, -- Ritual status
+    duration TEXT NOT NULL, -- Duration of the spell
+    concentration INTEGER AS Boolean NOT NULL DEFAULT 0, -- Concentration requirement
+    casting_time TEXT NOT NULL, -- Casting time
+    saving_throw_ability TEXT AS Ability, -- Saving throw ability, if applicable
+    attack_roll INTEGER AS Boolean NOT NULL DEFAULT 0, -- Indicates if the spell requires an attack roll
+    damage_type TEXT AS List<DamageType> NOT NULL,
+    target_count INTEGER, -- Number of targets
+    casting_options TEXT AS List<SpellOption> -- Additional casting options
+);
+
+insertOrReplace:
+INSERT OR REPLACE INTO SpellDbo (
+    key,
+    name,
+    level,
+    description,
+    higher_level,
+    school,
+    range,
+    verbal,
+    somatic,
+    material,
+    cost,
+    ritual,
+    duration,
+    concentration,
+    casting_time,
+    saving_throw_ability,
+    attack_roll,
+    damage_type,
+    target_count,
+    casting_options
+) VALUES (
+    ?,  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+);
+
+getByKey:
+SELECT * FROM SpellDbo
+WHERE key == ?;
+
+getAll:
+SELECT * FROM SpellDbo;
+
+deleteByKey:
+DELETE FROM SpellDbo
+WHERE key == ?;

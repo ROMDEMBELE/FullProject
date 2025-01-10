@@ -1,7 +1,6 @@
 package ui.spell.details
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -56,7 +55,6 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.concentration
-import org.dembeyo.shared.resources.error_dialog_title
 import org.dembeyo.shared.resources.minus_circle
 import org.dembeyo.shared.resources.ornament
 import org.dembeyo.shared.resources.plus_circle
@@ -68,7 +66,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ui.color
 import ui.composable.CustomAnimatedPlaceHolder
-import ui.composable.CustomErrorDialog
 import ui.composable.TaperedRule
 import ui.composable.darkBlue
 import ui.composable.lightBlue
@@ -91,22 +88,13 @@ fun SpellDetailsScreen(viewModel: SpellDetailsViewModel) {
         0f, 360f, infiniteRepeatable(tween(50000, easing = LinearEasing), RepeatMode.Restart)
     )
 
-    AnimatedVisibility(!uiState.error.isNullOrEmpty()) {
-        CustomErrorDialog(
-            stringResource(Res.string.error_dialog_title),
-            uiState.error.orEmpty()
-        ) {
-            viewModel.acknowledgeError()
-        }
-    }
-
     AnimatedContent(uiState, transitionSpec = { fadeIn().togetherWith(fadeOut()) }) { state ->
         if (!state.isReady) {
             CustomAnimatedPlaceHolder()
         } else {
             val pagerState = rememberPagerState(pageCount = { state.castingOptions.size })
             val brush =
-                Brush.horizontalGradient(listOf(state.school.color, state.level.color()))
+                Brush.horizontalGradient(listOf(state.school.color(), state.level.color()))
             Column(Modifier.fillMaxSize().background(brush).padding(8.dp)) {
                 Box(Modifier.weight(0.2f)) {
                     Image(
@@ -123,21 +111,22 @@ fun SpellDetailsScreen(viewModel: SpellDetailsViewModel) {
                     )
 
                     TextClip(
-                        stringResource(state.school.stringRes),
-                        state.school.color,
+                        stringResource(state.school.stringRes()),
+                        state.school.color(),
                         Alignment.TopStart
                     )
 
                     TextClip(" Level ${state.level.level}", state.level.color(), Alignment.TopEnd)
 
-                    if (state.ritual) {
+                    if (state.isRitual) {
                         TextClip(
                             text = stringResource(Res.string.ritual),
                             lightBlue,
                             Alignment.BottomEnd
                         )
                     }
-                    if (state.concentration) {
+
+                    if (state.isConcentration) {
                         TextClip(
                             text = stringResource(Res.string.concentration),
                             primary,
@@ -150,7 +139,7 @@ fun SpellDetailsScreen(viewModel: SpellDetailsViewModel) {
                         Modifier.align(Alignment.Center),
                         style = monsterTitle.copy(
                             color = darkBlue, shadow = Shadow(
-                                color = state.school.color,
+                                color = state.school.color(),
                                 offset = Offset(5f, 5f),
                                 blurRadius = 12f
                             )
@@ -217,7 +206,7 @@ fun SpellDetailsScreen(viewModel: SpellDetailsViewModel) {
                     Box(Modifier.fillMaxWidth()) {
                         HorizontalPager(state = pagerState) { pageIndex ->
                             state.castingOptions.toList()[pageIndex].let {
-                                DamageItem(it.level, it.damageRoll, it.damageTypes)
+                                DamageItem(it.level, it.damageRoll, state.damageType)
                             }
                         }
 

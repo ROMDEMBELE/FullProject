@@ -3,7 +3,7 @@ package data.preference
 import PlatformContext
 import com.liftric.kvault.KVault
 
-actual class SettingsStorage actual constructor(context: PlatformContext) {
+actual class PreferenceStorage actual constructor(context: PlatformContext) {
 
     val store = KVault(SERVICE_NAME, ACCESS_GROUP)
 

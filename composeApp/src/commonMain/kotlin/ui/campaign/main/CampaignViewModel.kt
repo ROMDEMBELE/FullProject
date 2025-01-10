@@ -33,13 +33,13 @@ class CampaignViewModel(
 
     fun playCampaign(campaign: Campaign) {
         viewModelScope.launch {
-            settingsRepository.setMainCampaignId(campaign.id)
+            //settingsRepository.setMainCampaignId(campaign.id)
         }
     }
 
     fun stopCampaign(campaign: Campaign) {
         viewModelScope.launch {
-            settingsRepository.setMainCampaignId(null)
+            //settingsRepository.setMainCampaignId(null)
         }
     }
 }

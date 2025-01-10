@@ -2,7 +2,7 @@ package data.preference
 
 import PlatformContext
 
-expect class SettingsStorage(context: PlatformContext) {
+expect class PreferenceStorage(context: PlatformContext) {
 
     inline fun <reified T> readValue(key: String): T?
 

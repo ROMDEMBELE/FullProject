@@ -8,12 +8,20 @@ import kotlin.coroutines.cancellation.CancellationException
 
 interface SpellRepository {
 
+    suspend fun addFavorite(spell: Spell)
+
+    suspend fun removeFavorite(key: String)
+
+    suspend fun getFavorites(): Flow<List<Spell>>
+
+    suspend fun getFavorite(key: String): Spell?
+
     @Throws(
         ServerResponseException::class,
         CancellationException::class,
         NoSuchElementException::class
     )
-    suspend fun getBySlug(slug: String): Spell
+    suspend fun getByKey(key: String): Spell
 
     @Throws(
         ServerResponseException::class,

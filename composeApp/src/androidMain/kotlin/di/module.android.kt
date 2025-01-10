@@ -1,7 +1,7 @@
 package di
 
 import data.database.sqlDelight.DriverFactory
-import data.preference.SettingsStorage
+import data.preference.PreferenceStorage
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.Module
@@ -32,5 +32,5 @@ actual fun platformModule(): Module = module {
     viewModelOf(::EncounterListViewModel)
 
     single { DriverFactory(androidContext()) }
-    single { SettingsStorage(androidContext()) }
+    single { PreferenceStorage(androidContext()) }
 }
