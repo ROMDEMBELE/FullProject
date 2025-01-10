@@ -8,6 +8,7 @@ import app.cash.sqldelight.coroutines.mapToOne
 import domain.model.Condition
 import domain.model.DamageType
 import domain.model.Environment
+import domain.model.Feat
 import domain.model.Level
 import domain.model.character.Skill
 import domain.model.monster.Action
@@ -23,6 +24,7 @@ import kotlinx.serialization.json.Json
 import org.dembeyo.data.BackgroundDbo
 import org.dembeyo.data.CampaingnDbo
 import org.dembeyo.data.CharacterDbo
+import org.dembeyo.data.FeatDbo
 import org.dembeyo.data.MonsterDbo
 import org.dembeyo.data.MySqlDelightDatabase
 import org.dembeyo.data.RaceDbo
@@ -188,7 +190,10 @@ class SqlDatabase(driverFactory: DriverFactory) {
             saving_throw_abilityAdapter = EnumColumnAdapter(),
             casting_optionsAdapter = listOfSpellOptionAdapter,
             damage_typeAdapter = listOfDamageTypeAdapter
-        )
+        ),
+        FeatDboAdapter = FeatDbo.Adapter(
+            benefitsAdapter = listOfStringAdapter
+        ),
     )
 
     fun getAllMonsters(): Flow<List<MonsterDbo>> =
@@ -296,6 +301,22 @@ class SqlDatabase(driverFactory: DriverFactory) {
             damage_type = spell.damageType,
             target_count = spell.targetCount?.toLong(),
             casting_options = spell.castingOptions
+        )
+    }
+
+    fun getAllFeat(): Flow<List<FeatDbo>> =
+        database.featQueries.getAll().asFlow().mapToList(Dispatchers.IO)
+
+    fun getFeatById(id: String): FeatDbo? =
+        database.featQueries.getByKey(id).executeAsOneOrNull()
+
+    fun insertOrUpdateFeat(feat: Feat) {
+        database.featQueries.insertOrReplace(
+            key = feat.key,
+            hasPrerequisite = feat.hasPrerequisites,
+            prerequisite = feat.prerequisite,
+            name = feat.name,
+            benefits = feat.benefits
         )
     }
 

@@ -1,6 +1,5 @@
 package ui.home
 
-import ui.navigation.AppRoute
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -16,6 +15,7 @@ import androidx.navigation.NavHostController
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ui.composable.darkBlue
+import ui.navigation.AppRoute
 
 @Composable
 fun MenuDrawer(navHostController: NavHostController, onDismiss: () -> Unit) {
@@ -24,9 +24,9 @@ fun MenuDrawer(navHostController: NavHostController, onDismiss: () -> Unit) {
         AppRoute.BATTLE,
         AppRoute.SEARCH_SPELL,
         AppRoute.SEARCH_MONSTER,
-        AppRoute.SEARCH_MAGIC_ITEM,
-        AppRoute.SEARCH_CHARACTER,
-        AppRoute.SEARCH_EQUIPMENT
+        AppRoute.SEARCH_FEAT,
+        //AppRoute.SEARCH_CHARACTER,
+        //AppRoute.SEARCH_EQUIPMENT
     ).forEach { menu ->
         TextButton(
             onClick = {

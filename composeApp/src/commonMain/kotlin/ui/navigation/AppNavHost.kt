@@ -6,6 +6,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import ui.feat.search.SearchFeatScreen
+import ui.feat.search.SearchFeatViewModel
 import ui.home.MenuScreen
 import ui.monster.details.MonsterDetailScreen
 import ui.monster.details.MonsterDetailsViewModel
@@ -57,5 +59,12 @@ fun AppNavHost(navController: NavHostController) {
 
             MonsterDetailScreen(navController, viewModel)
         }
+        composable(
+            route = AppRoute.SEARCH_FEAT.route,
+        ) {
+            val viewModel: SearchFeatViewModel = koinViewModel()
+            SearchFeatScreen(viewModel)
+        }
+
     }
 }

@@ -1,13 +1,16 @@
 package di
 
 import data.api.ChatGptApi
+import data.api.FeatApi
 import data.api.MonsterApi
 import data.api.SpellApi
 import data.api.impl.ChatGptApiImpl
+import data.api.impl.FeatApiImpl
 import data.api.impl.MonsterApiImpl
 import data.api.impl.SpellApiImpl
 import data.database.sqlDelight.SqlDatabase
 import data.local.LocalDatasource
+import data.repository.FeatRepositoryImpl
 import data.repository.MonsterRepositoryImpl
 import data.repository.SettingsRepositoryImpl
 import data.repository.SpellRepositoryImpl
@@ -15,6 +18,7 @@ import domain.repository.BackgroundRepository
 import domain.repository.CampaignRepository
 import domain.repository.CharacterRepository
 import domain.repository.EncounterRepository
+import domain.repository.FeatRepository
 import domain.repository.MagicItemRepository
 import domain.repository.MonsterRepository
 import domain.repository.SettingsRepository
@@ -35,6 +39,7 @@ import domain.usecase.encounter.GetMainCampaignEncounterUseCase
 import domain.usecase.encounter.RemoveCharacterFromEncounterUseCase
 import domain.usecase.encounter.RemoveMonsterFromEncounterUseCase
 import domain.usecase.encounter.UpdateEncounterUseCase
+import domain.usecase.feat.SearchFeatUseCase
 import domain.usecase.monster.AddMonsterToFavoriteUseCase
 import domain.usecase.monster.ChallengeFilterUseCase
 import domain.usecase.monster.GetFavoritesMonsterUseCase
@@ -100,6 +105,7 @@ val dataModule = module {
     }
     single<MonsterApi> { MonsterApiImpl(get()) }
     single<SpellApi> { SpellApiImpl(get()) }
+    single<FeatApi> { FeatApiImpl(get()) }
     single<ChatGptApi> { ChatGptApiImpl(get()) }
     singleOf(::LocalDatasource)
 
@@ -111,6 +117,7 @@ val repositoryModule = module {
     single<MonsterRepository> { MonsterRepositoryImpl(get(), get()) }
     single<SpellRepository> { SpellRepositoryImpl(get(), get()) }
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
+    single<FeatRepository> { FeatRepositoryImpl(get(), get()) }
     singleOf(::SpeciesRepository)
     singleOf(::BackgroundRepository)
     singleOf(::CampaignRepository)
@@ -142,6 +149,8 @@ val useCaseModule: Module = module {
     factoryOf(::RemoveSpellFromFavoritesUseCase)
     factoryOf(::LevelFilterUseCase)
     factoryOf(::SearchSpellUseCase)
+
+    factoryOf(::SearchFeatUseCase)
 
     factoryOf(::AddCharacterToEncounterUseCase)
     factoryOf(::AddMonsterToEncounterUseCase)

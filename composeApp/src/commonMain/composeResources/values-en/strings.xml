@@ -6,6 +6,7 @@
     <string name="menu_monster">Monsters</string>
     <string name="menu_magic_item">Magic Items</string>
     <string name="menu_character">Character</string>
+    <string name="menu_feat">Feats</string>
     <string name="menu_equipment">Equipment</string>
     <string name="menu_battle">Battle</string>
     <string name="menu_campaign">Campaign</string>
@@ -30,6 +31,8 @@
     <string name="search_empty">No results found</string>
     <string name="monster_not_found">Monster %1$s not found</string>
     <string name="spell_not_found">Spell %1$s not found</string>
+
+    <string name="feat_prerequisites">Prerequisites</string>"
 
     <string name="monster_armor_class">Armor Class</string>
     <string name="monster_hit_points">Hit Points</string>

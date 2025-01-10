@@ -1,6 +1,5 @@
 package ui.home
 
-import ui.navigation.AppRoute
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
@@ -63,6 +62,7 @@ import ui.composable.darkPrimary
 import ui.composable.primary
 import ui.composable.roundCornerShape
 import ui.composable.secondary
+import ui.navigation.AppRoute
 
 @Composable
 fun MenuScreen(navController: NavHostController) {
@@ -80,9 +80,9 @@ fun MenuScreen(navController: NavHostController) {
             listOf(
                 AppRoute.SEARCH_SPELL,
                 AppRoute.SEARCH_MONSTER,
-                AppRoute.SEARCH_MAGIC_ITEM,
-                AppRoute.SEARCH_CHARACTER,
-                AppRoute.SEARCH_EQUIPMENT
+                AppRoute.SEARCH_FEAT,
+                //AppRoute.SEARCH_CHARACTER,
+                //AppRoute.SEARCH_EQUIPMENT
             )
         ) { route ->
             MenuItemView(route) {

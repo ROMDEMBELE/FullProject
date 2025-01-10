@@ -38,9 +38,9 @@ fun SearchMenu(
     onTextChange: (TextFieldValue) -> Unit,
     favoriteCounter: Int = 0,
     favoriteEnabled: Boolean,
-    onFavoritesClick: () -> Unit,
+    onFavoritesClick: (() -> Unit)? = null,
     filterCounter: Int = 0,
-    filterContent: @Composable () -> Unit,
+    filterContent: (@Composable () -> Unit)? = null,
 ) {
     // Search Bar
     var filterExpended by remember { mutableStateOf(false) }
@@ -51,34 +51,37 @@ fun SearchMenu(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
         ) {
-            BadgedBox(
-                badge = {
-                    if (filterCounter > 0)
-                        Badge(
-                            backgroundColor = primary,
-                            contentColor = Color.White,
-                        ) { Text("$filterCounter") }
-                }
-            ) {
-                IconButton(
-                    modifier = Modifier.then(Modifier.size(30.dp).aspectRatio(1f)),
-                    enabled = !favoriteEnabled,
-                    onClick = { filterExpended = !filterExpended }) {
-                    Crossfade(filterExpended && !favoriteEnabled) { extended ->
-                        if (extended) {
-                            Icon(
-                                Icons.Filled.KeyboardArrowUp, null,
-                                tint = darkPrimary,
-                            )
-                        } else {
-                            Icon(
-                                Icons.Filled.KeyboardArrowDown, null,
-                                tint = if(favoriteEnabled) lightGray else darkPrimary,
-                            )
+            if(filterContent != null) {
+                BadgedBox(
+                    badge = {
+                        if (filterCounter > 0)
+                            Badge(
+                                backgroundColor = primary,
+                                contentColor = Color.White,
+                            ) { Text("$filterCounter") }
+                    }
+                ) {
+                    IconButton(
+                        modifier = Modifier.then(Modifier.size(30.dp).aspectRatio(1f)),
+                        enabled = !favoriteEnabled,
+                        onClick = { filterExpended = !filterExpended }) {
+                        Crossfade(filterExpended && !favoriteEnabled) { extended ->
+                            if (extended) {
+                                Icon(
+                                    Icons.Filled.KeyboardArrowUp, null,
+                                    tint = darkPrimary,
+                                )
+                            } else {
+                                Icon(
+                                    Icons.Filled.KeyboardArrowDown, null,
+                                    tint = if (favoriteEnabled) lightGray else darkPrimary,
+                                )
+                            }
                         }
                     }
                 }
             }
+
             CustomTextField(
                 modifier = Modifier.padding(horizontal = 12.dp).weight(1f),
                 textFieldValue = searchTextFieldValue,
@@ -87,35 +90,39 @@ fun SearchMenu(
                 placeholder = searchTextPlaceholder,
                 leadingIcon = { Icon(Icons.Filled.Search, null) },
             )
-            IconButton(
-                modifier = Modifier.then(Modifier.size(30.dp).aspectRatio(1f)),
-                onClick = onFavoritesClick
-            ) {
-                Crossfade(favoriteEnabled) { favorite ->
-                    if (favorite) {
-                        Icon(
-                            Icons.Filled.Menu, null,
-                            tint = darkPrimary,
-                        )
-                    } else {
-                        BadgedBox(badge = {
-                            if (favoriteCounter > 0)
-                                Badge(
-                                    backgroundColor = primary,
-                                    contentColor = Color.White
-                                ) { Text("$favoriteCounter") }
-                        }) {
+            if(onFavoritesClick != null) {
+                IconButton(
+                    modifier = Modifier.then(Modifier.size(30.dp).aspectRatio(1f)),
+                    onClick = onFavoritesClick
+                ) {
+                    Crossfade(favoriteEnabled) { favorite ->
+                        if (favorite) {
                             Icon(
-                                Icons.Filled.Star, null,
+                                Icons.Filled.Menu, null,
                                 tint = darkPrimary,
                             )
+                        } else {
+                            BadgedBox(badge = {
+                                if (favoriteCounter > 0)
+                                    Badge(
+                                        backgroundColor = primary,
+                                        contentColor = Color.White
+                                    ) { Text("$favoriteCounter") }
+                            }) {
+                                Icon(
+                                    Icons.Filled.Star, null,
+                                    tint = darkPrimary,
+                                )
+                            }
                         }
                     }
                 }
             }
         }
         AnimatedVisibility(filterExpended && !favoriteEnabled) {
-            filterContent()
+            if (filterContent != null) {
+                filterContent()
+            }
         }
     }
 }

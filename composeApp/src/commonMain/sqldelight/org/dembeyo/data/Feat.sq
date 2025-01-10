@@ -1,0 +1,22 @@
+import kotlin.Boolean;
+import kotlin.String;
+import kotlin.collections.List;
+
+CREATE TABLE FeatDbo (
+    key TEXT NOT NULL PRIMARY KEY,
+    hasPrerequisite INTEGER AS Boolean NOT NULL DEFAULT 0,
+    prerequisite TEXT,
+    name TEXT NOT NULL,
+    benefits TEXT AS List<String> NOT NULL
+);
+
+insertOrReplace:
+INSERT OR REPLACE INTO FeatDbo (key, hasPrerequisite, prerequisite, name, benefits)
+VALUES (? , ?, ? , ?,  ?);
+
+getAll:
+SELECT * FROM FeatDbo;
+
+getByKey:
+SELECT * FROM FeatDbo
+WHERE key == ?;

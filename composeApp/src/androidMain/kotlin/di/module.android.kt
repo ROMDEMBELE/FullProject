@@ -11,6 +11,7 @@ import ui.campaign.main.CampaignViewModel
 import ui.character.CharacterViewModel
 import ui.character.edit.EditCharacterViewModel
 import ui.encounter.EncounterListViewModel
+import ui.feat.search.SearchFeatViewModel
 import ui.magicItem.details.MagicItemDetailsViewModel
 import ui.magicItem.search.SearchMagicItemViewModel
 import ui.monster.details.MonsterDetailsViewModel
@@ -24,6 +25,7 @@ actual fun platformModule(): Module = module {
     viewModelOf(::EditCharacterViewModel)
     viewModelOf(::SearchMonsterViewModel)
     viewModelOf(::MonsterDetailsViewModel)
+    viewModelOf(::SearchFeatViewModel)
     viewModelOf(::CharacterViewModel)
     viewModelOf(::EditCampaignViewModel)
     viewModelOf(::CampaignViewModel)
