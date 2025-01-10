@@ -60,8 +60,11 @@ import org.dembeyo.shared.resources.ornament
 import org.dembeyo.shared.resources.plus_circle
 import org.dembeyo.shared.resources.ritual
 import org.dembeyo.shared.resources.spell_casting_time
+import org.dembeyo.shared.resources.spell_components
 import org.dembeyo.shared.resources.spell_duration
+import org.dembeyo.shared.resources.spell_materials
 import org.dembeyo.shared.resources.spell_range
+import org.dembeyo.shared.resources.spell_saving_throw
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ui.color
@@ -153,11 +156,19 @@ fun SpellDetailsScreen(viewModel: SpellDetailsViewModel) {
 
                 PropertyLine(Res.string.spell_duration, state.duration.toString())
 
-                // PropertyLine(Res.string.spell_components, state.components)
+                val component = buildString {
+                    if (state.verbal) append(" V")
+                    if (state.somatic) append(" S")
+                    if (state.material) append(" M")
+                }
+
+                PropertyLine(Res.string.spell_components, component)
 
                 PropertyLine(Res.string.spell_casting_time, state.castingTime.toString())
 
-                // PropertyLine(Res.string.spell_materials, state.material)
+                if (state.material && state.cost.isNullOrBlank().not()) {
+                    PropertyLine(Res.string.spell_materials, state.cost.toString())
+                }
 
                 TaperedRule(Modifier.padding(vertical = 8.dp), darkBlue)
 
@@ -177,6 +188,17 @@ fun SpellDetailsScreen(viewModel: SpellDetailsViewModel) {
                             color = secondary
                         )
                     }
+                    if (state.higherLevelDescription.isNullOrBlank().not()) {
+                        item {
+                            Text(
+                                text = state.higherLevelDescription.toString(),
+                                fontSize = 14.sp,
+                                style = TextStyle.Default.copy(lineBreak = LineBreak.Paragraph),
+                                fontFamily = FontFamily.Serif,
+                                color = secondary
+                            )
+                        }
+                    }
                 }
 
 
@@ -188,7 +210,10 @@ fun SpellDetailsScreen(viewModel: SpellDetailsViewModel) {
                             .clip(RoundedCornerShape(8.dp))
                             .background(primary)
                             .padding(4.dp),
-                        text = "Saving Throw: " + stringResource(state.savingThrowAbility.stringRes()),
+                        text = stringResource(
+                            Res.string.spell_saving_throw,
+                            stringResource(state.savingThrowAbility.stringRes())
+                        ),
                         color = darkBlue,
                         fontWeight = FontWeight.Bold,
                         fontFamily = FontFamily.Monospace,

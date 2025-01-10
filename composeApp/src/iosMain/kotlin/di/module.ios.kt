@@ -42,7 +42,7 @@ actual fun platformModule(): Module = module {
 object ViewModelProvider : KoinComponent {
     //FIXME complete viewModel injection
     fun getSpellScreenListViewModel() = SearchSpellViewModel(get(), get(), get(), get(), get())
-    fun getSpellScreenDetailsViewModel() = SpellDetailsViewModel(get(), get(), get(), get())
+    fun getSpellScreenDetailsViewModel() = SpellDetailsViewModel(get(), get(), get(), get(), get())
     fun getEditCharacterViewModel() = EditCharacterViewModel(get(), get(), get(), get(), get())
     fun getCharacterViewModel() = CharacterViewModel(get(), get())
     fun getMonsterListViewModel() = SearchMonsterViewModel(get(), get(), get(), get(), get())

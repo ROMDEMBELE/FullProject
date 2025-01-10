@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import ui.home.MenuScreen
@@ -32,7 +31,7 @@ fun AppNavHost(navController: NavHostController) {
             MenuScreen(navController)
         }
         composable(SEARCH_SPELL.route) {
-            val viewModel: SearchSpellViewModel = koinInject()
+            val viewModel: SearchSpellViewModel = koinViewModel()
             SearchSpellScreen(navController, viewModel)
         }
         composable(
@@ -54,7 +53,7 @@ fun AppNavHost(navController: NavHostController) {
         ) {
             val index = it.arguments?.getString("index")
                 ?: throw IllegalStateException("Nav argument 'index' is required to display a monster")
-            val viewModel: MonsterDetailsViewModel = koinInject { parametersOf(index) }
+            val viewModel: MonsterDetailsViewModel = koinViewModel { parametersOf(index) }
 
             MonsterDetailScreen(navController, viewModel)
         }

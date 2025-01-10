@@ -22,9 +22,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import domain.model.DamageType
-import org.dembeyo.shared.resources.Res
-import org.dembeyo.shared.resources.damage_acid
 import org.jetbrains.compose.resources.painterResource
+import ui.iconRes
 
 @Composable
 fun DamageType.generateIcon(modifier: Modifier = Modifier) {
@@ -36,8 +35,8 @@ fun DamageType.generateIcon(modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.Center
     ) {
         Image(
-            painterResource(Res.drawable.damage_acid),
-            null,
+            painterResource(iconRes()),
+            name,
             colorFilter = ColorFilter.tint(darkBlue),
             modifier = Modifier.size(15.dp).padding()
         )

@@ -3,15 +3,18 @@ package ui.spell.details
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import domain.usecase.spell.AddSpellToFavoritesUseCase
+import domain.usecase.spell.GetFavoritesSpellUseCase
 import domain.usecase.spell.GetSpellByKeyUseCase
 import domain.usecase.spell.RemoveSpellFromFavoritesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SpellDetailsViewModel(
     val key: String,
+    private val getFavoritesSpellUseCase: GetFavoritesSpellUseCase,
     private val getSpellByKeyUseCase: GetSpellByKeyUseCase,
     private val addSpellToFavoritesUseCase: AddSpellToFavoritesUseCase,
     private val removeSpellFromFavoritesUseCase: RemoveSpellFromFavoritesUseCase
@@ -28,33 +31,33 @@ class SpellDetailsViewModel(
     }
 
     private suspend fun fetchSpell(index: String) {
-        getSpellByKeyUseCase(index).let {
-            _uiState.update {
-                it.copy(
-                    isReady = true,
-                    key = it.key,
-                    name = it.name,
-                    level = it.level,
-                    description = it.description,
-                    higherLevelDescription = it.higherLevelDescription,
-                    school = it.school,
-                    isFavorite = it.isFavorite,
-                    isAttackRoll = it.isAttackRoll,
-                    isSavingThrow = it.isSavingThrow,
-                    savingThrowAbility = it.savingThrowAbility,
-                    isConcentration = it.isConcentration,
-                    isRitual = it.isRitual,
-                    range = it.range,
-                    verbal = it.verbal,
-                    somatic = it.somatic,
-                    material = it.material,
-                    cost = it.cost,
-                    duration = it.duration,
-                    castingTime = it.castingTime,
-                    damageType = it.damageType,
-                    castingOptions = it.castingOptions
-                )
-            }
+        val spell = getSpellByKeyUseCase(index)
+        val isFavorite = getFavoritesSpellUseCase().firstOrNull().orEmpty().any { it.key == index }
+        _uiState.update {
+            it.copy(
+                isReady = true,
+                key = spell.key,
+                name = spell.name,
+                level = spell.level,
+                description = spell.description,
+                higherLevelDescription = spell.higherLevel,
+                school = spell.school,
+                isFavorite = isFavorite,
+                isAttackRoll = spell.attackRoll,
+                isSavingThrow = spell.savingThrowAbility != null,
+                savingThrowAbility = spell.savingThrowAbility,
+                isConcentration = spell.concentration,
+                isRitual = spell.ritual,
+                range = spell.range,
+                verbal = spell.verbal,
+                somatic = spell.somatic,
+                material = spell.material,
+                cost = spell.cost,
+                duration = spell.duration,
+                castingTime = spell.castingTime,
+                damageType = spell.damageType,
+                castingOptions = spell.castingOptions
+            )
         }
     }
 

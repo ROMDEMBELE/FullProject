@@ -62,6 +62,7 @@ import org.dembeyo.shared.resources.damage_piercing
 import org.dembeyo.shared.resources.damage_poison
 import org.dembeyo.shared.resources.damage_psychic
 import org.dembeyo.shared.resources.damage_radiant
+import org.dembeyo.shared.resources.damage_slash
 import org.dembeyo.shared.resources.damage_slashing
 import org.dembeyo.shared.resources.damage_thunder
 import org.dembeyo.shared.resources.divination
@@ -99,6 +100,7 @@ import org.dembeyo.shared.resources.uncommon
 import org.dembeyo.shared.resources.undead
 import org.dembeyo.shared.resources.varies
 import org.dembeyo.shared.resources.very_rare
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 
 fun MagicSchool.stringRes(): StringResource = when (this) {
@@ -173,6 +175,22 @@ fun Condition.stringRes(): StringResource = when (this) {
     Condition.RESTRAINED -> Res.string.condition_restrained
     Condition.STUNNED -> Res.string.condition_stunned
     Condition.UNCONSCIOUS -> Res.string.condition_unconscious
+}
+
+fun DamageType.iconRes(): DrawableResource = when (this) {
+    DamageType.ACID -> Res.drawable.damage_acid
+    DamageType.BLUDGEONING -> Res.drawable.damage_bludgeoning
+    DamageType.COLD -> Res.drawable.damage_cold
+    DamageType.FIRE -> Res.drawable.damage_fire
+    DamageType.FORCE -> Res.drawable.damage_force
+    DamageType.LIGHTNING -> Res.drawable.damage_lightning
+    DamageType.NECROTIC -> Res.drawable.damage_necrotic
+    DamageType.PIERCING -> Res.drawable.damage_piercing
+    DamageType.SLASHING -> Res.drawable.damage_slash
+    DamageType.THUNDER -> Res.drawable.damage_thunder
+    DamageType.POISON -> Res.drawable.damage_poison
+    DamageType.PSYCHIC -> Res.drawable.damage_psychic
+    DamageType.RADIANT -> Res.drawable.damage_radiant
 }
 
 fun DamageType.stringRes(): StringResource = when (this) {

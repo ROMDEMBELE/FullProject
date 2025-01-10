@@ -47,33 +47,42 @@ class SpellRepositoryImpl(
         targetCount = this.target_count?.toInt(),
         concentration = this.concentration,
         attackRoll = this.attack_roll,
-
+        damageType = this.damage_type,
         cost = this.cost,
         savingThrowAbility = this.saving_throw_ability,
         castingOptions = this.casting_options.orEmpty()
     )
 
     @Throws(MissingPropertyException::class)
-    private fun JsonObject.toSpellOption(defaultLevel: Level) = Spell.SpellOption(
-        level = this["type"]?.jsonPrimitive?.contentOrNull?.let {
-            when (it) {
-                "slot_level_0" -> Level.LEVEL_0
-                "slot_level_1" -> Level.LEVEL_1
-                "slot_level_2" -> Level.LEVEL_2
-                "slot_level_3" -> Level.LEVEL_3
-                "slot_level_4" -> Level.LEVEL_4
-                "slot_level_5" -> Level.LEVEL_5
-                "slot_level_6" -> Level.LEVEL_6
-                "slot_level_7" -> Level.LEVEL_7
-                "slot_level_8" -> Level.LEVEL_8
-                "slot_level_9" -> Level.LEVEL_9
-                else -> defaultLevel
+    private fun JsonObject.toSpellOption(defaultLevel: Level): Spell.SpellOption {
+        val levelString = this["type"]?.jsonPrimitive?.contentOrNull
+            ?: throw MissingPropertyException("Missing 'type' property for spell level.")
+
+        val level = when {
+            levelString == "default" -> defaultLevel
+            levelString == "slot_level_0" -> Level.LEVEL_0
+            levelString.startsWith("slot_level_") -> {
+                val levelNum = levelString.substringAfter("slot_level_").toIntOrNull()
+                    ?: throw MissingPropertyException("Invalid slot level format: '$levelString'")
+                Level.fromInt(levelNum)
             }
-        } ?: throw MissingPropertyException("Unable to parse level"),
-        targetCount = this["target_count"]?.jsonPrimitive?.intOrNull,
-        damageRoll = this["damage_roll"]?.jsonPrimitive?.contentOrNull,
-        duration = this["duration"]?.jsonPrimitive?.contentOrNull,
-    )
+
+            levelString.startsWith("player_level_") -> {
+                val levelNum = levelString.substringAfter("player_level_").toIntOrNull()
+                    ?: throw MissingPropertyException("Invalid player level format: '$levelString'")
+                Level.fromInt(levelNum)
+            }
+
+            else -> throw MissingPropertyException("Invalid level type: '$levelString'")
+        }
+
+        return Spell.SpellOption(
+            level = level,
+            targetCount = this["target_count"]?.jsonPrimitive?.intOrNull,
+            damageRoll = this["damage_roll"]?.jsonPrimitive?.contentOrNull,
+            duration = this["duration"]?.jsonPrimitive?.contentOrNull,
+        )
+    }
 
     private fun JsonObject.toSpell(isFavorite: Boolean): Spell? {
         try {
@@ -116,11 +125,11 @@ class SpellRepositoryImpl(
             val favorites = database.getAllSpells().firstOrNull().orEmpty()
             var searchResult = call()
             do {
-                val monsters = searchResult.results.mapNotNull { jsonObject ->
+                val spells = searchResult.results.mapNotNull { jsonObject ->
                     val isFavorite = favorites.any { it.key == jsonObject.safeGetString("key") }
                     jsonObject.toSpell(isFavorite)
                 }
-                emit(monsters)
+                emit(spells)
                 searchResult.next?.let { next ->
                     searchResult = spellApi.getNextPage(next)
                 }

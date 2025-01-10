@@ -59,6 +59,7 @@
     <string name="spell_components">Components</string>
     <string name="spell_casting_time">Casting Time</string>
     <string name="spell_area_of_effect">Area of Effect</string>
+    <string name="spell_saving_throw">%1$s Saving Throw</string>
 
     <string name="loading">Loading...</string>
 
