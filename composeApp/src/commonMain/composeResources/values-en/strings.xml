@@ -2,7 +2,7 @@
     <string name="app_name">My Dungeon</string>
     <string name="menu_screen_title">Dungeons &amp; Dragons</string>
     <string name="menu_home">Home</string>
-    <string name="menu_spell">Magic Spells</string>
+    <string name="menu_spell">Magical Spells</string>
     <string name="menu_monster">Monsters</string>
     <string name="menu_magic_item">Magic Items</string>
     <string name="menu_character">Character</string>
@@ -10,7 +10,16 @@
     <string name="menu_battle">Battle</string>
     <string name="menu_campaign">Campaign</string>
 
+    <string name="button_add_to_favorite">Add to Favorites</string>
+    <string name="button_remove_from_favorites">Remove from Favorites</string>"
+
+    <string name="search_monster_text_field_hint">Search Monsters by name</string>
+    <string name="search_spell_text_field_hint">Search Spells by name</string>
+
+    <string name="favorites_empty">There is no favorites yet</string>
+    <string name="search_empty">No results found</string>
     <string name="monster_not_found">Monster %1$s not found</string>
+    <string name="spell_not_found">Spell %1$s not found</string>
 
     <string name="monster_armor_class">Armor Class</string>
     <string name="monster_hit_points">Hit Points</string>
@@ -24,14 +33,15 @@
     <string name="monster_special_abilities">Special Abilities</string>
     <string name="monster_actions">Actions</string>
     <string name="monster_legendary_actions">Legendary Actions</string>
-    <string name="monster_challenge_rating">Challenge</string>
+    <string name="monster_challenge_rating">Challenge Rating</string>
     <string name="monster_proficiencies">Proficiencies</string>
     <string name="monster_saving_throws">Saving Throws</string>
-    <string name="monster_senses_dark_vision">Darkvision</string>
-    <string name="monster_senses_blind_sight">Blindsight</string>
-    <string name="monster_senses_tremor_sense">Tremorsense</string>
+    <string name="monster_senses_dark_vision">Dark Vision</string>
+    <string name="monster_senses_blind_sight">Blind Sight</string>
+    <string name="monster_senses_tremor_sense">Tremor Sense</string>
     <string name="monster_senses_passive_perception">Passive Perception</string>
-    <string name="monster_senses_true_sight">Truesight</string>
+    <string name="monster_senses_true_sight">True Sight</string>
+    <string name="monster_attack">Attack Mod %1$s - Damage %2$s (%3$s)</string>
 
     <string name="spell_range">Range</string>
     <string name="spell_duration">Duration</string>
@@ -51,17 +61,16 @@
     <string name="edit_campaign_screen">Edit Campaign</string>
     <string name="edit_campaign_title">Campaign Title:</string>
     <string name="edit_campaign_description">Campaign Description:</string>
-    <string name="no_campaign">There is no campaign in progress. Please create or select a new campaign in the campaign menu and start the campaign by pressing the play button.</string>
+    <string name="no_campaign">No active campaign. Please create or select a new campaign from the Campaign menu and start it by pressing the play button.</string>
     <string name="select_campaign">Please select or create a campaign to start</string>
-    <string name="create_campaign_button">Start a new Adventure!</string>
-    <string name="campaign_characters">Characters in Campaign</string>
+    <string name="create_campaign_button">Start a new adventure!</string>
+    <string name="campaign_characters">Campaign Characters</string>
     <string name="campaign_encounters">Planned Encounters</string>
 
     <string name="edit_character_screen">Edit Character</string>
     <string name="create_character_button">Create a new Character</string>
-    <string name="no_character">No Character</string>
-
-    <string name="edit_character_information">Character Information</string>
+    <string name="no_character">No character</string>
+    <string name="edit_character_information">Information</string>
     <string name="player_name">Player Name</string>
     <string name="character_name">Character Name</string>
     <string name="character_class">Character Class</string>
@@ -71,8 +80,8 @@
     <string name="armor_class">Armor Class</string>
     <string name="hit_points">Hit Points</string>
     <string name="spell_save">Spell Save</string>
-    <string name="edit_character_abilities">Character Abilities</string>
-    <string name="edit_character_statistics">Character Statistics</string>
+    <string name="edit_character_abilities">Abilities</string>
+    <string name="edit_character_statistics">Statistics</string>
 
     <string name="delete_campaign">Delete Campaign</string>
     <string name="delete_campaign_confirm">Are you sure you want to delete this campaign?</string>
@@ -88,16 +97,20 @@
 
     <string name="any_alignment">Any alignment</string>
     <string name="any_evil_alignment">Any evil alignment</string>
+    <string name="any_good_alignment">Any good alignment</string>
+    <string name="any_non_lawful_alignment">Any non-lawful alignment</string>
+    <string name="any_chaotic_alignment">Any chaotic alignment</string>
+    <string name="any_non_good_alignment">Any non-good alignment</string>
     <string name="unaligned">Unaligned</string>
-    <string name="chaotic_evil">Chaotic evil</string>
-    <string name="chaotic_good">Chaotic good</string>
-    <string name="chaotic_neutral">Chaotic neutral</string>
-    <string name="lawful_evil">Lawful evil</string>
-    <string name="lawful_good">Lawful good</string>
-    <string name="lawful_neutral">Lawful neutral</string>
+    <string name="chaotic_evil">Chaotic Evil</string>
+    <string name="chaotic_good">Chaotic Good</string>
+    <string name="chaotic_neutral">Chaotic Neutral</string>
+    <string name="lawful_evil">Lawful Evil</string>
+    <string name="lawful_good">Lawful Good</string>
+    <string name="lawful_neutral">Lawful Neutral</string>
     <string name="neutral">Neutral</string>
-    <string name="neutral_evil">Neutral evil</string>
-    <string name="neutral_good">Neutral good</string>
+    <string name="neutral_evil">Neutral Evil</string>
+    <string name="neutral_good">Neutral Good</string>
 
     <string name="common">Common</string>
     <string name="uncommon">Uncommon</string>
@@ -131,6 +144,40 @@
     <string name="large">Large</string>
     <string name="huge">Huge</string>
     <string name="gargantuan">Gargantuan</string>
+    <string name="titanic">Titanic</string>
+
+    <string name="condition_blinded">Blinded</string>
+    <string name="condition_charmed">Charmed</string>
+    <string name="condition_deafened">Deafened</string>
+    <string name="condition_frightened">Frightened</string>
+    <string name="condition_grappled">Grappled</string>
+    <string name="condition_incapacitated">Incapacitated</string>
+    <string name="condition_invisible">Invisible</string>
+    <string name="condition_paralyzed">Paralyzed</string>
+    <string name="condition_exhaustion">Exhaustion</string>
+    <string name="condition_poisoned">Poisoned</string>
+    <string name="condition_prone">Prone</string>
+    <string name="condition_stunned">Stunned</string>
+    <string name="condition_unconscious">Unconscious</string>
+    <string name="condition_restrained">Restrained</string>
+    <string name="condition_petrified">Petrified</string>
+
+    <string name="non_magical_attack_resistance">Resistance to Non-Magical Attacks</string>
+    <string name="non_magical_attack_immunity">Immunity to Non-Magical Attacks</string>
+
+    <string name="damage_acid">Acid</string>
+    <string name="damage_bludgeoning">Bludgeoning</string>
+    <string name="damage_cold">Cold</string>
+    <string name="damage_fire">Fire</string>
+    <string name="damage_force">Force</string>
+    <string name="damage_lightning">Lightning</string>
+    <string name="damage_necrotic">Necrotic</string>
+    <string name="damage_piercing">Piercing</string>
+    <string name="damage_poison">Poison</string>
+    <string name="damage_psychic">Psychic</string>
+    <string name="damage_radiant">Radiant</string>
+    <string name="damage_slashing">Slashing</string>
+    <string name="damage_thunder">Thunder</string>
 
     <string name="aberration">Aberration</string>
     <string name="beast">Beast</string>

@@ -41,11 +41,11 @@ actual fun platformModule(): Module = module {
 
 object ViewModelProvider : KoinComponent {
     fun getSpellScreenListViewModel() = SearchSpellViewModel(get(), get(), get())
-    fun getSpellScreenDetailsViewModel() = SpellDetailsViewModel(get())
+    fun getSpellScreenDetailsViewModel() = SpellDetailsViewModel(get(), get())
     fun getEditCharacterViewModel() = EditCharacterViewModel(get(), get(), get(), get(), get())
     fun getCharacterViewModel() = CharacterViewModel(get(), get())
-    fun getMonsterListViewModel() = SearchMonsterViewModel(get(), get(), get(), get(), get())
-    fun getMonsterDetailsViewModel() = MonsterDetailsViewModel(get())
+    fun getMonsterListViewModel() = SearchMonsterViewModel(get(), get(), get(), get(), get(), get())
+    fun getMonsterDetailsViewModel() = MonsterDetailsViewModel(get(), get(), get(), get(), get())
     fun getMagicItemListViewModel() = SearchMagicItemViewModel(get())
     fun getMagicItemDetailsViewModel() = MagicItemDetailsViewModel(get())
 }

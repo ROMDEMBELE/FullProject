@@ -22,6 +22,7 @@ import domain.model.monster.Monster
 import domain.model.monster.Trait
 import domain.repository.MonsterRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.JsonArray
@@ -83,13 +84,14 @@ class MonsterRepositoryImpl(
     }
 
     @Throws(MissingPropertyException::class)
-    private fun JsonObject.toMonster(): Monster {
+    private fun JsonObject.toMonster(isFavorite: Boolean): Monster {
         val abilities = this.safeGetJsonObject("ability_scores")
         val savingThrows = this.safeGetJsonObject("saving_throws_all")
         val speed = this.safeGetJsonObject("speed_all")
         val actions = this.safeGetJsonArray("actions")
 
-        return Monster(isFavorite = false, // Ajoutez la logique pour déterminer si le monstre est favori
+        return Monster(
+            isFavorite = isFavorite,
             key = this.safeGetString("key"),
             name = this.safeGetString("name"),
             challenge = this.safeGetDouble("challenge_rating_decimal")
@@ -269,9 +271,14 @@ class MonsterRepositoryImpl(
 
     private fun fetchMonsters(call: suspend () -> SearchResultDto<JsonObject>): Flow<List<Monster>> =
         flow {
+            val favorites = database.getAllMonsters().firstOrNull().orEmpty()
             var searchResult = call()
             do {
-                emit(searchResult.results.map { it.toMonster() })
+                val monsters = searchResult.results.map { jsonObject ->
+                    val isFavorite = favorites.any { it.key == jsonObject.safeGetString("key") }
+                    jsonObject.toMonster(isFavorite)
+                }
+                emit(monsters)
                 searchResult.next?.let { next ->
                     searchResult = monsterApi.getNextPage(next)
                 }
@@ -307,16 +314,14 @@ class MonsterRepositoryImpl(
     }
 
     override suspend fun getByKey(slug: String): Monster {
-        // TODO get from local data base
-        val searchResult = monsterApi.getByKey(slug)
-
-        if (searchResult.results.isEmpty()) {
-            throw NoSuchElementException("Monster with slug $slug not found")
+        database.getMonsterById(slug)?.let {
+            return it.toMonster()
+        } ?: run {
+            val searchResult = monsterApi.getByKey(slug)
+            if (searchResult.results.isEmpty()) {
+                throw NoSuchElementException("Monster with slug $slug not found")
+            }
+            return searchResult.results.first().toMonster(false)
         }
-        return searchResult.results.first().toMonster()
-    }
-
-    companion object {
-        private const val FORMAT_FILE = "monster.json"
     }
 }

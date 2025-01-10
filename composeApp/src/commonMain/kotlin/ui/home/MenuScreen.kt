@@ -1,6 +1,6 @@
 package ui.home
 
-import AppRoute
+import ui.navigation.AppRoute
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable

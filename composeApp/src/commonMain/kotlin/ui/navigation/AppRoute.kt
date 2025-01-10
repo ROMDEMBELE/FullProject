@@ -1,3 +1,8 @@
+package ui.navigation
+
+import androidx.navigation.NamedNavArgument
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.battle
 import org.dembeyo.shared.resources.home
@@ -37,4 +42,9 @@ enum class AppRoute(val route: String, val title: StringResource, val icon: Draw
         val regexPattern = this.route.replace("{index}", ".*").toRegex() // Remplace {index} par un wildcard
         return regexPattern.matches(route)
     }
+}
+
+val index: NamedNavArgument = navArgument("index") {
+    type = NavType.StringType
+    nullable = false
 }

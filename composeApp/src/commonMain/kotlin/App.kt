@@ -1,10 +1,6 @@
-import AppRoute.HOME
-import AppRoute.MONSTER
-import AppRoute.SEARCH_MONSTER
-import AppRoute.SEARCH_SPELL
-import AppRoute.SPELL
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,12 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NamedNavArgument
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.adventure
@@ -47,21 +38,12 @@ import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.koinInject
-import org.koin.core.parameter.parametersOf
 import ui.composable.darkBlue
 import ui.composable.primary
 import ui.composable.secondary
 import ui.home.MenuDrawer
-import ui.home.MenuScreen
-import ui.monster.details.MonsterDetailScreen
-import ui.monster.details.MonsterDetailsViewModel
-import ui.monster.search.SearchMonsterScreen
-import ui.monster.search.SearchMonsterViewModel
-import ui.spell.details.SpellDetailsScreen
-import ui.spell.details.SpellDetailsViewModel
-import ui.spell.search.SearchSpellScreen
-import ui.spell.search.SearchSpellViewModel
+import ui.navigation.AppNavHost
+import ui.navigation.AppRoute
 
 @Composable
 @Preview
@@ -125,69 +107,28 @@ fun App() {
                                 fontFamily = FontFamily(Font(Res.font.ancient)),
                                 color = primary,
                             )
-                            IconButton(
-                                enabled = true,
-                                modifier = Modifier.align(Alignment.CenterEnd),
-                                onClick = {
-                                    // TODO navigate to Campaign Screen
-                                }) {
-                                Image(
-                                    painter = painterResource(Res.drawable.castle_empty),
-                                    contentDescription = null,
-                                    colorFilter = ColorFilter.tint(primary),
-                                    modifier = Modifier.size(24.dp).aspectRatio(1f)
-                                )
-                            }
+                        }
+                        IconButton(
+                            enabled = true,
+                            modifier = Modifier.align(Alignment.CenterEnd),
+                            onClick = {
+                                // TODO navigate to Campaign Screen
+                            }) {
+                            Image(
+                                painter = painterResource(Res.drawable.castle_empty),
+                                contentDescription = null,
+                                colorFilter = ColorFilter.tint(primary),
+                                modifier = Modifier.size(24.dp).aspectRatio(1f)
+                            )
                         }
                     }
                 }
             }
         ) { _ ->
-            Box {
-                NavHost(
-                    navController = navController,
-                    startDestination = HOME.route,
-                ) {
-                    composable(HOME.route) {
-                        MenuScreen(navController)
-                    }
-                    composable(SEARCH_SPELL.route) {
-                        val viewModel: SearchSpellViewModel = koinInject()
-                        SearchSpellScreen(navController, viewModel)
-                    }
-                    composable(
-                        route = SPELL.route,
-                        arguments = listOf(index)
-                    ) {
-                        val index = it.arguments?.getString("index")
-                            ?: throw IllegalStateException("Nav argument 'index' is required to display a spell")
-                        val viewModel: SpellDetailsViewModel = koinInject { parametersOf(index) }
-                        SpellDetailsScreen(viewModel)
-                    }
-                    composable(SEARCH_MONSTER.route) {
-
-                        val viewModel: SearchMonsterViewModel = koinInject()
-                        SearchMonsterScreen(navController, viewModel)
-                    }
-                    composable(
-                        route = MONSTER.route,
-                        arguments = listOf(index)
-                    ) {
-                        val index = it.arguments?.getString("index")
-                            ?: throw IllegalStateException("Nav argument 'index' is required to display a monster")
-                        val viewModel: MonsterDetailsViewModel = koinInject()
-
-                        MonsterDetailScreen(index, viewModel)
-                    }
-                }
+            Box(Modifier.background(secondary)) {
+                AppNavHost(navController)
             }
         }
     }
 }
 
-val index: NamedNavArgument = navArgument("index") {
-    type = NavType.StringType
-    nullable = false
-}
-
-enum class MenuItem

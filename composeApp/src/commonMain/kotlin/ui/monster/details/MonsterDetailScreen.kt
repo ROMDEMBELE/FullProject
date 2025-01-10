@@ -6,9 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,14 +15,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -39,12 +36,12 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import domain.model.Ability
-import domain.model.Ability.Companion.getAbilityBonus
-import domain.model.monster.Action
-import domain.model.monster.Trait
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.burrow
+import org.dembeyo.shared.resources.button_add_to_favorite
+import org.dembeyo.shared.resources.button_remove_from_favorites
 import org.dembeyo.shared.resources.climb
 import org.dembeyo.shared.resources.fly
 import org.dembeyo.shared.resources.ghost
@@ -79,40 +76,36 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ui.color
 import ui.composable.CustomAnimatedPlaceHolder
-import ui.composable.MediumBoldSecondary
-import ui.composable.SmallBoldSecondary
+import ui.composable.CustomButton
 import ui.composable.TaperedRule
-import ui.composable.darkBlue
 import ui.composable.darkGray
 import ui.composable.darkPrimary
 import ui.composable.lightGray
 import ui.composable.monsterSubTitle
 import ui.composable.monsterTitle
-import ui.composable.orange
 import ui.composable.propertyText
 import ui.composable.propertyTitle
 import ui.composable.roundCornerShape
 import ui.composable.secondary
-import ui.getAbilityBonusColor
 import ui.joinToString
+import ui.monster.details.composable.ActionItem
 import ui.stringRes
 
 @Composable
-fun MonsterDetailScreen(index: String, viewModel: MonsterDetailsViewModel) {
+fun MonsterDetailScreen(
+    navController: NavHostController,
+    viewModel: MonsterDetailsViewModel
+) {
 
-    val uiState by viewModel.uiState.collectAsState()
-
-    LaunchedEffect(index) {
-        viewModel.fetchMonster(index)
-    }
+    val uiState by viewModel.state.collectAsState()
 
     AnimatedContent(uiState, transitionSpec = { fadeIn().togetherWith(fadeOut()) }) { state ->
         if (!state.isReady) {
             CustomAnimatedPlaceHolder()
         } else {
-            val brush =
-                Brush.linearGradient(listOf(lightGray, secondary, state.challenge.color()))
+            val brush = Brush.linearGradient(listOf(lightGray, secondary, state.challenge.color()))
             LazyColumn(
+                state = rememberLazyListState(),
                 modifier = Modifier.fillMaxSize()
                     .background(brush)
                     .padding(horizontal = 8.dp)
@@ -296,7 +289,7 @@ fun MonsterDetailScreen(index: String, viewModel: MonsterDetailsViewModel) {
 
                     if (state.trait.isNotEmpty()) {
                         state.trait.forEach { ability ->
-                            traitItem(ability)
+                            TraitItem(ability)
                         }
                         TaperedRule()
                     }
@@ -311,15 +304,15 @@ fun MonsterDetailScreen(index: String, viewModel: MonsterDetailsViewModel) {
                     )
 
                     state.actions.forEach { action ->
-                        actionItem(action)
+                        ActionItem(action)
                     }
 
                     state.bonusActions.forEach { action ->
-                        actionItem(action)
+                        ActionItem(action)
                     }
 
                     state.reactions.forEach { action ->
-                        actionItem(action)
+                        ActionItem(action)
                     }
 
                     if (state.legendaryActions.isNotEmpty()) {
@@ -334,124 +327,30 @@ fun MonsterDetailScreen(index: String, viewModel: MonsterDetailsViewModel) {
                         )
 
                         state.legendaryActions.forEach { action ->
-                            actionItem(action)
+                            ActionItem(action)
                         }
                     }
                     CustomDivider()
+
+                    if (state.isFavorite) {
+                        CustomButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            content = { Text(stringResource(Res.string.button_remove_from_favorites)) },
+                            onClick = viewModel::removeFromFavorites
+                        )
+                    } else {
+                        CustomButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            content = { Text(stringResource(Res.string.button_add_to_favorite)) },
+                            onClick = viewModel::addToFavorites
+                        )
+                    }
                 }
             }
         }
     }
 }
 
-
-@Composable
-fun RowScope.AbilityChip(abilityName: String, abilityValue: Int) {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(horizontal = 1.dp).weight(1f).clip(RoundedCornerShape(4.dp))
-            .background(darkPrimary)
-    ) {
-        Text(
-            text = "$abilityName ($abilityValue)",
-            style = SmallBoldSecondary,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth().padding(2.dp)
-        )
-        val bonus = abilityValue.getAbilityBonus()
-        val signedBonus = if (bonus > 0) "+$bonus" else "$bonus"
-        Text(
-            text = signedBonus,
-            modifier = Modifier.fillMaxWidth().background(bonus.getAbilityBonusColor())
-                .padding(2.dp),
-            textAlign = TextAlign.Center,
-            style = MediumBoldSecondary.copy(color = darkPrimary)
-        )
-    }
-}
-
-@Composable
-fun CustomDivider() {
-    Divider(
-        color = orange, thickness = 5.dp, modifier = Modifier.padding(vertical = 8.dp)
-    )
-}
-
-@Composable
-fun PropertyLine(title: StringResource, value: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)
-            .clip(RoundedCornerShape(8.dp)).background(secondary),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = stringResource(title),
-            style = propertyTitle,
-            modifier = Modifier.padding(4.dp)
-        )
-        Text(
-            text = value.capitalize(Locale.current),
-            modifier = Modifier.padding(4.dp),
-            textAlign = TextAlign.End,
-            style = propertyText,
-        )
-    }
-}
-
-@Composable
-fun traitItem(trait: Trait) {
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)
-            .clip(RoundedCornerShape(8.dp)).background(secondary),
-    ) {
-        Text(
-            text = trait.name,
-            style = SmallBoldSecondary.copy(color = secondary),
-            modifier = Modifier.fillMaxWidth().background(darkPrimary).padding(4.dp)
-        )
-        Text(
-            text = trait.desc.capitalize(Locale.current),
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            style = propertyText.copy(textAlign = TextAlign.Center)
-        )
-    }
-}
-
-@Composable
-fun actionItem(action: Action) {
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)
-            .clip(RoundedCornerShape(8.dp)).background(secondary),
-    ) {
-        Text(
-            text = action.name,
-            style = SmallBoldSecondary,
-            modifier = Modifier.fillMaxWidth().background(darkBlue).padding(4.dp)
-        )
-
-        Text(
-            text = action.desc.capitalize(Locale.current),
-            modifier = Modifier.padding(8.dp),
-            style = propertyText.copy(textAlign = TextAlign.Center)
-        )
-
-        if (action.attacks.isNotEmpty()) {
-            for (attack in action.attacks) {
-                val actionBonus = attack.attackBonus
-                val damageDice = attack.damageDice
-                val attackText = if (actionBonus > 0) "+$actionBonus" else "$actionBonus"
-
-                Text(
-                    text = "$attackText ($damageDice)",
-                    style = SmallBoldSecondary,
-                    modifier = Modifier.fillMaxWidth().background(darkGray).padding(4.dp)
-                )
-            }
-        }
-    }
-}
 
 @Composable
 fun header(text: String) {

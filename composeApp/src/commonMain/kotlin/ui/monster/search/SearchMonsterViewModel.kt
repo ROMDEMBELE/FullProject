@@ -3,6 +3,7 @@ package ui.monster.search
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import domain.model.monster.Challenge
 import domain.model.monster.Monster
 import domain.usecase.monster.AddMonsterToFavoriteUseCase
 import domain.usecase.monster.ChallengeFilterUseCase
@@ -17,6 +18,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * View model for the search monster screen.
+ */
 class SearchMonsterViewModel(
     private val searchMonstersUseCase: SearchMonstersUseCase,
     private val addToFavoriteUseCase: AddMonsterToFavoriteUseCase,
@@ -25,77 +29,95 @@ class SearchMonsterViewModel(
     private val challengeFilter: ChallengeFilterUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(SearchMonsterUiState())
-    val uiState: StateFlow<SearchMonsterUiState> = _uiState.asStateFlow()
+    private val _state = MutableStateFlow(SearchMonsterUiState())
+    val state: StateFlow<SearchMonsterUiState> = _state.asStateFlow()
 
     private var searchJob: Job? = null
 
-    private fun Monster.toSearchMonsterItem(): SearchMonsterItem = SearchMonsterItem(
-        slug = key,
-        name = name,
-        isFavorite = isFavorite,
-        challenge = challenge
-    )
-
     init {
-        _uiState.update {
-            // Load the challenge filter from preferences
-            it.copy(filterChallengeRange = challengeFilter.get())
-        }
+        fetchChallengeFilter()
 
+        fetchFavorites()
+    }
+
+    private fun fetchChallengeFilter() {
         viewModelScope.launch {
-            getFavoritesMonsterUseCase().collect { favorites ->
-                _uiState.update {
-                    it.copy(favoriteMonster = favorites.map { monster -> monster.toSearchMonsterItem() })
-                }
-            }
+            _state.update { it.copy(filterChallengeRange = challengeFilter.get()) }
         }
     }
 
-    private fun searchMonsters() {
-        searchJob?.cancel()
+    private fun fetchMonsters(text: TextFieldValue, min: Challenge, max: Challenge) {
         searchJob = viewModelScope.launch {
-            // Clean the list of monsters
-            _uiState.update { it.copy(searchResult = emptyList(), isLoading = true) }
-
-            val min = _uiState.value.minChallenge
-            val max = _uiState.value.maxChallenge
-            val text = _uiState.value.textField
-
-            // Start the search
-            searchMonstersUseCase(text, min, max).collect { monster ->
-                delay(500)
-                _uiState.update {
+            searchMonstersUseCase(text, min, max).collect { results ->
+                _state.update {
                     it.copy(
-                        searchResult = it.searchResult + monster.map { monster -> monster.toSearchMonsterItem() },
-                        isLoading = false,
+                        searchResult = it.searchResult + results.map { monster -> monster.toSearchMonsterItem() },
+                        isLoading = false
                     )
                 }
             }
         }
     }
 
-    fun toggleFavorites() {
-        _uiState.update {
-            it.copy(showFavorites = !it.showFavorites)
+    private fun fetchFavorites() {
+        viewModelScope.launch {
+            getFavoritesMonsterUseCase().collect { favorites ->
+                _state.update {
+                    it.copy(
+                        favorites = favorites.map { monster -> monster.toSearchMonsterItem() },
+                        searchResult = it.searchResult.map { item ->
+                            if (favorites.any { favorite -> favorite.key == item.key }) {
+                                item.copy(isFavorite = true)
+                            } else {
+                                item.copy(isFavorite = false)
+                            }
+                        }
+                    )
+                }
+            }
         }
+    }
+
+    private fun Monster.toSearchMonsterItem(): SearchMonsterItem =
+        SearchMonsterItem(
+            key = key,
+            name = name,
+            isFavorite = isFavorite,
+            challenge = challenge,
+            type = type
+        )
+
+    private fun searchMonsters() {
+        searchJob?.cancel()
+        val min = state.value.minChallenge
+        val max = state.value.maxChallenge
+        val text = state.value.searchTextField
+        if (text.text.isNotBlank()) {
+            _state.update { it.copy(searchResult = emptyList(), isLoading = true) }
+            fetchMonsters(text, min, max)
+        } else {
+            _state.update { it.copy(isLoading = false) }
+        }
+    }
+
+    fun cancelSearch() {
         searchJob?.cancel()
     }
 
     fun setChallengeRange(range: ClosedFloatingPointRange<Float>) {
         viewModelScope.launch {
-            _uiState.update {
+            _state.update {
                 it.copy(filterChallengeRange = range)
             }
             challengeFilter.save(range)
-            delay(5000)
+            delay(500)
             searchMonsters()
         }
     }
 
-    fun filterByText(textField: TextFieldValue) {
+    fun onSearchTextChange(textField: TextFieldValue) {
         viewModelScope.launch {
-            _uiState.update { it.copy(textField = textField) }
+            _state.update { it.copy(searchTextField = textField) }
             delay(500)
             searchMonsters()
         }

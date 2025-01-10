@@ -1,6 +1,6 @@
 package ui.home
 
-import AppRoute
+import ui.navigation.AppRoute
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
