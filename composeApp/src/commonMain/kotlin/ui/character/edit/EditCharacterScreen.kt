@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -129,10 +129,10 @@ fun EditCharacterScreen(
                 Spacer(Modifier.height(8.dp))
 
                 DropDownTextField(
-                    value = uiState.characterBackground,
+                    selectedValue = uiState.characterBackground,
                     display = { this?.name ?: "" },
                     label = stringResource(Res.string.background),
-                    list = uiState.backgrounds.values.toList()
+                    values = uiState.backgrounds.values.toList()
                 ) {
                     if (it != null) {
                         viewModel.updateCharacterBackground(it)
@@ -142,10 +142,10 @@ fun EditCharacterScreen(
                 Spacer(Modifier.height(8.dp))
 
                 DropDownTextField(
-                    value = uiState.characterSpecies,
+                    selectedValue = uiState.characterSpecies,
                     display = { this?.fullName ?: "" },
                     label = stringResource(Res.string.species),
-                    list = uiState.species.values.toList()
+                    values = uiState.species.values.toList()
                 ) {
                     if (it != null) {
                         viewModel.updateCharacterSpecies(it)
@@ -238,7 +238,7 @@ fun EditCharacterScreen(
                         onClick = { deleteDialogDisplay = true },
                         modifier = Modifier.fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = primary,
+                            containerColor = primary,
                             contentColor = secondary
                         ),
                     ) {

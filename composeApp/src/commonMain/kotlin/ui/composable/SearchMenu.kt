@@ -9,17 +9,17 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Badge
-import androidx.compose.material.BadgedBox
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,12 +51,12 @@ fun SearchMenu(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
         ) {
-            if(filterContent != null) {
+            if (filterContent != null) {
                 BadgedBox(
                     badge = {
                         if (filterCounter > 0)
                             Badge(
-                                backgroundColor = primary,
+                                containerColor = primary,
                                 contentColor = Color.White,
                             ) { Text("$filterCounter") }
                     }
@@ -90,7 +90,7 @@ fun SearchMenu(
                 placeholder = searchTextPlaceholder,
                 leadingIcon = { Icon(Icons.Filled.Search, null) },
             )
-            if(onFavoritesClick != null) {
+            if (onFavoritesClick != null) {
                 IconButton(
                     modifier = Modifier.then(Modifier.size(30.dp).aspectRatio(1f)),
                     onClick = onFavoritesClick
@@ -105,9 +105,11 @@ fun SearchMenu(
                             BadgedBox(badge = {
                                 if (favoriteCounter > 0)
                                     Badge(
-                                        backgroundColor = primary,
+                                        containerColor = primary,
                                         contentColor = Color.White
-                                    ) { Text("$favoriteCounter") }
+                                    ) {
+                                        Text("$favoriteCounter")
+                                    }
                             }) {
                                 Icon(
                                     Icons.Filled.Star, null,

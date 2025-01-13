@@ -16,6 +16,7 @@
 
     <string name="search_monster_text_field_hint">Search Monsters by name</string>
     <string name="search_spell_text_field_hint">Search Spells by name</string>
+    <string name="search_magic_item_text_field_hint">Search Magic Items by name</string>
 
     <string name="filter_min_challenge_rating">Min CR %1$d</string>
     <string name="filter_max_challenge_rating">Max CR %1$d</string>
@@ -26,6 +27,11 @@
     <string name="filter_max_level">Max Level %1$d</string>
 
     <string name="filter_level">Filter Spell by level (%1$d result)</string>
+
+    <string name="filter_min_rarity">Min Rarity %1$s</string>
+    <string name="filter_max_rarity">Max Rarity %1$s</string>
+
+    <string name="filter_rarity">Filter Magic Items by rarity (%1$d result)</string>
 
     <string name="favorites_empty">There is no favorites yet</string>
     <string name="search_empty">No results found</string>
@@ -132,7 +138,7 @@
     <string name="very_rare">Very Rare</string>
     <string name="legendary">Legendary</string>
     <string name="artifact">Artifact</string>
-    <string name="varies">Varies</string>
+    <string name="none">None</string>
 
     <string name="abjuration">Abjuration</string>
     <string name="conjuration">Conjuration</string>

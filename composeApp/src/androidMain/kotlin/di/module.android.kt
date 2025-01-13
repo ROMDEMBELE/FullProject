@@ -29,6 +29,7 @@ actual fun platformModule(): Module = module {
     viewModelOf(::CharacterViewModel)
     viewModelOf(::EditCampaignViewModel)
     viewModelOf(::CampaignViewModel)
+
     viewModelOf(::SearchMagicItemViewModel)
     viewModelOf(::MagicItemDetailsViewModel)
     viewModelOf(::EncounterListViewModel)

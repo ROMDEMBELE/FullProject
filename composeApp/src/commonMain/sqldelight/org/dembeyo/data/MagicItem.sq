@@ -1,0 +1,31 @@
+import domain.model.magicItem.ItemCategory;
+import domain.model.magicItem.ItemRarity;
+import kotlin.Boolean;
+
+CREATE TABLE MagicItemDbo (
+    key TEXT NOT NULL PRIMARY KEY,
+    is_magical INTEGER AS Boolean NOT NULL DEFAULT 0,
+    name TEXT NOT NULL,
+    description TEXT NOT NULL,
+    cost REAL,
+    weight REAL NOT NULL,
+    require_attunement INTEGER AS Boolean NOT NULL DEFAULT 0,
+    category TEXT AS ItemCategory NOT NULL,
+    rarity TEXT AS ItemRarity NOT NULL
+);
+
+insertOrReplace:
+INSERT OR REPLACE INTO MagicItemDbo (
+key, is_magical, name, description, cost, weight, require_attunement, category, rarity)
+VALUES (?, ? ,? ,? ,? ,? ,?, ?, ?);
+
+getByKey:
+SELECT * FROM MagicItemDbo
+WHERE key == ?;
+
+getAll:
+SELECT * FROM MagicItemDbo;
+
+deleteByKey:
+DELETE FROM MagicItemDbo
+WHERE ? == key;

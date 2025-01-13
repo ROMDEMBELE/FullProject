@@ -13,7 +13,6 @@ import domain.model.Level
 import domain.model.spell.MagicSchool
 import domain.model.spell.Spell
 import domain.repository.SpellRepository
-import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
@@ -29,6 +28,8 @@ import org.koin.core.error.MissingPropertyException
 class SpellRepositoryImpl(
     private val spellApi: SpellApi, private val database: SqlDatabase
 ) : SpellRepository {
+
+    private val temporarilyRemoteSpells = mutableListOf<Spell>()
 
     private fun SpellDbo.toSpell() = Spell(
         isFavorite = true,
@@ -59,6 +60,7 @@ class SpellRepositoryImpl(
             ?: throw MissingPropertyException("Missing 'type' property for spell level.")
 
         val level = when {
+            levelString == "ritual" -> defaultLevel
             levelString == "default" -> defaultLevel
             levelString == "slot_level_0" -> Level.LEVEL_0
             levelString.startsWith("slot_level_") -> {
@@ -84,39 +86,33 @@ class SpellRepositoryImpl(
         )
     }
 
-    private fun JsonObject.toSpell(isFavorite: Boolean): Spell? {
-        try {
-
-            val level = this.safeGetInt("level").let { Level.fromInt(it) }
-            return Spell(isFavorite = isFavorite,
-                key = this.safeGetString("key"),
-                name = this.safeGetString("name"),
-                level = level,
-                description = this.safeGetString("desc"),
-                higherLevel = this["higher_level"]?.jsonPrimitive?.contentOrNull,
-                school = this.safeGetString("school").let { MagicSchool.fromUrl(it) },
-                range = this.safeGetString("range_text"),
-                verbal = this.safeGetBoolean("verbal"),
-                somatic = this.safeGetBoolean("somatic"),
-                ritual = this.safeGetBoolean("ritual"),
-                duration = this.safeGetString("duration"),
-                castingTime = this.safeGetString("casting_time"),
-                targetCount = this.safeGetInt("target_count"),
-                concentration = this.safeGetBoolean("concentration"),
-                attackRoll = this.safeGetBoolean("attack_roll"),
-                damageType = this.safeGetJsonArray("damage_types")
-                    .map { DamageType.fromString(it.jsonPrimitive.content) },
-                cost = this["cost"]?.jsonPrimitive?.contentOrNull,
-                savingThrowAbility = this["saving_throw_ability"]?.jsonPrimitive?.contentOrNull?.let {
-                    if (it.isBlank()) null else Ability.fromFullName(it)
-                },
-                castingOptions = this.safeGetJsonArray("casting_options").map {
-                    it.jsonObject.toSpellOption(level)
-                })
-        } catch (e: MissingPropertyException) {
-            Napier.w { "Unable to parse spell: ${e.message}" }
-            return null
-        }
+    private fun JsonObject.toSpell(isFavorite: Boolean): Spell {
+        val level = this.safeGetInt("level").let { Level.fromInt(it) }
+        return Spell(isFavorite = isFavorite,
+            key = this.safeGetString("key"),
+            name = this.safeGetString("name"),
+            level = level,
+            description = this.safeGetString("desc"),
+            higherLevel = this["higher_level"]?.jsonPrimitive?.contentOrNull,
+            school = this.safeGetString("school").let { MagicSchool.fromUrl(it) },
+            range = this.safeGetString("range_text"),
+            verbal = this.safeGetBoolean("verbal"),
+            somatic = this.safeGetBoolean("somatic"),
+            ritual = this.safeGetBoolean("ritual"),
+            duration = this.safeGetString("duration"),
+            castingTime = this.safeGetString("casting_time"),
+            targetCount = this.safeGetInt("target_count"),
+            concentration = this.safeGetBoolean("concentration"),
+            attackRoll = this.safeGetBoolean("attack_roll"),
+            damageType = this.safeGetJsonArray("damage_types")
+                .map { DamageType.fromString(it.jsonPrimitive.content) },
+            cost = this["cost"]?.jsonPrimitive?.contentOrNull,
+            savingThrowAbility = this["saving_throw_ability"]?.jsonPrimitive?.contentOrNull?.let {
+                if (it.isBlank()) null else Ability.fromFullName(it)
+            },
+            castingOptions = this.safeGetJsonArray("casting_options").map {
+                it.jsonObject.toSpellOption(level)
+            })
     }
 
 
@@ -125,11 +121,16 @@ class SpellRepositoryImpl(
             val favorites = database.getAllSpells().firstOrNull().orEmpty()
             var searchResult = call()
             do {
-                val spells = searchResult.results.mapNotNull { jsonObject ->
+                // Convert JsonObject to Spell
+                val spells = searchResult.results.map { jsonObject ->
                     val isFavorite = favorites.any { it.key == jsonObject.safeGetString("key") }
                     jsonObject.toSpell(isFavorite)
                 }
+                // Save to temporary list
+                temporarilyRemoteSpells.addAll(spells)
+                // Emit spells
                 emit(spells)
+                // Fetch next page
                 searchResult.next?.let { next ->
                     searchResult = spellApi.getNextPage(next)
                 }
@@ -138,11 +139,21 @@ class SpellRepositoryImpl(
     }
 
     override suspend fun getByKey(key: String): Spell {
-        return database.getSpellById(key)?.toSpell() ?: run {
-            spellApi.findSpell(key).results.firstOrNull()?.toSpell(false)
-                ?: throw Exception("Unable to find spell with key $key")
-        }
+        // Look for the spell in database
+        return database.getSpellById(key)?.toSpell()
+            ?: run {
+                // Otherwise, look for the spell in temporary list
+                temporarilyRemoteSpells.firstOrNull { it.key == key }
+            }
+            ?: run {
+                // Otherwise, fetch it from the API
+                val searchResult = spellApi.findSpell(key)
+                if (searchResult.results.isEmpty()) {
+                    throw NoSuchElementException("Spell $key not found")
+                }
+                return searchResult.results.first().toSpell(false)
 
+            }
     }
 
     override suspend fun search(

@@ -41,6 +41,8 @@ class MonsterRepositoryImpl(
     private val database: SqlDatabase
 ) : MonsterRepository {
 
+    private val temporarilyRemoteMonsters = mutableListOf<Monster>()
+
     private fun JsonObject.toAction(): Action? {
         try {
             return Action(name = this.safeGetString("name"),
@@ -274,11 +276,16 @@ class MonsterRepositoryImpl(
             val favorites = database.getAllMonsters().firstOrNull().orEmpty()
             var searchResult = call()
             do {
+                // Convert search result to monsters list
                 val monsters = searchResult.results.map { jsonObject ->
                     val isFavorite = favorites.any { it.key == jsonObject.safeGetString("key") }
                     jsonObject.toMonster(isFavorite)
                 }
+                // Save monsters in memory temporarily
+                temporarilyRemoteMonsters.addAll(monsters)
+                // Emit monsters
                 emit(monsters)
+                // Fetch next page of result
                 searchResult.next?.let { next ->
                     searchResult = monsterApi.getNextPage(next)
                 }
@@ -314,14 +321,18 @@ class MonsterRepositoryImpl(
     }
 
     override suspend fun getByKey(slug: String): Monster {
-        database.getMonsterById(slug)?.let {
-            return it.toMonster()
-        } ?: run {
-            val searchResult = monsterApi.getByKey(slug)
-            if (searchResult.results.isEmpty()) {
-                throw NoSuchElementException("Monster with slug $slug not found")
+        // Look for monster in database
+        return database.getMonsterById(slug)?.toMonster()
+            ?: run {
+                // Otherwise look for monster in temporarily remote monsters
+                temporarilyRemoteMonsters.firstOrNull { it.key == slug }
+            } ?: run {
+                // If not found in temporarily remote monsters, fetch monster from API
+                val searchResult = monsterApi.getByKey(slug)
+                if (searchResult.results.isEmpty()) {
+                    throw NoSuchElementException("Monster with slug $slug not found")
+                }
+                return searchResult.results.first().toMonster(false)
             }
-            return searchResult.results.first().toMonster(false)
-        }
     }
 }

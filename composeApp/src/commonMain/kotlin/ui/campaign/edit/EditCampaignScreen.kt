@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -22,7 +22,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import domain.model.Campaign
@@ -101,11 +100,11 @@ fun EditCampaignScreen(
             onValueChange = { viewModel.updateName(it) },
             placeholder = { Text("ex : Le Murmure de la Forêt") },
             modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = secondary,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                textColor = darkBlue
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = darkBlue,
+                unfocusedTextColor = darkBlue,
+                focusedContainerColor = secondary,
+                unfocusedContainerColor = secondary,
             )
         )
 
@@ -119,11 +118,11 @@ fun EditCampaignScreen(
             modifier = Modifier.height(400.dp).fillMaxWidth(),
             singleLine = false,
             maxLines = 30,
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = secondary,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                textColor = darkBlue
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = darkBlue,
+                unfocusedTextColor = darkBlue,
+                focusedContainerColor = secondary,
+                unfocusedContainerColor = secondary,
             )
         )
 
@@ -142,7 +141,7 @@ fun EditCampaignScreen(
         if (campaign != null) {
             CustomButton(
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = primary,
+                    containerColor = primary,
                     contentColor = darkPrimary
                 ),
                 onClick = { deleteDialogDisplay = true },

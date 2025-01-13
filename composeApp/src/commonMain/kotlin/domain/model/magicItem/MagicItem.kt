@@ -1,21 +1,14 @@
 package domain.model.magicItem
 
 data class MagicItem(
-    val index: String,
+    val key: String,
     val isFavorite: Boolean,
+    val isMagical: Boolean,
     val name: String,
-    val category: Category,
-    val rarity: Rarity,
-    val description: List<String>,
-    val imageUrl: String?,
-) {
-
-    val hasAttunement: Boolean
-        get() = description.any { it.contains("requires attunement", ignoreCase = true) }
-
-    data class Category(
-        val index: String,
-        val name: String,
-        val url: String,
-    )
-}
+    val description: String,
+    val cost: Double? = null,
+    val weight: Double,
+    val requireAttunement: Boolean,
+    val category: ItemCategory,
+    val rarity: ItemRarity,
+)

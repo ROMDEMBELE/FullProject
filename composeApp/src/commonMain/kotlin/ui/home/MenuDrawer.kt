@@ -4,8 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +25,7 @@ fun MenuDrawer(navHostController: NavHostController, onDismiss: () -> Unit) {
         AppRoute.SEARCH_SPELL,
         AppRoute.SEARCH_MONSTER,
         AppRoute.SEARCH_FEAT,
+        AppRoute.SEARCH_MAGIC_ITEM,
         //AppRoute.SEARCH_CHARACTER,
         //AppRoute.SEARCH_EQUIPMENT
     ).forEach { menu ->

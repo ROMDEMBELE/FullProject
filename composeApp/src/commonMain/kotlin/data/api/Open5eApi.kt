@@ -6,27 +6,19 @@ import io.ktor.serialization.JsonConvertException
 import kotlinx.serialization.json.JsonObject
 import kotlin.coroutines.cancellation.CancellationException
 
-interface SpellApi : Open5eApi {
+interface Open5eApi {
 
     @Throws(
         ServerResponseException::class,
         CancellationException::class,
         JsonConvertException::class
     )
-    suspend fun findSpell(key: String): SearchResultDto<JsonObject>
+    suspend fun getPreviousPage(url: String): SearchResultDto<JsonObject>
 
     @Throws(
         ServerResponseException::class,
         CancellationException::class,
         JsonConvertException::class
     )
-    suspend fun search(query: String, minLv: Int, maxLv: Int): SearchResultDto<JsonObject>
-
-    @Throws(
-        ServerResponseException::class,
-        CancellationException::class,
-        JsonConvertException::class
-    )
-    suspend fun getByLevel(level: Int): SearchResultDto<JsonObject>
-
+    suspend fun getNextPage(url: String): SearchResultDto<JsonObject>
 }

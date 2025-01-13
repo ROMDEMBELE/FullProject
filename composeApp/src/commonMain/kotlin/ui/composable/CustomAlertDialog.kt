@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -65,7 +65,7 @@ fun CustomAlertDialog(
                         modifier = Modifier.weight(0.3f),
                         onClick = onDismiss,
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = primary,
+                            containerColor = primary,
                             contentColor = darkPrimary
                         )
                     ) {

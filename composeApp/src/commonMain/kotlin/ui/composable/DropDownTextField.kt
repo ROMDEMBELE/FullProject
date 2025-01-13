@@ -2,15 +2,15 @@ package ui.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ExposedDropdownMenuBox
-import androidx.compose.material.ExposedDropdownMenuDefaults
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,27 +18,26 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> DropDownTextField(
-    value: T,
-    display: T.() -> String,
+    selectedValue: T?,
+    display: @Composable T?.() -> String,
     label: String,
-    list: List<T>,
+    values: List<T?>,
     modifier: Modifier = Modifier,
-    onSelected: (T) -> Unit
+    onSelected: (T?) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
+
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = it }
     ) {
         TextField(
-            value = value.display(),
+            value = selectedValue.display(),
             onValueChange = { },
             readOnly = true,
             shape = RoundedCornerShape(8.dp),
@@ -46,40 +45,33 @@ fun <T> DropDownTextField(
             label = { Text(text = label) },
             colors = ExposedDropdownMenuDefaults.textFieldColors(
                 focusedIndicatorColor = Color.Transparent,
-                backgroundColor = lightGray,
+                focusedContainerColor = lightGray,
                 unfocusedIndicatorColor = Color.Transparent,
-                leadingIconColor = darkPrimary,
-                textColor = darkBlue,
+                focusedLeadingIconColor = darkPrimary,
+                focusedTextColor = darkBlue,
                 focusedTrailingIconColor = darkPrimary,
                 focusedLabelColor = darkPrimary,
                 unfocusedLabelColor = darkPrimary,
-                trailingIconColor = darkPrimary,
-                placeholderColor = Color.Transparent
+                unfocusedTrailingIconColor = darkPrimary,
+                focusedPlaceholderColor = Color.Transparent
             ),
             modifier = modifier.fillMaxWidth()
         )
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = {
-                expanded = false
-            },
-            modifier = Modifier.background(lightGray).fillMaxWidth(0.5f),
-            offset = DpOffset(250.dp, 350.dp),
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.background(lightGray)
+                .padding(horizontal = 8.dp)
+                .fillMaxWidth(),
         ) {
-            list.forEach {
+            values.forEach { item ->
                 DropdownMenuItem(
+                    text = { item.display() },
                     onClick = {
                         expanded = false
-                        onSelected(it)
+                        onSelected(item)
                     },
-                    modifier = Modifier.fillMaxWidth().height(20.dp),
-                ) {
-                    Text(
-                        text = it.display(),
-                        fontSize = 13.sp,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
+                )
             }
         }
     }

@@ -22,10 +22,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -81,6 +81,7 @@ fun MenuScreen(navController: NavHostController) {
                 AppRoute.SEARCH_SPELL,
                 AppRoute.SEARCH_MONSTER,
                 AppRoute.SEARCH_FEAT,
+                AppRoute.SEARCH_MAGIC_ITEM,
                 //AppRoute.SEARCH_CHARACTER,
                 //AppRoute.SEARCH_EQUIPMENT
             )
@@ -118,7 +119,7 @@ fun MenuItemView(route: AppRoute, onClick: () -> Unit) {
         shape = roundCornerShape,
         interactionSource = interactionSource,
         border = BorderStroke(2.dp, secondary),
-        elevation = ButtonDefaults.elevation(4.dp),
+        elevation = ButtonDefaults.elevatedButtonElevation(4.dp),
         contentPadding = PaddingValues(0.dp),
         colors = ButtonDefaults.buttonColors(darkBlue),
         onClick = onClick,

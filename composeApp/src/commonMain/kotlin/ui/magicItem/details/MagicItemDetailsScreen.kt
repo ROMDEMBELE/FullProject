@@ -21,9 +21,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -62,15 +61,16 @@ fun MagicItemDetailsScreen(viewModel: MagicItemDetailsViewModel) {
     val uiState by viewModel.uiState.collectAsState()
 
     AnimatedContent(uiState, transitionSpec = { fadeIn().togetherWith(fadeOut()) }) { state ->
-        val magicItem = state.magicItem
-        if (state.isReady && magicItem != null) {
+        if (!state.isReady) {
+            CustomAnimatedPlaceHolder()
+        } else {
             val rotation by infiniteTransition.animateFloat(
                 0f,
                 360f,
                 infiniteRepeatable(tween(50000, easing = LinearEasing), RepeatMode.Restart)
             )
             val brush =
-                Brush.horizontalGradient(listOf(secondary, magicItem.rarity.getRarityColor()))
+                Brush.horizontalGradient(listOf(secondary, state.rarity.getRarityColor()))
 
             Column(Modifier.fillMaxSize().background(brush).padding(8.dp)) {
                 Box(Modifier.weight(0.2f)) {
@@ -89,7 +89,7 @@ fun MagicItemDetailsScreen(viewModel: MagicItemDetailsViewModel) {
                     )
 
                     Text(
-                        text = magicItem.name,
+                        text = state.name.toString(),
                         style = magicItemTitle,
                         modifier = Modifier.align(Alignment.Center)
                     )
@@ -98,20 +98,20 @@ fun MagicItemDetailsScreen(viewModel: MagicItemDetailsViewModel) {
                 TaperedRule(Modifier.padding(vertical = 8.dp), darkBlue)
 
                 Text(
-                    text = stringResource(magicItem.rarity.stringRes()),
+                    text = stringResource(state.rarity.stringRes()),
                     color = darkBlue,
                     style = MediumBoldSecondary,
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(8.dp))
-                        .background(magicItem.rarity.getRarityColor())
+                        .background(state.rarity.getRarityColor())
                         .padding(4.dp)
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = magicItem.category.name,
+                    text = state.category.name,
                     color = secondary,
                     style = MediumBoldSecondary,
                     modifier = Modifier
@@ -123,7 +123,7 @@ fun MagicItemDetailsScreen(viewModel: MagicItemDetailsViewModel) {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                if (magicItem.hasAttunement) {
+                if (state.requireAttunement) {
                     Text(
                         text = "Requires Attunement",
                         color = secondary,
@@ -144,22 +144,17 @@ fun MagicItemDetailsScreen(viewModel: MagicItemDetailsViewModel) {
                         .fillMaxWidth()
                         .weight(.6f)
                 ) {
-                    items(magicItem.description) { text ->
+                    item {
                         Text(
-                            text,
+                            text = state.description.toString(),
                             fontSize = 14.sp,
                             style = TextStyle.Default.copy(lineBreak = LineBreak.Paragraph),
                             fontFamily = FontFamily.Serif,
                             color = secondary
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
             }
-        } else if (state.isReady) {
-
-        } else {
-            CustomAnimatedPlaceHolder()
         }
     }
 }

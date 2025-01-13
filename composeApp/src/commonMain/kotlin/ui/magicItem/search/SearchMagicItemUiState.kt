@@ -1,29 +1,38 @@
 package ui.magicItem.search
 
 import androidx.compose.ui.text.input.TextFieldValue
-import domain.model.magicItem.Rarity
+import domain.model.magicItem.ItemRarity
 
 data class SearchMagicItemUiState(
-    val favoriteItems: List<SearchMagicItemItem> = emptyList(),
-    val magicItemsList: List<SearchMagicItemItem> = emptyList(),
-    val rarityFilter: List<Rarity> = Rarity.entries.toList(),
-    var textField: TextFieldValue = TextFieldValue(),
-    val error: String? = null,
-    val isReady: Boolean = false
+    val favorites: List<SearchMagicItemItem> = emptyList(),
+    val searchResult: List<SearchMagicItemItem> = emptyList(),
+    val rarityFilter: ItemRarity? = null,
+    var searchTextFieldValue: TextFieldValue = TextFieldValue(),
+    val isLoading: Boolean = false
 ) {
 
-    val favoriteItemsByRarity: Map<Rarity, List<SearchMagicItemItem>>
-        get() = favoriteItems
+    val favoriteItemsByRarity: Map<ItemRarity, List<SearchMagicItemItem>>
+        get() = favorites
             .sortedBy { it.rarity }
             .groupBy { it.rarity }
 
-    val filteredMagicItemsByRarity: Map<Rarity, List<SearchMagicItemItem>>
-        get() = magicItemsList
-            .filter { it.name.contains(textField.text, true) && it.rarity in rarityFilter }
+    val searchResultByRarity: Map<ItemRarity, List<SearchMagicItemItem>>
+        get() = searchResult
             .sortedBy { it.rarity }
             .groupBy { it.rarity }
 
-    val hasError get() = error != null
+    val favoriteCounter get() = favorites.size
 
-    val favoriteCounter get() = favoriteItems.size
+    val searchCounter get() = searchResult.size
+
+    val rarityRange: List<ItemRarity?>
+        get() = listOf(
+            null,
+            ItemRarity.COMMON,
+            ItemRarity.UNCOMMON,
+            ItemRarity.RARE,
+            ItemRarity.VERY_RARE,
+            ItemRarity.LEGENDARY,
+            ItemRarity.ARTIFACT
+        )
 }

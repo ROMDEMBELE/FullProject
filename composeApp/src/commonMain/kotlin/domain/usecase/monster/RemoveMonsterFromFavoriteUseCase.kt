@@ -5,15 +5,14 @@ import io.github.aakira.napier.Napier
 
 class RemoveMonsterFromFavoriteUseCase(private val monsterRepository: MonsterRepository) {
 
-    suspend operator fun invoke(key: String) {
-        // Check if the monster is in favorites
-        val favorite = monsterRepository.getFavorite(key)
-        if (favorite == null) {
-            Napier.d("Monster not in favorites")
-        } else {
-            monsterRepository.removeFavorite(favorite.key)
+    private val tag = "RemoveMonsterFromFavoriteUseCase"
 
-            Napier.d("Monster added to favorites")
+    suspend operator fun invoke(key: String) {
+        if (monsterRepository.getFavorite(key) != null) {
+            monsterRepository.removeFavorite(key)
+            Napier.i(tag = tag) { "Monster $key removed from favorites" }
+        } else {
+            Napier.w(tag = tag) { "Monster $key not found in favorites, nothing to remove" }
         }
     }
 

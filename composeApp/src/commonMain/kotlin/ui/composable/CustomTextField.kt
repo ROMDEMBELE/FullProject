@@ -2,9 +2,9 @@ package ui.composable
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,25 +22,22 @@ fun CustomTextField(
     enabled: Boolean = true,
     leadingIcon: @Composable (() -> Unit)? = null
 ) {
-    TextField(
+    OutlinedTextField(
         shape = RoundedCornerShape(8.dp),
         value = textFieldValue,
         enabled = enabled,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         label = { Text(placeholder) },
         leadingIcon = leadingIcon,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            backgroundColor = lightGray,
-            trailingIconColor = darkPrimary,
-            leadingIconColor = darkPrimary,
-            textColor = darkBlue,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = lightGray,
+            focusedTrailingIconColor = darkPrimary,
+            focusedLeadingIconColor = darkPrimary,
+            focusedTextColor = darkBlue,
             cursorColor = darkPrimary,
-            unfocusedBorderColor = Color.Transparent,
-            focusedBorderColor = Color.Transparent,
-            disabledBorderColor = Color.Transparent,
             focusedLabelColor = darkPrimary,
             unfocusedLabelColor = darkPrimary,
-            placeholderColor = Color.Transparent
+            focusedPlaceholderColor = Color.Transparent
         ),
         onValueChange = onTextChange,
         modifier = modifier

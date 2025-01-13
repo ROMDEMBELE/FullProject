@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,7 +26,13 @@ import ui.composable.generateIcon
 import ui.composable.secondary
 
 @Composable
-fun DamageItem(level: Level, dice: String?, type: List<DamageType> = emptyList()) {
+fun SpellOptionItem(
+    level: Level,
+    dice: String?,
+    duration: String?,
+    targetCount: Int?,
+    type: List<DamageType> = emptyList()
+) {
     val damageBrush = Brush.linearGradient(listOf(darkBlue, darkBlue, level.color()))
     Row(
         Modifier.height(70.dp).fillMaxWidth()
@@ -47,6 +53,28 @@ fun DamageItem(level: Level, dice: String?, type: List<DamageType> = emptyList()
 
         Spacer(Modifier.width(4.dp))
 
+        if (duration != null) {
+            Text(
+                text = duration,
+                style = SmallBoldDarkBlue.copy(color = darkBlue, fontSize = 14.sp),
+                modifier = Modifier.clip(RoundedCornerShape(8.dp))
+                    .background(secondary)
+                    .padding(8.dp)
+            )
+            Spacer(Modifier.width(4.dp))
+        }
+
+        if (targetCount != null) {
+            Text(
+                text = "Target : $targetCount",
+                style = SmallBoldDarkBlue.copy(color = darkBlue, fontSize = 14.sp),
+                modifier = Modifier.clip(RoundedCornerShape(8.dp))
+                    .background(secondary)
+                    .padding(8.dp)
+            )
+            Spacer(Modifier.width(4.dp))
+        }
+
         if (dice != null) {
             Text(
                 text = dice,
@@ -55,9 +83,8 @@ fun DamageItem(level: Level, dice: String?, type: List<DamageType> = emptyList()
                     .background(secondary)
                     .padding(8.dp)
             )
+            Spacer(Modifier.width(4.dp))
         }
-
-        Spacer(Modifier.width(4.dp))
 
         for (damageType in type) {
             damageType.generateIcon()

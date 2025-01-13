@@ -24,9 +24,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -184,8 +184,8 @@ fun CreateCampaignPage(
                 //
             },
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = secondary,
-                contentColor = darkBlue
+                containerColor = secondary,
+                contentColor = darkBlue,
             ),
         ) {
             Text(stringResource(Res.string.create_campaign_button))
@@ -291,7 +291,7 @@ fun CampaignPage(
             onClick = onEdit,
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = secondary,
+                containerColor = secondary,
                 contentColor = darkBlue
             )
         ) {
@@ -302,7 +302,7 @@ fun CampaignPage(
                 onClick = onStop,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = secondary,
+                    containerColor = secondary,
                     contentColor = primary
                 )
             ) {
@@ -313,7 +313,7 @@ fun CampaignPage(
                 onClick = onPlay,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = secondary,
+                    containerColor = secondary,
                     contentColor = orange
                 )
             ) {

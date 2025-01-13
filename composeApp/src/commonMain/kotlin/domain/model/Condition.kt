@@ -4,52 +4,52 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class Condition {
+enum class Condition(val url: String) {
 
     @SerialName("Blinded")
-    BLINDED,
+    BLINDED("https://api.open5e.com/v2/conditions/blinded"),
 
     @SerialName("Charmed")
-    CHARMED,
+    CHARMED("https://api.open5e.com/v2/conditions/charmed"),
 
     @SerialName("Deafened")
-    DEAFENED,
+    DEAFENED("https://api.open5e.com/v2/conditions/deafened"),
 
     @SerialName("Exhaustion")
-    EXHAUSTION,
+    EXHAUSTION("https://api.open5e.com/v2/conditions/exhaustion"),
 
     @SerialName("Frightened")
-    FRIGHTENED,
+    FRIGHTENED("https://api.open5e.com/v2/conditions/frightened"),
 
     @SerialName("Grappled")
-    GRAPPLED,
+    GRAPPLED("https://api.open5e.com/v2/conditions/grappled"),
 
     @SerialName("Incapacitated")
-    INCAPACITATED,
+    INCAPACITATED("https://api.open5e.com/v2/conditions/incapacitated"),
 
     @SerialName("Invisible")
-    INVISIBLE,
+    INVISIBLE("https://api.open5e.com/v2/conditions/invisible"),
 
     @SerialName("Paralyzed")
-    PARALYZED,
+    PARALYZED("https://api.open5e.com/v2/conditions/paralyzed"),
 
     @SerialName("Petrified")
-    PETRIFIED,
+    PETRIFIED("https://api.open5e.com/v2/conditions/petrified"),
 
     @SerialName("Poisoned")
-    POISONED,
+    POISONED("https://api.open5e.com/v2/conditions/poisoned"),
 
     @SerialName("Prone")
-    PRONE,
+    PRONE("https://api.open5e.com/v2/conditions/prone"),
 
     @SerialName("Restrained")
-    RESTRAINED,
+    RESTRAINED("https://api.open5e.com/v2/conditions/restrained"),
 
     @SerialName("Stunned")
-    STUNNED,
+    STUNNED("https://api.open5e.com/v2/conditions/stunned"),
 
     @SerialName("Unconscious")
-    UNCONSCIOUS;
+    UNCONSCIOUS("https://api.open5e.com/v2/conditions/unconscious");
 
     companion object {
         fun fromUrl(url: String): Condition {

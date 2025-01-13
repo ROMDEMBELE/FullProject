@@ -28,8 +28,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -76,8 +76,8 @@ import ui.composable.lightGray
 import ui.composable.monsterTitle
 import ui.composable.primary
 import ui.composable.secondary
-import ui.spell.details.composable.DamageItem
 import ui.spell.details.composable.PropertyLine
+import ui.spell.details.composable.SpellOptionItem
 import ui.stringRes
 
 
@@ -231,7 +231,13 @@ fun SpellDetailsScreen(viewModel: SpellDetailsViewModel) {
                     Box(Modifier.fillMaxWidth()) {
                         HorizontalPager(state = pagerState) { pageIndex ->
                             state.castingOptions.toList()[pageIndex].let {
-                                DamageItem(it.level, it.damageRoll, state.damageType)
+                                SpellOptionItem(
+                                    level = it.level,
+                                    dice = it.damageRoll,
+                                    duration = it.duration,
+                                    targetCount = it.targetCount,
+                                    type = state.damageType
+                                )
                             }
                         }
 

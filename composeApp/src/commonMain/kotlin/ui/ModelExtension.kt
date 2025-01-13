@@ -8,7 +8,7 @@ import domain.model.Alignment
 import domain.model.Condition
 import domain.model.DamageType
 import domain.model.Level
-import domain.model.magicItem.Rarity
+import domain.model.magicItem.ItemRarity
 import domain.model.monster.Challenge
 import domain.model.monster.CreatureSize
 import domain.model.monster.CreatureType
@@ -88,6 +88,7 @@ import org.dembeyo.shared.resources.necromancy
 import org.dembeyo.shared.resources.neutral
 import org.dembeyo.shared.resources.neutral_evil
 import org.dembeyo.shared.resources.neutral_good
+import org.dembeyo.shared.resources.none
 import org.dembeyo.shared.resources.ooze
 import org.dembeyo.shared.resources.plant
 import org.dembeyo.shared.resources.rare
@@ -98,7 +99,6 @@ import org.dembeyo.shared.resources.transmutation
 import org.dembeyo.shared.resources.unaligned
 import org.dembeyo.shared.resources.uncommon
 import org.dembeyo.shared.resources.undead
-import org.dembeyo.shared.resources.varies
 import org.dembeyo.shared.resources.very_rare
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
@@ -125,24 +125,24 @@ fun MagicSchool.color(): Color = when (this) {
     MagicSchool.TRANSMUTATION -> Color(0xFF90EE90) // Pastel Green
 }
 
-fun Rarity.stringRes(): StringResource = when (this) {
-    Rarity.COMMON -> Res.string.common
-    Rarity.UNCOMMON -> Res.string.uncommon
-    Rarity.RARE -> Res.string.rare
-    Rarity.VERY_RARE -> Res.string.very_rare
-    Rarity.LEGENDARY -> Res.string.legendary
-    Rarity.ARTIFACT -> Res.string.artifact
-    Rarity.VARIES -> Res.string.varies
+fun ItemRarity.stringRes(): StringResource = when (this) {
+    ItemRarity.NONE -> Res.string.none
+    ItemRarity.COMMON -> Res.string.common
+    ItemRarity.UNCOMMON -> Res.string.uncommon
+    ItemRarity.RARE -> Res.string.rare
+    ItemRarity.VERY_RARE -> Res.string.very_rare
+    ItemRarity.LEGENDARY -> Res.string.legendary
+    ItemRarity.ARTIFACT -> Res.string.artifact
 }
 
-fun Rarity.getRarityColor(): Color = when (this) {
-    Rarity.COMMON -> Color(0xFFB69470)
-    Rarity.UNCOMMON -> Color(0xFFCD8E4B)
-    Rarity.RARE -> Color(0xFFEABA25)
-    Rarity.VERY_RARE -> Color(0xFFEF9315)
-    Rarity.LEGENDARY -> Color(0xFFEF5B15)
-    Rarity.ARTIFACT -> Color(0xFFD61070)
-    Rarity.VARIES -> Color(0xFFD7C1CC)
+fun ItemRarity.getRarityColor(): Color = when (this) {
+    ItemRarity.NONE -> Color(0xFF808080) // Grayscale
+    ItemRarity.COMMON -> Color(0xFFB69470)
+    ItemRarity.UNCOMMON -> Color(0xFFCD8E4B)
+    ItemRarity.RARE -> Color(0xFFEABA25)
+    ItemRarity.VERY_RARE -> Color(0xFFEF9315)
+    ItemRarity.LEGENDARY -> Color(0xFFEF5B15)
+    ItemRarity.ARTIFACT -> Color(0xFFD61070)
 }
 
 fun Ability.stringRes(): StringResource = when (this) {

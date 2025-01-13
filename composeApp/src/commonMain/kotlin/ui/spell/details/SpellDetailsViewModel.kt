@@ -56,7 +56,9 @@ class SpellDetailsViewModel(
                 duration = spell.duration,
                 castingTime = spell.castingTime,
                 damageType = spell.damageType,
-                castingOptions = spell.castingOptions
+                castingOptions = spell.castingOptions.filter { option ->
+                    option.duration != null || option.damageRoll != null || option.targetCount != null
+                }
             )
         }
     }

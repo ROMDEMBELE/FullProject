@@ -9,6 +9,10 @@ import org.koin.core.parameter.parametersOf
 import ui.feat.search.SearchFeatScreen
 import ui.feat.search.SearchFeatViewModel
 import ui.home.MenuScreen
+import ui.magicItem.details.MagicItemDetailsScreen
+import ui.magicItem.details.MagicItemDetailsViewModel
+import ui.magicItem.search.SearchMagicItemScreen
+import ui.magicItem.search.SearchMagicItemViewModel
 import ui.monster.details.MonsterDetailScreen
 import ui.monster.details.MonsterDetailsViewModel
 import ui.monster.search.SearchMonsterScreen
@@ -64,6 +68,23 @@ fun AppNavHost(navController: NavHostController) {
         ) {
             val viewModel: SearchFeatViewModel = koinViewModel()
             SearchFeatScreen(viewModel)
+        }
+
+        composable(
+            route = AppRoute.SEARCH_MAGIC_ITEM.route,
+        ) {
+            val viewModel: SearchMagicItemViewModel = koinViewModel()
+            SearchMagicItemScreen(navController, viewModel)
+        }
+
+        composable(
+            route = AppRoute.MAGIC_ITEM.route,
+            arguments = listOf(index)
+        ) {
+            val index = it.arguments?.getString("index")
+                ?: throw IllegalStateException("Nav argument 'index' is required to display a magic item")
+            val viewModel: MagicItemDetailsViewModel = koinViewModel { parametersOf(index) }
+            MagicItemDetailsScreen(viewModel)
         }
 
     }

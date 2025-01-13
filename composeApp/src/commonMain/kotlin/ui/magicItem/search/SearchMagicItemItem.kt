@@ -1,10 +1,10 @@
 package ui.magicItem.search
 
-import domain.model.magicItem.Rarity
+import domain.model.magicItem.ItemRarity
 
 data class SearchMagicItemItem(
     val key: String,
     val name: String,
-    val rarity: Rarity,
+    val rarity: ItemRarity,
     val isFavorite: Boolean,
 )

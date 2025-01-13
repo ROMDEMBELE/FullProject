@@ -6,7 +6,7 @@ import io.ktor.serialization.JsonConvertException
 import kotlinx.serialization.json.JsonObject
 import kotlin.coroutines.cancellation.CancellationException
 
-interface FeatApi {
+interface FeatApi : Open5eApi {
 
     @Throws(
         ServerResponseException::class,
@@ -14,19 +14,5 @@ interface FeatApi {
         JsonConvertException::class
     )
     suspend fun fetchAll(): SearchResultDto<JsonObject>
-
-    @Throws(
-        ServerResponseException::class,
-        CancellationException::class,
-        JsonConvertException::class
-    )
-    suspend fun getPreviousPage(url: String): SearchResultDto<JsonObject>
-
-    @Throws(
-        ServerResponseException::class,
-        CancellationException::class,
-        JsonConvertException::class
-    )
-    suspend fun getNextPage(url: String): SearchResultDto<JsonObject>
 
 }

@@ -11,6 +11,7 @@ import domain.model.Environment
 import domain.model.Feat
 import domain.model.Level
 import domain.model.character.Skill
+import domain.model.magicItem.MagicItem
 import domain.model.monster.Action
 import domain.model.monster.Challenge
 import domain.model.monster.Monster
@@ -25,6 +26,7 @@ import org.dembeyo.data.BackgroundDbo
 import org.dembeyo.data.CampaingnDbo
 import org.dembeyo.data.CharacterDbo
 import org.dembeyo.data.FeatDbo
+import org.dembeyo.data.MagicItemDbo
 import org.dembeyo.data.MonsterDbo
 import org.dembeyo.data.MySqlDelightDatabase
 import org.dembeyo.data.RaceDbo
@@ -194,6 +196,10 @@ class SqlDatabase(driverFactory: DriverFactory) {
         FeatDboAdapter = FeatDbo.Adapter(
             benefitsAdapter = listOfStringAdapter
         ),
+        MagicItemDboAdapter = MagicItemDbo.Adapter(
+            categoryAdapter = EnumColumnAdapter(),
+            rarityAdapter = EnumColumnAdapter()
+        )
     )
 
     fun getAllMonsters(): Flow<List<MonsterDbo>> =
@@ -319,6 +325,28 @@ class SqlDatabase(driverFactory: DriverFactory) {
             benefits = feat.benefits
         )
     }
+
+    fun getAllMagicItem(): Flow<List<MagicItemDbo>> =
+        database.magicItemQueries.getAll().asFlow().mapToList(Dispatchers.IO)
+
+    fun getMagicItemById(id: String): MagicItemDbo? =
+        database.magicItemQueries.getByKey(id).executeAsOneOrNull()
+
+    fun insertOrUpdateMagicItem(magicItem: MagicItem) {
+        database.magicItemQueries.insertOrReplace(
+            key = magicItem.key,
+            name = magicItem.name,
+            category = magicItem.category,
+            rarity = magicItem.rarity,
+            description = magicItem.description,
+            cost = magicItem.cost,
+            weight = magicItem.weight,
+            is_magical = magicItem.isMagical,
+            require_attunement = magicItem.requireAttunement
+        )
+    }
+
+    fun deleteMagicItemById(id: String) = database.magicItemQueries.deleteByKey(id)
 
 // section Character
 

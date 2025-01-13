@@ -47,6 +47,6 @@ object ViewModelProvider : KoinComponent {
     fun getCharacterViewModel() = CharacterViewModel(get(), get())
     fun getMonsterListViewModel() = SearchMonsterViewModel(get(), get(), get(), get(), get())
     fun getMonsterDetailsViewModel() = MonsterDetailsViewModel(get(), get(), get(), get(), get())
-    fun getMagicItemListViewModel() = SearchMagicItemViewModel(get())
-    fun getMagicItemDetailsViewModel() = MagicItemDetailsViewModel(get())
+    fun getMagicItemListViewModel() = SearchMagicItemViewModel(get(), get(), get(), get())
+    fun getMagicItemDetailsViewModel() = MagicItemDetailsViewModel(get(), get(), get(), get())
 }

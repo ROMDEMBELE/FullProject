@@ -7,10 +7,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.RangeSlider
-import androidx.compose.material.SliderDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.RangeSlider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -24,6 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import domain.model.monster.Challenge
 import org.dembeyo.shared.resources.Res
+import org.dembeyo.shared.resources.filter_challenge_rating
+import org.dembeyo.shared.resources.filter_max_challenge_rating
+import org.dembeyo.shared.resources.filter_min_challenge_rating
 import org.dembeyo.shared.resources.search_monster_text_field_hint
 import org.jetbrains.compose.resources.stringResource
 import ui.composable.CustomAnimatedPlaceHolder
@@ -35,7 +37,6 @@ import ui.composable.darkPrimary
 import ui.composable.propertyText
 import ui.monster.search.composable.MonsterList
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SearchMonsterScreen(
     navHostController: NavHostController,
@@ -80,19 +81,28 @@ fun SearchMonsterScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            "Min CR ${state.minChallenge.rating}",
+                            stringResource(
+                                Res.string.filter_min_challenge_rating,
+                                state.minChallenge.rating
+                            ),
                             style = propertyText,
                             color = darkPrimary
                         )
 
                         Text(
-                            "Filter by Challenge (${state.searchResultCount} results)",
+                            stringResource(
+                                Res.string.filter_challenge_rating,
+                                state.searchResultCount
+                            ),
                             style = SmallBoldSecondary,
                             color = darkPrimary,
                         )
 
                         Text(
-                            "Max CR ${state.maxChallenge.rating}",
+                            stringResource(
+                                Res.string.filter_max_challenge_rating,
+                                state.maxChallenge.rating
+                            ),
                             style = propertyText,
                             color = darkPrimary
                         )
@@ -123,7 +133,7 @@ fun SearchMonsterScreen(
                 backgroundColor = Color.Transparent,
                 contentColor = darkPrimary
             )
-        } else
+        } else {
             AnimatedContent(showFavorites) { favorite ->
                 if (favorite) {
                     MonsterList(
@@ -139,6 +149,7 @@ fun SearchMonsterScreen(
                     )
                 }
             }
+        }
     }
 }
 

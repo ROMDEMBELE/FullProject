@@ -8,10 +8,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.RangeSlider
-import androidx.compose.material.SliderDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.RangeSlider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -28,6 +27,7 @@ import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.filter_level
 import org.dembeyo.shared.resources.filter_max_level
 import org.dembeyo.shared.resources.filter_min_level
+import org.dembeyo.shared.resources.search_spell_text_field_hint
 import org.jetbrains.compose.resources.stringResource
 import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.SearchMenu
@@ -39,7 +39,6 @@ import ui.composable.propertyText
 import ui.composable.secondary
 import ui.spell.search.composable.SpellList
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SearchSpellScreen(
     navHostController: NavHostController,
@@ -67,7 +66,7 @@ fun SearchSpellScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         SearchMenu(
-            searchTextPlaceholder = "Search by name",
+            searchTextPlaceholder = stringResource(Res.string.search_spell_text_field_hint),
             searchTextFieldValue = uiState.searchTextField,
             onTextChange = { viewModel.filterByText(it) },
             favoriteCounter = uiState.favoritesCounter,
