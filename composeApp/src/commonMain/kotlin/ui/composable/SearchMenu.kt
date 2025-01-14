@@ -96,11 +96,11 @@ fun SearchMenu(
                                 badge = {
                                     if (favoriteCounter > 0)
                                         Badge(
-                                            modifier = Modifier.size(13.dp),
+                                            modifier = Modifier.size(14.dp),
                                             containerColor = primary,
                                             contentColor = Color.White
                                         ) {
-                                            Text("$favoriteCounter", fontSize = 10.sp)
+                                            Text("$favoriteCounter", fontSize = 8.sp)
                                         }
                                 }) {
                                 Icon(
