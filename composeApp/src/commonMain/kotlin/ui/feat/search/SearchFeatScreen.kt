@@ -49,7 +49,7 @@ import ui.composable.SearchMenu
 import ui.composable.TaperedRule
 import ui.composable.bounceClick
 import ui.composable.darkBlue
-import ui.composable.darkPrimary
+import ui.composable.primaryDark
 import ui.composable.item
 import ui.composable.lightBlue
 import ui.composable.propertyText
@@ -83,7 +83,7 @@ fun SearchFeatScreen(
         if (state.isLoading) {
             CustomAnimatedPlaceHolder(
                 backgroundColor = Color.Transparent,
-                contentColor = darkPrimary
+                contentColor = primaryDark
             )
         } else {
             FeatList(featItemList = state.featList)
@@ -102,11 +102,11 @@ fun FeatList(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(stringResource(Res.string.search_empty), style = screenTitle(darkPrimary))
+            Text(stringResource(Res.string.search_empty), style = screenTitle(primaryDark))
             Spacer(Modifier.height(36.dp))
             Image(
                 painter = painterResource(Res.drawable.d20),
-                colorFilter = ColorFilter.tint(darkPrimary),
+                colorFilter = ColorFilter.tint(primaryDark),
                 contentDescription = "loading",
                 modifier = Modifier.size(100.dp)
             )

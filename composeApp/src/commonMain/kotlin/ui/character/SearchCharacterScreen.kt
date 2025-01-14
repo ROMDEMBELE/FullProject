@@ -62,7 +62,7 @@ import ui.composable.MediumBoldSecondary
 import ui.composable.RoundIconText
 import ui.composable.SmallBoldSecondary
 import ui.composable.TaperedRule
-import ui.composable.darkPrimary
+import ui.composable.primaryDark
 import ui.composable.roundCornerShape
 import ui.composable.screenTitle
 import ui.composable.secondary
@@ -75,7 +75,7 @@ fun SearchCharacterScreen(
 
     val uiState: CharacterListUiState by viewModel.uiState.collectAsState()
 
-    Box(Modifier.fillMaxSize().background(darkPrimary)) {
+    Box(Modifier.fillMaxSize().background(primaryDark)) {
         AnimatedContent(
             targetState = uiState,
             modifier = Modifier.align(Alignment.Center),
@@ -83,7 +83,7 @@ fun SearchCharacterScreen(
             when {
                 state.isReady.not() -> {
                     CustomAnimatedPlaceHolder(
-                        backgroundColor = darkPrimary,
+                        backgroundColor = primaryDark,
                         contentColor = secondary
                     )
                 }
@@ -121,7 +121,7 @@ fun CampaignCharacterScreen(
             Spacer(Modifier.weight(1f))
             Text(
                 stringResource(Res.string.no_character),
-                style = MediumBoldSecondary.copy(darkPrimary)
+                style = MediumBoldSecondary.copy(primaryDark)
             )
             Spacer(Modifier.weight(1f))
         } else {
@@ -181,13 +181,13 @@ fun NoCampaignScreen() {
             onClick = { },
             colors = ButtonDefaults.buttonColors(
                 containerColor = secondary,
-                contentColor = darkPrimary
+                contentColor = primaryDark
             )
         ) {
             Image(
                 painter = painterResource(Res.drawable.castle_empty),
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(darkPrimary),
+                colorFilter = ColorFilter.tint(primaryDark),
                 modifier = Modifier.size(24.dp).aspectRatio(1f)
             )
 
@@ -204,7 +204,7 @@ fun CharacterItem(character: Character, onEdit: () -> Unit) {
     var moreExpanded by rememberSaveable { mutableStateOf(false) }
     Surface(
         shape = roundCornerShape,
-        color = darkPrimary,
+        color = primaryDark,
         modifier = Modifier.padding(bottom = 8.dp).clickable {
             moreExpanded = !moreExpanded
         }
@@ -216,7 +216,7 @@ fun CharacterItem(character: Character, onEdit: () -> Unit) {
                 RoundIconText(
                     text = "Lv${character.level.level}",
                     backgroundColor = secondary,
-                    iconColor = darkPrimary,
+                    iconColor = primaryDark,
                     modifier = Modifier
                         .constrainAs(picture) {
                             top.linkTo(parent.top)
@@ -263,7 +263,7 @@ fun CharacterItem(character: Character, onEdit: () -> Unit) {
                         .aspectRatio(1f),
                     onClick = onEdit)
                 {
-                    Icon(Icons.Filled.Edit, null, tint = darkPrimary)
+                    Icon(Icons.Filled.Edit, null, tint = primaryDark)
                 }
                 /*
                 IconButton(

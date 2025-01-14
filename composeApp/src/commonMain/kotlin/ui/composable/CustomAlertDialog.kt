@@ -43,7 +43,7 @@ fun CustomAlertDialog(
             Column(modifier = Modifier.padding(18.dp)) {
                 Text(
                     title, modifier = Modifier.fillMaxWidth(),
-                    color = darkPrimary,
+                    color = primaryDark,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -53,7 +53,7 @@ fun CustomAlertDialog(
 
                 Text(
                     content, modifier = Modifier.fillMaxWidth(),
-                    color = darkPrimary,
+                    color = primaryDark,
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
                 )
@@ -66,7 +66,7 @@ fun CustomAlertDialog(
                         onClick = onDismiss,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = primary,
-                            contentColor = darkPrimary
+                            contentColor = primaryDark
                         )
                     ) {
                         Text(stringResource(Res.string.cancel_button))

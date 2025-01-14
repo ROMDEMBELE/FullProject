@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun SearchMenu(
@@ -39,7 +40,6 @@ fun SearchMenu(
     favoriteCounter: Int = 0,
     favoriteEnabled: Boolean,
     onFavoritesClick: (() -> Unit)? = null,
-    filterCounter: Int = 0,
     filterContent: (@Composable () -> Unit)? = null,
 ) {
     // Search Bar
@@ -52,31 +52,21 @@ fun SearchMenu(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
         ) {
             if (filterContent != null) {
-                BadgedBox(
-                    badge = {
-                        if (filterCounter > 0)
-                            Badge(
-                                containerColor = primary,
-                                contentColor = Color.White,
-                            ) { Text("$filterCounter") }
-                    }
-                ) {
-                    IconButton(
-                        modifier = Modifier.then(Modifier.size(30.dp).aspectRatio(1f)),
-                        enabled = !favoriteEnabled,
-                        onClick = { filterExpended = !filterExpended }) {
-                        Crossfade(filterExpended && !favoriteEnabled) { extended ->
-                            if (extended) {
-                                Icon(
-                                    Icons.Filled.KeyboardArrowUp, null,
-                                    tint = darkPrimary,
-                                )
-                            } else {
-                                Icon(
-                                    Icons.Filled.KeyboardArrowDown, null,
-                                    tint = if (favoriteEnabled) lightGray else darkPrimary,
-                                )
-                            }
+                IconButton(
+                    modifier = Modifier.then(Modifier.size(30.dp).aspectRatio(1f)),
+                    enabled = !favoriteEnabled,
+                    onClick = { filterExpended = !filterExpended }) {
+                    Crossfade(filterExpended && !favoriteEnabled) { extended ->
+                        if (extended) {
+                            Icon(
+                                Icons.Filled.KeyboardArrowUp, null,
+                                tint = primaryDark,
+                            )
+                        } else {
+                            Icon(
+                                Icons.Filled.KeyboardArrowDown, null,
+                                tint = if (favoriteEnabled) lightGray else primaryDark,
+                            )
                         }
                     }
                 }
@@ -90,30 +80,34 @@ fun SearchMenu(
                 placeholder = searchTextPlaceholder,
                 leadingIcon = { Icon(Icons.Filled.Search, null) },
             )
+
             if (onFavoritesClick != null) {
-                IconButton(
-                    modifier = Modifier.then(Modifier.size(30.dp).aspectRatio(1f)),
-                    onClick = onFavoritesClick
-                ) {
+                IconButton(onClick = onFavoritesClick) {
                     Crossfade(favoriteEnabled) { favorite ->
                         if (favorite) {
                             Icon(
-                                Icons.Filled.Menu, null,
-                                tint = darkPrimary,
+                                modifier = Modifier.then(Modifier.size(30.dp).aspectRatio(1f)),
+                                imageVector = Icons.Filled.Menu,
+                                contentDescription = "search",
+                                tint = primaryDark,
                             )
                         } else {
-                            BadgedBox(badge = {
-                                if (favoriteCounter > 0)
-                                    Badge(
-                                        containerColor = primary,
-                                        contentColor = Color.White
-                                    ) {
-                                        Text("$favoriteCounter")
-                                    }
-                            }) {
+                            BadgedBox(
+                                badge = {
+                                    if (favoriteCounter > 0)
+                                        Badge(
+                                            modifier = Modifier.size(13.dp),
+                                            containerColor = primary,
+                                            contentColor = Color.White
+                                        ) {
+                                            Text("$favoriteCounter", fontSize = 10.sp)
+                                        }
+                                }) {
                                 Icon(
-                                    Icons.Filled.Star, null,
-                                    tint = darkPrimary,
+                                    modifier = Modifier.then(Modifier.size(30.dp).aspectRatio(1f)),
+                                    imageVector = Icons.Filled.Star,
+                                    contentDescription = "favorite",
+                                    tint = primaryDark,
                                 )
                             }
                         }

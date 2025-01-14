@@ -102,6 +102,7 @@ class SearchMonsterViewModel(
 
     fun cancelSearch() {
         searchJob?.cancel()
+        _state.update { it.copy(isLoading = false) }
     }
 
     fun setChallengeRange(range: ClosedFloatingPointRange<Float>) {

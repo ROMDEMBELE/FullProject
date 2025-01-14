@@ -2,9 +2,9 @@ package ui.composable
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,22 +22,33 @@ fun CustomTextField(
     enabled: Boolean = true,
     leadingIcon: @Composable (() -> Unit)? = null
 ) {
-    OutlinedTextField(
+    TextField(
         shape = RoundedCornerShape(8.dp),
         value = textFieldValue,
         enabled = enabled,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         label = { Text(placeholder) },
         leadingIcon = leadingIcon,
-        colors = OutlinedTextFieldDefaults.colors(
+        colors = TextFieldDefaults.colors(
             focusedContainerColor = lightGray,
-            focusedTrailingIconColor = darkPrimary,
-            focusedLeadingIconColor = darkPrimary,
-            focusedTextColor = darkBlue,
-            cursorColor = darkPrimary,
-            focusedLabelColor = darkPrimary,
-            unfocusedLabelColor = darkPrimary,
-            focusedPlaceholderColor = Color.Transparent
+            disabledContainerColor = lightGrayLight,
+            unfocusedContainerColor = lightGray,
+            focusedTextColor = primaryDark,
+            unfocusedTextColor = lightGrayDark,
+            disabledTextColor = lightGrayDark,
+            disabledLeadingIconColor = lightGrayDark,
+            unfocusedLeadingIconColor = lightGrayDark,
+            focusedLeadingIconColor = primaryDark,
+            unfocusedLabelColor = lightGrayDark,
+            disabledLabelColor = lightGrayDark,
+            focusedLabelColor = primaryDark,
+            cursorColor = primaryDark,
+            focusedSupportingTextColor = Color.Transparent,
+            unfocusedSupportingTextColor = Color.Transparent,
+            disabledSupportingTextColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent
         ),
         onValueChange = onTextChange,
         modifier = modifier

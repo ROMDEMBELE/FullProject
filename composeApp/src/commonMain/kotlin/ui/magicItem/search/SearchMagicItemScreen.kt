@@ -25,7 +25,7 @@ import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.DropDownTextField
 import ui.composable.SearchMenu
 import ui.composable.TaperedRule
-import ui.composable.darkPrimary
+import ui.composable.primaryDark
 import ui.composable.secondary
 import ui.stringRes
 
@@ -81,7 +81,7 @@ fun SearchMagicItemScreen(
 
         if (state.isLoading) {
             CustomAnimatedPlaceHolder(
-                backgroundColor = Color.Transparent, contentColor = darkPrimary
+                backgroundColor = Color.Transparent, contentColor = primaryDark
             )
         } else {
             AnimatedContent(showFavorites) { favorite ->

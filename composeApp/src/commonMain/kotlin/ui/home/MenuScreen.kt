@@ -58,8 +58,8 @@ import org.jetbrains.compose.resources.stringResource
 import ui.composable.bounceClick
 import ui.composable.darkBlue
 import ui.composable.darkGray
-import ui.composable.darkPrimary
 import ui.composable.primary
+import ui.composable.primaryDark
 import ui.composable.roundCornerShape
 import ui.composable.secondary
 import ui.navigation.AppRoute
@@ -110,7 +110,7 @@ fun MenuItemView(route: AppRoute, onClick: () -> Unit) {
     val infiniteTransition = rememberInfiniteTransition()
     val colorAnimation by infiniteTransition.animateColor(
         primary,
-        darkPrimary,
+        primaryDark,
         infiniteRepeatable(tween(10000), RepeatMode.Reverse)
     )
     val interactionSource = remember { NoRippleInteractionSource() }

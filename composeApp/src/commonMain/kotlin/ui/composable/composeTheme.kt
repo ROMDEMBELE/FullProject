@@ -17,19 +17,41 @@ import org.dembeyo.shared.resources.ancient
 import org.jetbrains.compose.resources.Font
 
 val primary = Color(205, 97, 85)
-val darkPrimary = Color(123, 36, 28)
+val primaryLight = Color(236, 136, 124)
+val primaryDark = Color(123, 36, 28)
+
 val darkGray = Color(93, 109, 126)
+val darkGrayLight = Color(131, 145, 161)
+val darkGrayDark = Color(62, 73, 84)
+
 val darkBlue = Color(28, 43, 98)
+val darkBlueLight = Color(77, 92, 151)
+val darkBlueDark = Color(15, 25, 56)
+
 val lightBlue = Color(95, 99, 175)
+val lightBlueLight = Color(136, 141, 210)
+val lightBlueDark = Color(54, 57, 122)
+
 val lightGray = Color(174, 182, 191)
+val lightGrayLight = Color(207, 214, 222)
+val lightGrayDark = Color(143, 150, 157)
+
 val secondary = Color(255, 248, 219)
-val orange = Color(0xFFE69A28)
-val yellow = Color(0xFFFDD534)
+val secondaryLight = Color(255, 253, 235)
+val secondaryDark = Color(225, 218, 191)
+
+val orange = Color(230, 154, 40)
+val orangeLight = Color(255, 191, 87)
+val orangeDark = Color(185, 116, 24)
+
+val yellow = Color(253, 213, 52)
+val yellowLight = Color(255, 237, 128)
+val yellowDark = Color(204, 171, 41)
 
 val roundCornerShape = RoundedCornerShape(18.dp)
 
 @Composable
-fun screenTitle(color: Color = darkPrimary) = TextStyle(
+fun screenTitle(color: Color = primaryDark) = TextStyle(
     fontSize = 32.sp,
     textAlign = TextAlign.Center,
     fontFamily = FontFamily(Font(Res.font.ancient)),
@@ -37,7 +59,7 @@ fun screenTitle(color: Color = darkPrimary) = TextStyle(
 )
 
 val BigBold = TextStyle(
-    color = darkPrimary,
+    color = primaryDark,
     fontSize = 18.sp,
     fontWeight = FontWeight.Bold,
     fontStyle = FontStyle.Italic,
@@ -75,7 +97,7 @@ val SmallBoldDarkBlue = TextStyle(
 val monsterTitle = TextStyle(
     fontSize = 23.sp,
     fontWeight = FontWeight.Bold,
-    color = darkPrimary,
+    color = primaryDark,
     fontFamily = FontFamily.Serif,
 )
 
@@ -99,7 +121,7 @@ val monsterSubTitle = TextStyle(
 )
 
 val propertyText = TextStyle(
-    color = darkPrimary,
+    color = primaryDark,
     fontSize = 13.5.sp,
     lineHeight = 16.sp
 )

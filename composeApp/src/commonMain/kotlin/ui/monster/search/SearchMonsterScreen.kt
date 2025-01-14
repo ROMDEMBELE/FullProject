@@ -33,7 +33,7 @@ import ui.composable.SearchMenu
 import ui.composable.SmallBoldSecondary
 import ui.composable.TaperedRule
 import ui.composable.darkGray
-import ui.composable.darkPrimary
+import ui.composable.primaryDark
 import ui.composable.propertyText
 import ui.monster.search.composable.MonsterList
 
@@ -86,7 +86,7 @@ fun SearchMonsterScreen(
                                 state.minChallenge.rating
                             ),
                             style = propertyText,
-                            color = darkPrimary
+                            color = primaryDark
                         )
 
                         Text(
@@ -95,7 +95,7 @@ fun SearchMonsterScreen(
                                 state.searchResultCount
                             ),
                             style = SmallBoldSecondary,
-                            color = darkPrimary,
+                            color = primaryDark,
                         )
 
                         Text(
@@ -104,7 +104,7 @@ fun SearchMonsterScreen(
                                 state.maxChallenge.rating
                             ),
                             style = propertyText,
-                            color = darkPrimary
+                            color = primaryDark
                         )
 
                     }
@@ -116,8 +116,8 @@ fun SearchMonsterScreen(
                         steps = Challenge.entries.size,
                         modifier = Modifier.fillMaxWidth(),
                         colors = SliderDefaults.colors(
-                            thumbColor = darkPrimary,
-                            activeTrackColor = darkPrimary,
+                            thumbColor = primaryDark,
+                            activeTrackColor = primaryDark,
                             inactiveTrackColor = darkGray
                         )
                     )
@@ -131,7 +131,7 @@ fun SearchMonsterScreen(
         if (state.isLoading) {
             CustomAnimatedPlaceHolder(
                 backgroundColor = Color.Transparent,
-                contentColor = darkPrimary
+                contentColor = primaryDark
             )
         } else {
             AnimatedContent(showFavorites) { favorite ->

@@ -36,7 +36,7 @@ import ui.composable.BigBold
 import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.CustomButton
 import ui.composable.TaperedRule
-import ui.composable.darkPrimary
+import ui.composable.primaryDark
 import ui.composable.screenTitle
 import ui.composable.secondary
 
@@ -47,7 +47,7 @@ fun EncounterListScreen(navHostController: NavHostController, viewModel: Encount
 
     AnimatedContent(uiState, transitionSpec = { fadeIn().togetherWith(fadeOut()) }) { state ->
         if (state.isReady.not()) {
-            CustomAnimatedPlaceHolder(backgroundColor = darkPrimary, contentColor = secondary)
+            CustomAnimatedPlaceHolder(backgroundColor = primaryDark, contentColor = secondary)
         } else if (state.isReady && state.campaign == null) {
             Column(
                 Modifier.fillMaxSize().background(secondary),

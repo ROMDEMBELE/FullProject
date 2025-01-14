@@ -47,12 +47,12 @@ fun <T> DropDownTextField(
                 focusedIndicatorColor = Color.Transparent,
                 focusedContainerColor = lightGray,
                 unfocusedIndicatorColor = Color.Transparent,
-                focusedLeadingIconColor = darkPrimary,
+                focusedLeadingIconColor = primaryDark,
                 focusedTextColor = darkBlue,
-                focusedTrailingIconColor = darkPrimary,
-                focusedLabelColor = darkPrimary,
-                unfocusedLabelColor = darkPrimary,
-                unfocusedTrailingIconColor = darkPrimary,
+                focusedTrailingIconColor = primaryDark,
+                focusedLabelColor = primaryDark,
+                unfocusedLabelColor = primaryDark,
+                unfocusedTrailingIconColor = primaryDark,
                 focusedPlaceholderColor = Color.Transparent
             ),
             modifier = modifier.fillMaxWidth()

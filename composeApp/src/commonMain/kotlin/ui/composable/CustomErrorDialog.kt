@@ -34,7 +34,7 @@ fun CustomErrorDialog(
             dismissOnBackPress = false,
         )
     ) {
-        Surface(color = darkPrimary, shape = roundCornerShape) {
+        Surface(color = primaryDark, shape = roundCornerShape) {
             Column(
                 modifier = Modifier.padding(18.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -62,7 +62,7 @@ fun CustomErrorDialog(
                     onClick = onClose,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = secondary,
-                        contentColor = darkPrimary
+                        contentColor = primaryDark
                     )
                 ) {
                     Text(stringResource(Res.string.confirm_button))

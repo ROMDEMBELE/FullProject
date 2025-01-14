@@ -22,7 +22,7 @@ fun RoundIconText(
     drawable: DrawableResource? = null,
     modifier: Modifier = Modifier,
     text: String? = null,
-    iconColor: Color = darkPrimary,
+    iconColor: Color = primaryDark,
     backgroundColor: Color = darkGray
 ) {
     Surface(shape = CircleShape, color = backgroundColor, modifier = modifier.size(40.dp)) {

@@ -51,7 +51,7 @@ import ui.composable.DropDownTextField
 import ui.composable.MediumBoldDarkBlue
 import ui.composable.SliderSelector
 import ui.composable.TaperedRule
-import ui.composable.darkPrimary
+import ui.composable.primaryDark
 import ui.composable.primary
 import ui.composable.secondary
 import ui.stringRes
@@ -218,7 +218,7 @@ fun EditCharacterScreen(
                     Spacer(Modifier.height(8.dp))
                 }
 
-                TaperedRule(color = darkPrimary)
+                TaperedRule(color = primaryDark)
 
                 CustomButton(
                     enabled = uiState.isValid,

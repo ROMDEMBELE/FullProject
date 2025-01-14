@@ -79,7 +79,7 @@ import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.CustomButton
 import ui.composable.TaperedRule
 import ui.composable.darkGray
-import ui.composable.darkPrimary
+import ui.composable.primaryDark
 import ui.composable.lightGray
 import ui.composable.monsterSubTitle
 import ui.composable.monsterTitle
@@ -283,7 +283,7 @@ fun MonsterDetailScreen(
                         fontSize = 21.sp,
                         fontWeight = FontWeight.Normal,
                         fontFamily = FontFamily.Serif,
-                        color = darkPrimary,
+                        color = primaryDark,
                         modifier = Modifier.padding(vertical = 12.dp)
                     )
 
@@ -299,7 +299,7 @@ fun MonsterDetailScreen(
                         fontSize = 21.sp,
                         fontWeight = FontWeight.Normal,
                         fontFamily = FontFamily.Serif,
-                        color = darkPrimary,
+                        color = primaryDark,
                         modifier = Modifier.padding(vertical = 12.dp)
                     )
 
@@ -322,7 +322,7 @@ fun MonsterDetailScreen(
                             fontSize = 21.sp,
                             fontWeight = FontWeight.Normal,
                             fontFamily = FontFamily.Serif,
-                            color = darkPrimary,
+                            color = primaryDark,
                             modifier = Modifier.padding(vertical = 12.dp)
                         )
 
@@ -369,7 +369,7 @@ fun speed(movement: StringResource, value: Double, icon: DrawableResource) {
         modifier = Modifier.size(20.dp).aspectRatio(1f).padding(2.dp),
         painter = painterResource(icon),
         contentDescription = null,
-        tint = darkPrimary
+        tint = primaryDark
     )
     val movementText = stringResource(movement)
     Text(
@@ -387,7 +387,7 @@ fun spell(text: String, color: Color, onClick: () -> Unit) {
         shape = roundCornerShape,
         colors = ButtonDefaults.textButtonColors(
             containerColor = color,
-            contentColor = darkPrimary
+            contentColor = primaryDark
         ),
         onClick = onClick
     ) {

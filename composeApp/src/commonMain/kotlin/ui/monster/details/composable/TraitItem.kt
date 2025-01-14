@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import domain.model.monster.Trait
 import ui.composable.SmallBoldSecondary
-import ui.composable.darkPrimary
+import ui.composable.primaryDark
 import ui.composable.propertyText
 import ui.composable.secondary
 
@@ -28,7 +28,7 @@ fun TraitItem(trait: Trait) {
         Text(
             text = trait.name,
             style = SmallBoldSecondary.copy(color = secondary),
-            modifier = Modifier.fillMaxWidth().background(darkPrimary).padding(4.dp)
+            modifier = Modifier.fillMaxWidth().background(primaryDark).padding(4.dp)
         )
         Text(
             text = trait.desc.capitalize(Locale.current),

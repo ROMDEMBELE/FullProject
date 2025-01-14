@@ -12,7 +12,7 @@ fun CustomButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     colors: ButtonColors = ButtonDefaults.buttonColors(
-        containerColor = darkPrimary,
+        containerColor = primaryDark,
         contentColor = secondary,
         disabledContainerColor = lightGray,
         disabledContentColor = darkGray

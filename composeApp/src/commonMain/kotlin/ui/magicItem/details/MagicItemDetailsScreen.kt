@@ -47,7 +47,7 @@ import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.MediumBoldSecondary
 import ui.composable.TaperedRule
 import ui.composable.darkBlue
-import ui.composable.darkPrimary
+import ui.composable.primaryDark
 import ui.composable.magicItemTitle
 import ui.composable.secondary
 import ui.getRarityColor
@@ -131,7 +131,7 @@ fun MagicItemDetailsScreen(viewModel: MagicItemDetailsViewModel) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(8.dp))
-                            .background(darkPrimary)
+                            .background(primaryDark)
                             .padding(4.dp)
                     )
                     Spacer(modifier = Modifier.height(8.dp))

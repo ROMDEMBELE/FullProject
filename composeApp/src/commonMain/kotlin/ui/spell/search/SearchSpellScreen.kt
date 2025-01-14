@@ -34,7 +34,7 @@ import ui.composable.SearchMenu
 import ui.composable.SmallBoldSecondary
 import ui.composable.TaperedRule
 import ui.composable.darkGray
-import ui.composable.darkPrimary
+import ui.composable.primaryDark
 import ui.composable.propertyText
 import ui.composable.secondary
 import ui.spell.search.composable.SpellList
@@ -85,19 +85,19 @@ fun SearchSpellScreen(
                         Text(
                             stringResource(Res.string.filter_min_level, uiState.minLevel.level),
                             style = propertyText,
-                            color = darkPrimary
+                            color = primaryDark
                         )
 
                         Text(
                             stringResource(Res.string.filter_level, uiState.resultCounter),
                             style = SmallBoldSecondary,
-                            color = darkPrimary,
+                            color = primaryDark,
                         )
 
                         Text(
                             stringResource(Res.string.filter_max_level, uiState.maxLevel.level),
                             style = propertyText,
-                            color = darkPrimary
+                            color = primaryDark
                         )
 
                     }
@@ -109,8 +109,8 @@ fun SearchSpellScreen(
                         steps = Challenge.entries.size,
                         modifier = Modifier.fillMaxWidth(),
                         colors = SliderDefaults.colors(
-                            thumbColor = darkPrimary,
-                            activeTrackColor = darkPrimary,
+                            thumbColor = primaryDark,
+                            activeTrackColor = primaryDark,
                             inactiveTrackColor = darkGray
                         )
                     )
@@ -123,7 +123,7 @@ fun SearchSpellScreen(
         if (uiState.isLoading) {
             CustomAnimatedPlaceHolder(
                 backgroundColor = Color.Transparent,
-                contentColor = darkPrimary
+                contentColor = primaryDark
             )
         } else
             AnimatedContent(showFavorites) { favorite ->

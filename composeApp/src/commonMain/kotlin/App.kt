@@ -1,9 +1,9 @@
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
@@ -58,9 +58,7 @@ fun App() {
                     modifier = Modifier.consumeWindowInsets(innerPadding),
                     drawerState = drawerState,
                     drawerContent = {
-                        ModalDrawerSheet(drawerState) {
                             MenuDrawer(navController, toggleDrawer)
-                        }
                     },
                     content = {
                         AppNavHost(navController)

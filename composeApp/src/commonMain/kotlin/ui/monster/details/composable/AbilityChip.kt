@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import domain.model.Ability.Companion.getAbilityBonus
 import ui.composable.MediumBoldSecondary
 import ui.composable.SmallBoldSecondary
-import ui.composable.darkPrimary
+import ui.composable.primaryDark
 import ui.getAbilityBonusColor
 
 @Composable
@@ -26,7 +26,7 @@ fun RowScope.AbilityChip(abilityName: String, abilityValue: Int) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(horizontal = 1.dp).weight(1f).clip(RoundedCornerShape(4.dp))
-            .background(darkPrimary)
+            .background(primaryDark)
     ) {
         Text(
             text = "$abilityName ($abilityValue)",
@@ -41,7 +41,7 @@ fun RowScope.AbilityChip(abilityName: String, abilityValue: Int) {
             modifier = Modifier.fillMaxWidth().background(bonus.getAbilityBonusColor())
                 .padding(2.dp),
             textAlign = TextAlign.Center,
-            style = MediumBoldSecondary.copy(color = darkPrimary)
+            style = MediumBoldSecondary.copy(color = primaryDark)
         )
     }
 }

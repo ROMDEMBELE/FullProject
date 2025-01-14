@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TaperedRule(modifier: Modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp), color: Color = darkPrimary) {
+fun TaperedRule(modifier: Modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp), color: Color = primaryDark) {
     Divider(
         color = color,
         thickness = 2.dp,

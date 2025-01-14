@@ -39,8 +39,8 @@ import ui.composable.CustomAlertDialog
 import ui.composable.CustomButton
 import ui.composable.MediumBoldSecondary
 import ui.composable.darkBlue
-import ui.composable.darkPrimary
 import ui.composable.primary
+import ui.composable.primaryDark
 import ui.composable.roundCornerShape
 import ui.composable.secondary
 
@@ -142,7 +142,7 @@ fun EditCampaignScreen(
             CustomButton(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = primary,
-                    contentColor = darkPrimary
+                    contentColor = primaryDark
                 ),
                 onClick = { deleteDialogDisplay = true },
                 modifier = Modifier.fillMaxWidth()

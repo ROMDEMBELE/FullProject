@@ -28,7 +28,7 @@ import org.jetbrains.compose.resources.stringResource
 import ui.composable.CustomLazyHeaderList
 import ui.composable.MediumBoldSecondary
 import ui.composable.darkBlue
-import ui.composable.darkPrimary
+import ui.composable.primaryDark
 import ui.composable.screenTitle
 import ui.getRarityColor
 import ui.magicItem.search.composable.SearchMagicItemItem
@@ -46,11 +46,11 @@ fun MagicItemList(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(stringResource(Res.string.search_empty), style = screenTitle(darkPrimary))
+            Text(stringResource(Res.string.search_empty), style = screenTitle(primaryDark))
             Spacer(Modifier.height(36.dp))
             Image(
                 painter = painterResource(Res.drawable.d20),
-                colorFilter = ColorFilter.tint(darkPrimary),
+                colorFilter = ColorFilter.tint(primaryDark),
                 contentDescription = "loading",
                 modifier = Modifier.size(100.dp)
             )
