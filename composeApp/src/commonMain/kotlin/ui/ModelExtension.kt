@@ -193,6 +193,22 @@ fun DamageType.iconRes(): DrawableResource = when (this) {
     DamageType.RADIANT -> Res.drawable.damage_radiant
 }
 
+fun DamageType.color(): Color = when (this) {
+    DamageType.ACID -> Color(0xFF4CAF50) // Green for Acid
+    DamageType.BLUDGEONING -> Color(0xFF795548) // Brown for Bludgeoning
+    DamageType.COLD -> Color(0xFF03A9F4) // Light Blue for Cold
+    DamageType.FIRE -> Color(0xFFFF5722) // Orange-Red for Fire
+    DamageType.FORCE -> Color(0xFF9C27B0) // Purple for Force
+    DamageType.LIGHTNING -> Color(0xFFFFEB3B) // Yellow for Lightning
+    DamageType.NECROTIC -> Color(0xFF212121) // Dark Grey for Necrotic
+    DamageType.PIERCING -> Color(0xFF607D8B) // Blue-Grey for Piercing
+    DamageType.SLASHING -> Color(0xFFD32F2F) // Red for Slashing
+    DamageType.THUNDER -> Color(0xFF673AB7) // Deep Purple for Thunder
+    DamageType.POISON -> Color(0xFF8BC34A) // Lime Green for Poison
+    DamageType.PSYCHIC -> Color(0xFFE91E63) // Pink for Psychic
+    DamageType.RADIANT -> Color(0xFFFFF176) // Light Yellow for Radiant
+}
+
 fun DamageType.stringRes(): StringResource = when (this) {
     DamageType.ACID -> Res.string.damage_acid
     DamageType.BLUDGEONING -> Res.string.damage_bludgeoning

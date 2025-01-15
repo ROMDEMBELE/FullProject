@@ -1,6 +1,6 @@
 package ui.feat.search
 
-data class FeatItem(
+data class SearchFeatItem(
     val key: String,
     val name: String,
     val benefits: List<String>,

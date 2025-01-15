@@ -20,9 +20,9 @@ import androidx.compose.ui.unit.sp
 import domain.model.DamageType
 import domain.model.Level
 import ui.color
+import ui.composable.DamageCardItem
 import ui.composable.SmallBoldDarkBlue
 import ui.composable.darkBlue
-import ui.composable.generateIcon
 import ui.composable.secondary
 
 @Composable
@@ -87,7 +87,7 @@ fun SpellOptionItem(
         }
 
         for (damageType in type) {
-            damageType.generateIcon()
+            DamageCardItem(damageType)
         }
     }
 }

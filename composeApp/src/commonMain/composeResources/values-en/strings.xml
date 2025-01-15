@@ -12,26 +12,24 @@
     <string name="menu_campaign">Campaign</string>
 
     <string name="button_add_to_favorite">Add to Favorites</string>
-    <string name="button_remove_from_favorites">Remove from Favorites</string>"
+    <string name="button_remove_from_favorites">Remove from Favorites</string>
 
     <string name="search_monster_text_field_hint">Search Monsters by name</string>
+    <string name="search_feat_text_field_hint">Search Feat by name</string>
     <string name="search_spell_text_field_hint">Search Spells by name</string>
-    <string name="search_magic_item_text_field_hint">Search Magic Items by name</string>
+    <string name="search_magic_item_text_field_hint">Search Items by name</string>
 
-    <string name="filter_min_challenge_rating">Min CR %1$d</string>
-    <string name="filter_max_challenge_rating">Max CR %1$d</string>
+    <string name="challenge_rating">CR %1$d</string>
 
-    <string name="filter_challenge_rating">Filter monsters by challenge rating (%1$d result)</string>
+    <string name="filter_challenge_rating">Filter monsters by challenge rating</string>
 
-    <string name="filter_min_level">Min Level %1$d</string>
-    <string name="filter_max_level">Max Level %1$d</string>
+    <string name="level_rating">Level %1$d</string>
 
-    <string name="filter_level">Filter Spell by level (%1$d result)</string>
+    <string name="filter_level">Filter Spell by level</string>
 
-    <string name="filter_min_rarity">Min Rarity %1$s</string>
-    <string name="filter_max_rarity">Max Rarity %1$s</string>
+    <string name="rarity_rating">Rarity %1$s</string>
 
-    <string name="filter_rarity">Filter Magic Items by rarity (%1$d result)</string>
+    <string name="filter_rarity">Filter Magic Items by rarity</string>
 
     <string name="favorites_empty">There is no favorites yet</string>
     <string name="search_empty">No results found</string>

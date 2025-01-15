@@ -31,8 +31,7 @@ import androidx.navigation.NavHostController
 import domain.model.monster.Challenge
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.filter_level
-import org.dembeyo.shared.resources.filter_max_level
-import org.dembeyo.shared.resources.filter_min_level
+import org.dembeyo.shared.resources.level_rating
 import org.dembeyo.shared.resources.search_spell_text_field_hint
 import org.jetbrains.compose.resources.stringResource
 import ui.composable.CustomAnimatedPlaceHolder
@@ -83,80 +82,75 @@ fun SearchSpellScreen(
                 viewModel.cancelSearch()
             },
             filterContent = {
-                Column(modifier = Modifier.padding(8.dp)) {
+                Column(modifier = Modifier.padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = stringResource(Res.string.filter_level),
+                        style = propertyText,
+                        color = primaryDark,
+                    )
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceAround,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = stringResource(
-                                Res.string.filter_min_level,
-                                uiState.minLevel.level
-                            ),
+                            text = stringResource(Res.string.level_rating, uiState.minLevel.level),
                             style = SmallBoldSecondary,
                             textAlign = TextAlign.Start,
-                            modifier = Modifier.weight(0.25f),
                             color = primaryDark
                         )
 
-                        Text(
-                            text = stringResource(Res.string.filter_level, uiState.resultCounter),
-                            style = propertyText,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.weight(0.5f).padding(horizontal = 8.dp),
-                            color = primaryDark,
+                        RangeSlider(
+                            value = uiState.filterLevelRange,
+                            onValueChange = { viewModel.setLevelRange(it) },
+                            valueRange = uiState.levelRange,
+                            steps = Challenge.entries.size,
+                            modifier = Modifier.weight(0.8f).padding(horizontal = 10.dp),
+                            colors = SliderDefaults.colors(
+                                thumbColor = primaryDark,
+                                activeTrackColor = primaryDark,
+                                inactiveTrackColor = darkGray,
+                                activeTickColor = Color.Transparent,
+                                inactiveTickColor = Color.Transparent,
+                                disabledActiveTickColor = Color.Transparent,
+                                disabledInactiveTickColor = Color.Transparent,
+                            ),
+                            track = { state ->
+                                SliderDefaults.Track(
+                                    rangeSliderState = state,
+                                    drawStopIndicator = null,
+                                    colors = SliderDefaults.colors(
+                                        activeTrackColor = primaryDark,
+                                        inactiveTrackColor = darkGray,
+                                        activeTickColor = Color.Transparent,
+                                        inactiveTickColor = Color.Transparent
+                                    ),
+                                    modifier = Modifier.height(4.dp),
+                                )
+                            },
+                            startThumb = {
+                                Box(
+                                    Modifier.size(15.dp)
+                                        .background(primaryDark, CutCornerShape(15.dp))
+                                )
+                            },
+                            endThumb = {
+                                Box(
+                                    Modifier.size(15.dp)
+                                        .background(primaryDark, CutCornerShape(15.dp))
+                                )
+                            }
                         )
 
                         Text(
-                            text = stringResource(
-                                Res.string.filter_max_level,
-                                uiState.maxLevel.level
-                            ),
-                            style = propertyText,
+                            text = stringResource(Res.string.level_rating, uiState.maxLevel.level),
+                            style = SmallBoldSecondary,
                             textAlign = TextAlign.End,
-                            modifier = Modifier.weight(0.25f),
                             color = primaryDark
                         )
 
                     }
-
-                    RangeSlider(
-                        value = uiState.filterLevelRange,
-                        onValueChange = { viewModel.setLevelRange(it) },
-                        valueRange = uiState.levelRange,
-                        steps = Challenge.entries.size,
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
-                        colors = SliderDefaults.colors(
-                            thumbColor = primaryDark,
-                            activeTrackColor = primaryDark,
-                            inactiveTrackColor = darkGray,
-                            activeTickColor = Color.Transparent,
-                            inactiveTickColor = Color.Transparent,
-                            disabledActiveTickColor = Color.Transparent,
-                            disabledInactiveTickColor = Color.Transparent,
-                        ),
-                        track = { state ->
-                            SliderDefaults.Track(
-                                rangeSliderState = state,
-                                drawStopIndicator = null,
-                                colors = SliderDefaults.colors(
-                                    activeTrackColor = primaryDark,
-                                    inactiveTrackColor = darkGray,
-                                    activeTickColor = Color.Transparent,
-                                    inactiveTickColor = Color.Transparent
-                                ),
-                                modifier = Modifier.height(4.dp),
-                            )
-                        },
-                        startThumb = {
-                            Box(Modifier.size(15.dp).background(primaryDark, CutCornerShape(15.dp)))
-                        },
-                        endThumb = {
-                            Box(Modifier.size(15.dp).background(primaryDark, CutCornerShape(15.dp)))
-                        }
-                    )
-
                 }
             }
         )

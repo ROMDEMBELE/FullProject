@@ -14,6 +14,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -45,10 +46,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -75,6 +74,7 @@ import ui.composable.lightBlue
 import ui.composable.lightGray
 import ui.composable.monsterTitle
 import ui.composable.primary
+import ui.composable.propertyText
 import ui.composable.secondary
 import ui.spell.details.composable.PropertyLine
 import ui.spell.details.composable.SpellOptionItem
@@ -177,14 +177,15 @@ fun SpellDetailsScreen(viewModel: SpellDetailsViewModel) {
                         .background(darkBlue)
                         .padding(8.dp)
                         .fillMaxWidth()
-                        .weight(.6f)
+                        .weight(.6f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     item {
                         Text(
                             text = state.description.toString(),
                             fontSize = 14.sp,
-                            style = TextStyle.Default.copy(lineBreak = LineBreak.Paragraph),
-                            fontFamily = FontFamily.Serif,
+                            lineHeight = 20.sp,
+                            style = propertyText,
                             color = secondary
                         )
                     }
@@ -193,8 +194,8 @@ fun SpellDetailsScreen(viewModel: SpellDetailsViewModel) {
                             Text(
                                 text = state.higherLevelDescription.toString(),
                                 fontSize = 14.sp,
-                                style = TextStyle.Default.copy(lineBreak = LineBreak.Paragraph),
-                                fontFamily = FontFamily.Serif,
+                                lineHeight = 20.sp,
+                                style = propertyText,
                                 color = secondary
                             )
                         }

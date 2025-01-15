@@ -22,7 +22,7 @@ class SearchFeatViewModel(private val searchFeatUseCase: SearchFeatUseCase) : Vi
         searchFeat(TextFieldValue())
     }
 
-    private fun Feat.toItem() = FeatItem(
+    private fun Feat.toItem() = SearchFeatItem(
         key = this.key,
         name = this.name,
         benefits = this.benefits,
