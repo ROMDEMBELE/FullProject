@@ -15,7 +15,7 @@ class SearchMagicItemUseCase(private val repository: MagicItemRepository) {
         val listOfItems: MutableSet<MagicItem> = mutableSetOf()
         return repository.search(name, rarity).map { items ->
             listOfItems.addAll(items)
-            listOfItems.toList()
+            listOfItems.toList().distinctBy { it.name }
         }
     }
 

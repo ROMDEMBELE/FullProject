@@ -40,15 +40,20 @@ import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.dembeyo.shared.resources.Res
+import org.dembeyo.shared.resources.magic_item_category
+import org.dembeyo.shared.resources.magic_item_cost
+import org.dembeyo.shared.resources.magic_item_require_attunement
+import org.dembeyo.shared.resources.magic_item_weight
 import org.dembeyo.shared.resources.ornament
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.MediumBoldSecondary
+import ui.composable.PropertyLine
 import ui.composable.TaperedRule
 import ui.composable.darkBlue
-import ui.composable.primaryDark
 import ui.composable.magicItemTitle
+import ui.composable.primaryDark
 import ui.composable.secondary
 import ui.getRarityColor
 import ui.stringRes
@@ -65,9 +70,12 @@ fun MagicItemDetailsScreen(viewModel: MagicItemDetailsViewModel) {
             CustomAnimatedPlaceHolder()
         } else {
             val rotation by infiniteTransition.animateFloat(
-                0f,
-                360f,
-                infiniteRepeatable(tween(50000, easing = LinearEasing), RepeatMode.Restart)
+                initialValue = 360f,
+                targetValue = 0f,
+                animationSpec = infiniteRepeatable(
+                    tween(50000, easing = LinearEasing),
+                    RepeatMode.Restart
+                )
             )
             val brush =
                 Brush.horizontalGradient(listOf(secondary, state.rarity.getRarityColor()))
@@ -108,24 +116,11 @@ fun MagicItemDetailsScreen(viewModel: MagicItemDetailsViewModel) {
                         .padding(4.dp)
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = state.category.name,
-                    color = secondary,
-                    style = MediumBoldSecondary,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(darkBlue)
-                        .padding(4.dp)
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
                 if (state.requireAttunement) {
                     Text(
-                        text = "Requires Attunement",
+                        text = stringResource(Res.string.magic_item_require_attunement),
                         color = secondary,
                         style = MediumBoldSecondary,
                         modifier = Modifier
@@ -134,8 +129,24 @@ fun MagicItemDetailsScreen(viewModel: MagicItemDetailsViewModel) {
                             .background(primaryDark)
                             .padding(4.dp)
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
+
+                PropertyLine(
+                    Res.string.magic_item_category,
+                    stringResource(state.category.stringRes())
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                if (state.cost != null) {
+                    PropertyLine(Res.string.magic_item_cost, state.cost.toString())
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
+
+                PropertyLine(Res.string.magic_item_weight, state.weight.toString())
+
+                Spacer(modifier = Modifier.height(4.dp))
 
                 LazyColumn(
                     Modifier.clip(RoundedCornerShape(8.dp))

@@ -2,7 +2,7 @@ package ui.campaign.edit
 
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
-import domain.model.Campaign
+import domain.Campaign
 import domain.usecase.campaign.DeleteCampaignUseCase
 import domain.usecase.campaign.SaveCampaignUseCase
 import kotlinx.coroutines.flow.MutableStateFlow

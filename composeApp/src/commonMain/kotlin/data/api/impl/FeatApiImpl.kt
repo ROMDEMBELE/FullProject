@@ -9,7 +9,7 @@ import io.ktor.client.request.get
 import io.ktor.http.isSuccess
 import kotlinx.serialization.json.JsonObject
 
-class FeatApiImpl(private val client: HttpClient) : FeatApi {
+class FeatApiImpl(client: HttpClient) : FeatApi, Open5eApiImpl(client) {
 
     override suspend fun fetchAll(): SearchResultDto<JsonObject> {
         val response = client.get(BASE_URL)
@@ -18,28 +18,6 @@ class FeatApiImpl(private val client: HttpClient) : FeatApi {
         } else {
             throw ServerResponseException(response, "get feats failed : ${response.status}")
         }
-    }
-
-    override suspend fun getPreviousPage(url: String): SearchResultDto<JsonObject> {
-        val response = client.get(url)
-        if (response.status.isSuccess())
-            return response.body()
-        else
-            throw ServerResponseException(
-                response,
-                "get previous page $url failed : ${response.status}"
-            )
-    }
-
-    override suspend fun getNextPage(url: String): SearchResultDto<JsonObject> {
-        val response = client.get(url)
-        if (response.status.isSuccess())
-            return response.body()
-        else
-            throw ServerResponseException(
-                response,
-                "get next page $url failed : ${response.status}"
-            )
     }
 
     companion object {

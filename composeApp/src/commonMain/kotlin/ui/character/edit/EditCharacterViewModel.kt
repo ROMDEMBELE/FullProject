@@ -5,11 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import domain.model.Ability
 import domain.model.Level
-import domain.model.character.Background
-import domain.model.character.Species
-import domain.repository.BackgroundRepository
 import domain.repository.CharacterRepository
-import domain.repository.SpeciesRepository
 import domain.usecase.character.DeleteCharacterUseCase
 import domain.usecase.character.SaveCharacterUseCase
 import kotlinx.coroutines.flow.MutableStateFlow

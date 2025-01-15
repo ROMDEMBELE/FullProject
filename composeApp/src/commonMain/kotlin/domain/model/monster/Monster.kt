@@ -71,15 +71,13 @@ data class Monster(
     val environments: List<Environment>,
 ) {
     override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Monster) return false
-        if (this.key != other.key) return false
-        if (this.isFavorite != other.isFavorite) return false
-        return true
+        return other is Monster && (other.key == key || other.name == name) && other.isFavorite == isFavorite
     }
 
     override fun hashCode(): Int {
-        return key.hashCode() + isFavorite.hashCode()
+        var result = key.hashCode()
+        result = 31 * result + isFavorite.hashCode()
+        return result
     }
 }
 

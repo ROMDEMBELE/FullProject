@@ -3,8 +3,6 @@ package ui.character.edit
 import androidx.compose.ui.text.input.TextFieldValue
 import domain.model.Ability
 import domain.model.Level
-import domain.model.character.Background
-import domain.model.character.Species
 
 data class EditCharacterUiState(
     val id: Long? = null,

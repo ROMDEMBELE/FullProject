@@ -1,6 +1,6 @@
 package domain.usecase.campaign
 
-import domain.model.Campaign
+import domain.Campaign
 import domain.repository.CampaignRepository
 import domain.repository.CharacterRepository
 import domain.repository.EncounterRepository

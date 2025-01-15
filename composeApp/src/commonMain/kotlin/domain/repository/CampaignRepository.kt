@@ -1,28 +1,23 @@
 package domain.repository
 
-import data.database.sqlDelight.SqlDatabase
-import domain.model.Campaign
+import domain.Campaign
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import org.dembeyo.data.CampaingnDbo
+import kotlin.coroutines.cancellation.CancellationException
 
-class CampaignRepository(private val database: SqlDatabase) {
+interface CampaignRepository {
 
-    private fun CampaingnDbo.toDomain() = Campaign(id, fullName, description)
+    @Throws(NoSuchElementException::class, CancellationException::class)
+    suspend fun getById(id: Long): Campaign
 
-    fun getById(id: Long): Flow<Campaign?> =
-        database.getCampaignById(id).map { it?.toDomain() }
+    suspend fun getAll(): Flow<List<Campaign>>
 
-    fun getAll(): Flow<List<Campaign>> =
-        database.getAllCampaign().map { list -> list.map { it.toDomain() } }
-
+    @Throws(NoSuchElementException::class)
     fun createOrUpdate(
         id: Long?,
         name: String,
         description: String,
-    ): Long? = database.insertOrUpdateCampaign(id, name, description)
+    )
 
-    fun delete(id: Long) {
-        database.deleteCampaignById(id)
-    }
+    @Throws(NoSuchElementException::class, CancellationException::class)
+    suspend fun delete(id: Long)
 }

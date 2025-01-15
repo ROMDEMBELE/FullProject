@@ -51,7 +51,7 @@ class SearchMonsterViewModel(
             searchMonstersUseCase(text, min, max).collect { results ->
                 _state.update {
                     it.copy(
-                        searchResult = it.searchResult + results.map { monster -> monster.toSearchMonsterItem() },
+                        searchResult = results.map { monster -> monster.toSearchMonsterItem() },
                         isLoading = false
                     )
                 }
@@ -66,11 +66,7 @@ class SearchMonsterViewModel(
                     it.copy(
                         favorites = favorites.map { monster -> monster.toSearchMonsterItem() },
                         searchResult = it.searchResult.map { item ->
-                            if (favorites.any { favorite -> favorite.key == item.key }) {
-                                item.copy(isFavorite = true)
-                            } else {
-                                item.copy(isFavorite = false)
-                            }
+                            item.copy(isFavorite = favorites.any { favorite -> favorite.key == item.key })
                         }
                     )
                 }

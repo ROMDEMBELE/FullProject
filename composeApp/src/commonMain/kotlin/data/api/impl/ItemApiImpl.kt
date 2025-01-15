@@ -10,7 +10,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.isSuccess
 import kotlinx.serialization.json.JsonObject
 
-class ItemApiImpl(private val client: HttpClient) : ItemApi {
+class ItemApiImpl(client: HttpClient) : ItemApi, Open5eApiImpl(client) {
 
     override suspend fun getByKey(key: String): SearchResultDto<JsonObject> {
         val response = client.get(BASE_URL) {
@@ -31,7 +31,7 @@ class ItemApiImpl(private val client: HttpClient) : ItemApi {
     ): SearchResultDto<JsonObject> {
         val response = client.get(BASE_URL) {
             url {
-                parameters.append("name_icontains", query.lowercase())
+                parameters.append("name__icontains", query.lowercase())
                 if (rarity != null) {
                     parameters.append("rarity", rarity)
                 }
@@ -41,28 +41,6 @@ class ItemApiImpl(private val client: HttpClient) : ItemApi {
             return response.body()
         } else {
             throw ServerResponseException(response, response.bodyAsText())
-        }
-    }
-
-    override suspend fun getNextPage(url: String): SearchResultDto<JsonObject> {
-        val response = client.get(url)
-        if (response.status.isSuccess()) {
-            return response.body()
-        } else {
-            throw ServerResponseException(
-                response, "get next page $url failed : ${response.status}"
-            )
-        }
-    }
-
-    override suspend fun getPreviousPage(url: String): SearchResultDto<JsonObject> {
-        val response = client.get(url)
-        if (response.status.isSuccess()) {
-            return response.body()
-        } else {
-            throw ServerResponseException(
-                response, "get previous page $url failed : ${response.status}"
-            )
         }
     }
 

@@ -1,4 +1,4 @@
-package domain.model
+package domain.model.feat
 
 data class Feat(
     val key: String,

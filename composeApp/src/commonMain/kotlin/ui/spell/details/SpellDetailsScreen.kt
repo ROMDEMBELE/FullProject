@@ -68,6 +68,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ui.color
 import ui.composable.CustomAnimatedPlaceHolder
+import ui.composable.PropertyLine
 import ui.composable.TaperedRule
 import ui.composable.darkBlue
 import ui.composable.lightBlue
@@ -76,7 +77,6 @@ import ui.composable.monsterTitle
 import ui.composable.primary
 import ui.composable.propertyText
 import ui.composable.secondary
-import ui.spell.details.composable.PropertyLine
 import ui.spell.details.composable.SpellOptionItem
 import ui.stringRes
 
@@ -138,8 +138,8 @@ fun SpellDetailsScreen(viewModel: SpellDetailsViewModel) {
                     }
 
                     Text(
-                        state.name.toString(),
-                        Modifier.align(Alignment.Center),
+                        text = state.name.toString(),
+                        modifier = Modifier.align(Alignment.Center),
                         style = monsterTitle.copy(
                             color = darkBlue, shadow = Shadow(
                                 color = state.school.color(),

@@ -51,8 +51,8 @@ import ui.composable.DropDownTextField
 import ui.composable.MediumBoldDarkBlue
 import ui.composable.SliderSelector
 import ui.composable.TaperedRule
-import ui.composable.primaryDark
 import ui.composable.primary
+import ui.composable.primaryDark
 import ui.composable.secondary
 import ui.stringRes
 
@@ -130,7 +130,7 @@ fun EditCharacterScreen(
 
                 DropDownTextField(
                     selectedValue = uiState.characterBackground,
-                    display = { this?.name ?: "" },
+                    valueToString = { it?.name ?: "" },
                     label = stringResource(Res.string.background),
                     values = uiState.backgrounds.values.toList()
                 ) {
@@ -143,7 +143,7 @@ fun EditCharacterScreen(
 
                 DropDownTextField(
                     selectedValue = uiState.characterSpecies,
-                    display = { this?.fullName ?: "" },
+                    valueToString = { it?.fullName ?: "" },
                     label = stringResource(Res.string.species),
                     values = uiState.species.values.toList()
                 ) {

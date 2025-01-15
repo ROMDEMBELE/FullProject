@@ -15,7 +15,7 @@ class SearchMonstersUseCase(
         query: TextFieldValue,
         minChallenge: Challenge,
         maxChallenge: Challenge
-    ): Flow<Set<Monster>> {
+    ): Flow<List<Monster>> {
         val listOfMonsters: MutableSet<Monster> = mutableSetOf()
         return monsterRepository.search(
             name = query.text,
@@ -23,7 +23,7 @@ class SearchMonstersUseCase(
             max = maxChallenge
         ).map { monsters ->
             listOfMonsters.addAll(monsters)
-            listOfMonsters
+            listOfMonsters.toList().distinctBy { it.name }
         }
     }
 }

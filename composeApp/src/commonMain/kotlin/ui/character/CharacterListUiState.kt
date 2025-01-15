@@ -1,6 +1,6 @@
 package ui.character
 
-import domain.model.Campaign
+import domain.Campaign
 import domain.model.character.Character
 
 data class CharacterListUiState(

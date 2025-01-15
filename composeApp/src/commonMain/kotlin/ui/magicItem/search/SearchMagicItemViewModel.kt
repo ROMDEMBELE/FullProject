@@ -43,8 +43,12 @@ class SearchMagicItemViewModel(
         viewModelScope.launch {
             getFavoritesMagicItemsUseCase().collect { favorites ->
                 _state.update {
-                    it.copy(searchResult = it.searchResult.map { item -> item.copy(isFavorite = favorites.any { favorite -> favorite.key == item.key }) },
-                        favorites = favorites.map { item -> item.toSearchMagicItem() })
+                    it.copy(
+                        favorites = favorites.map { item -> item.toSearchMagicItem() },
+                        searchResult = it.searchResult.map { item ->
+                            item.copy(isFavorite = favorites.any { favorite -> favorite.key == item.key })
+                        },
+                    )
                 }
             }
         }
@@ -56,7 +60,7 @@ class SearchMagicItemViewModel(
             searchMagicItemUseCase(textField.text, rarity).collect { results ->
                 _state.update {
                     it.copy(
-                        searchResult = it.searchResult + results.map { item -> item.toSearchMagicItem() },
+                        searchResult = results.map { item -> item.toSearchMagicItem() },
                         isLoading = false
                     )
                 }
@@ -74,6 +78,7 @@ class SearchMagicItemViewModel(
 
     fun cancelSearch() {
         searchJob?.cancel()
+        _state.update { it.copy(isLoading = false) }
     }
 
     fun onRarityFilterChange(range: ItemRarity? = null) {

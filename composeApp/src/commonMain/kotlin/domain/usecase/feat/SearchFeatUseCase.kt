@@ -1,7 +1,7 @@
 package domain.usecase.feat
 
 import androidx.compose.ui.text.input.TextFieldValue
-import domain.model.Feat
+import domain.model.feat.Feat
 import domain.repository.FeatRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

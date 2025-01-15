@@ -11,4 +11,14 @@ data class MagicItem(
     val requireAttunement: Boolean,
     val category: ItemCategory,
     val rarity: ItemRarity,
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        return other is MagicItem && (other.key == key || other.name == name) && other.isFavorite == isFavorite
+    }
+
+    override fun hashCode(): Int {
+        var result = key.hashCode()
+        result = 31 * result + isFavorite.hashCode()
+        return result
+    }
+}

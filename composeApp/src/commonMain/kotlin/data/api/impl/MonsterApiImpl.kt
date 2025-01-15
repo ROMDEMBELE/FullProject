@@ -9,7 +9,7 @@ import io.ktor.client.request.get
 import io.ktor.http.isSuccess
 import kotlinx.serialization.json.JsonObject
 
-class MonsterApiImpl(private val client: HttpClient) : MonsterApi {
+class MonsterApiImpl(client: HttpClient) : MonsterApi, Open5eApiImpl(client) {
 
     override suspend fun getByKey(key: String): SearchResultDto<JsonObject> {
         val response = client.get(BASE_URL) {
@@ -59,28 +59,6 @@ class MonsterApiImpl(private val client: HttpClient) : MonsterApi {
             throw ServerResponseException(
                 response,
                 "search monsters :$query failed : status ${response.status}"
-            )
-        }
-    }
-
-    override suspend fun getNextPage(url: String): SearchResultDto<JsonObject> {
-        val response = client.get(url)
-        if (response.status.isSuccess()) {
-            return response.body()
-        } else {
-            throw ServerResponseException(
-                response, "get next page $url failed : ${response.status}"
-            )
-        }
-    }
-
-    override suspend fun getPreviousPage(url: String): SearchResultDto<JsonObject> {
-        val response = client.get(url)
-        if (response.status.isSuccess()) {
-            return response.body()
-        } else {
-            throw ServerResponseException(
-                response, "get previous page $url failed : ${response.status}"
             )
         }
     }

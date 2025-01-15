@@ -69,7 +69,7 @@ fun SearchMagicItemScreen(
                 Column(modifier = Modifier.padding(16.dp)) {
                     DropDownTextField(
                         selectedValue = state.rarityFilter,
-                        display = { this?.let { stringResource(stringRes()) } ?: "---" },
+                        valueToString = { stringResource(it.stringRes()) },
                         label = stringResource(Res.string.filter_rarity, state.searchCounter),
                         values = state.rarityRange,
                         onSelected = viewModel::onRarityFilterChange

@@ -9,7 +9,7 @@ import io.ktor.client.request.get
 import io.ktor.http.isSuccess
 import kotlinx.serialization.json.JsonObject
 
-class SpellApiImpl(private val client: HttpClient) : SpellApi {
+class SpellApiImpl(client: HttpClient) : SpellApi, Open5eApiImpl(client) {
 
     override suspend fun search(
         query: String,
@@ -62,28 +62,6 @@ class SpellApiImpl(private val client: HttpClient) : SpellApi {
                 "get by level $level failed : ${response.status}"
             )
         }
-    }
-
-    override suspend fun getPreviousPage(url: String): SearchResultDto<JsonObject> {
-        val response = client.get(url)
-        if (response.status.isSuccess())
-            return response.body()
-        else
-            throw ServerResponseException(
-                response,
-                "get previous page $url failed : ${response.status}"
-            )
-    }
-
-    override suspend fun getNextPage(url: String): SearchResultDto<JsonObject> {
-        val response = client.get(url)
-        if (response.status.isSuccess())
-            return response.body()
-        else
-            throw ServerResponseException(
-                response,
-                "get next page $url failed : ${response.status}"
-            )
     }
 
     companion object {

@@ -50,11 +50,7 @@ class SearchSpellViewModel(
                     state.copy(
                         favorites = favorites.map { spell -> spell.toSearchSpellItem() },
                         searchResult = state.searchResult.map { spell ->
-                            if (favorites.any { it.key == spell.key }) {
-                                spell.copy(isFavorite = true)
-                            } else {
-                                spell.copy(isFavorite = false)
-                            }
+                            spell.copy(isFavorite = favorites.any { it.key == spell.key })
                         }
                     )
                 }
@@ -73,10 +69,12 @@ class SearchSpellViewModel(
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
-            searchSpellUseCase(text, minLevel, maxLevel).collect {
-                _state.update { state ->
-                    val newSpells = it.map { spell -> spell.toSearchSpellItem() }
-                    state.copy(searchResult = state.searchResult.plus(newSpells), isLoading = false)
+            searchSpellUseCase(text, minLevel, maxLevel).collect { result ->
+                _state.update {
+                    it.copy(
+                        searchResult = result.map { spell -> spell.toSearchSpellItem() },
+                        isLoading = false
+                    )
                 }
             }
         }

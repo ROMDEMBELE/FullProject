@@ -13,12 +13,12 @@ interface Open5eApi {
         CancellationException::class,
         JsonConvertException::class
     )
-    suspend fun getPreviousPage(url: String): SearchResultDto<JsonObject>
+    suspend fun getPage(url: String): SearchResultDto<JsonObject>
 
     @Throws(
         ServerResponseException::class,
         CancellationException::class,
         JsonConvertException::class
     )
-    suspend fun getNextPage(url: String): SearchResultDto<JsonObject>
+    suspend fun getUrl(url: String): JsonObject
 }

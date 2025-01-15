@@ -3,7 +3,7 @@ package ui.feat.search
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import domain.model.Feat
+import domain.model.feat.Feat
 import domain.usecase.feat.SearchFeatUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

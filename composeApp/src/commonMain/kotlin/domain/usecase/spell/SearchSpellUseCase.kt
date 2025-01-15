@@ -14,10 +14,10 @@ class SearchSpellUseCase(private val spellRepository: SpellRepository) {
         minLevel: Level,
         maxLevel: Level
     ): Flow<List<Spell>> {
-        val listOfSpells: MutableList<Spell> = mutableListOf()
-        return spellRepository.search(query.text, minLevel, maxLevel).map {
-            listOfSpells.addAll(it)
-            listOfSpells
+        val listOfSpells: MutableSet<Spell> = mutableSetOf()
+        return spellRepository.search(query.text, minLevel, maxLevel).map { newSpells ->
+            listOfSpells.addAll(newSpells)
+            listOfSpells.toList().distinctBy { it.name }
         }
     }
 

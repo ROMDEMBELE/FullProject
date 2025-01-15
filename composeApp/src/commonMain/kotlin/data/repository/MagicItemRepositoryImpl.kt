@@ -20,7 +20,7 @@ import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.jsonPrimitive
 import org.dembeyo.data.MagicItemDbo
 
-class MagicItemRepositoryImpl(private val api: ItemApi, private val database: SqlDatabase) :
+class MagicItemRepositoryImpl(private val itemApi: ItemApi, private val database: SqlDatabase) :
     MagicItemRepository {
 
     private val temporaryRemoteMagicItems = mutableListOf<MagicItem>()
@@ -67,7 +67,7 @@ class MagicItemRepositoryImpl(private val api: ItemApi, private val database: Sq
                 emit(magicItems)
                 // Fetch next page of result
                 searchResult.next?.let { next ->
-                    searchResult = api.getNextPage(next)
+                    searchResult = itemApi.getPage(next)
                 }
             } while (searchResult.next != null)
         }
@@ -93,7 +93,7 @@ class MagicItemRepositoryImpl(private val api: ItemApi, private val database: Sq
         return database.getMagicItemById(key)?.toMagicItem() ?: run {
             temporaryRemoteMagicItems.firstOrNull { it.key == key }
         } ?: run {
-            val searchResult = api.getByKey(key)
+            val searchResult = itemApi.getByKey(key)
             if (searchResult.results.isEmpty()) {
                 throw NoSuchElementException("No item found with key $key")
             }
@@ -105,9 +105,7 @@ class MagicItemRepositoryImpl(private val api: ItemApi, private val database: Sq
         name: String,
         rarity: ItemRarity?,
     ): Flow<List<MagicItem>> {
-        return fetchItems { api.search(name, rarity?.key) }.map { list ->
-            list.distinctBy { it.key }.distinctBy { it.name }
-        }
+        return fetchItems { itemApi.search(name, rarity?.key) }
     }
 
 

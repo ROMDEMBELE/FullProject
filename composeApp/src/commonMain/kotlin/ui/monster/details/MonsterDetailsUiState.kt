@@ -3,7 +3,6 @@ package ui.monster.details
 import domain.model.Alignment
 import domain.model.Condition
 import domain.model.DamageType
-import domain.model.character.Skill
 import domain.model.monster.Action
 import domain.model.monster.Challenge
 import domain.model.monster.CreatureSize

@@ -28,6 +28,7 @@
     <string name="filter_level">Filter Spell by level</string>
 
     <string name="rarity_rating">Rarity %1$s</string>
+    <string name="drop_down_option_empty">( - - - )</string>
 
     <string name="filter_rarity">Filter Magic Items by rarity</string>
 
@@ -67,6 +68,33 @@
     <string name="spell_casting_time">Casting Time</string>
     <string name="spell_area_of_effect">Area of Effect</string>
     <string name="spell_saving_throw">%1$s Saving Throw</string>
+
+    <string name="category_ring">Ring</string>
+    <string name="category_adventuring_gear">Adventuring Gear</string>
+    <string name="category_ammunition">Ammunition</string>
+    <string name="category_armor">Armor</string>
+    <string name="category_art">Art</string>
+    <string name="category_drawn_vehicle">Drawn Vehicle</string>
+    <string name="category_gem">Gem</string>
+    <string name="category_jewelry">Jewelry</string>
+    <string name="category_poison">Poison</string>
+    <string name="category_potion">Potion</string>
+    <string name="category_rod">Rod</string>
+    <string name="category_scroll">Scroll</string>
+    <string name="category_shield">Shield</string>
+    <string name="category_staff">Staff</string>
+    <string name="category_tools">Tools</string>
+    <string name="category_trade_good">Trade Good</string>
+    <string name="category_wand">Wand</string>
+    <string name="category_waterborne_vehicle">Waterborne Vehicle</string>
+    <string name="category_weapon">Weapon</string>
+    <string name="category_wondrous_item">Wondrous Item</string>
+
+    <string name="magic_item_cost">Cost</string>
+    <string name="magic_item_category">Category</string>
+    <string name="magic_item_weight">Weight</string>
+    <string name="magic_item_require_attunement">Requires Attunement</string>
+
 
     <string name="loading">Loading...</string>
 

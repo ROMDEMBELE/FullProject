@@ -287,7 +287,7 @@ class MonsterRepositoryImpl(
                 emit(monsters)
                 // Fetch next page of result
                 searchResult.next?.let { next ->
-                    searchResult = monsterApi.getNextPage(next)
+                    searchResult = monsterApi.getPage(next)
                 }
             } while (searchResult.next != null)
         }
@@ -314,10 +314,7 @@ class MonsterRepositoryImpl(
         name: String, min: Challenge, max: Challenge
     ): Flow<List<Monster>> {
         // Search monsters in API with name, min and max challenge
-        return fetchMonsters { monsterApi.search(name, min.rating, max.rating) }.map { list ->
-            list.distinctBy { it.key }
-                .distinctBy { it.name }
-        }
+        return fetchMonsters { monsterApi.search(name, min.rating, max.rating) }
     }
 
     override suspend fun getByKey(slug: String): Monster {

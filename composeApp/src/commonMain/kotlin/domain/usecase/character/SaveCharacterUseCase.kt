@@ -2,9 +2,7 @@ package domain.usecase.character
 
 import androidx.compose.ui.text.input.TextFieldValue
 import domain.model.Level
-import domain.model.character.Background
 import domain.model.character.Character
-import domain.model.character.Species
 import domain.repository.CharacterRepository
 import domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.firstOrNull
@@ -39,7 +37,7 @@ class SaveCharacterUseCase(
 
         val campaignId = 1L
 
-        val newId = characterRepository.createOrUpdateCharacter(
+        val newId = characterRepository.save(
             id = id,
             fullName = characterName.text,
             campaignId = campaignId,

@@ -4,11 +4,13 @@ import data.api.ChatGptApi
 import data.api.FeatApi
 import data.api.ItemApi
 import data.api.MonsterApi
+import data.api.Open5eApi
 import data.api.SpellApi
 import data.api.impl.ChatGptApiImpl
 import data.api.impl.FeatApiImpl
 import data.api.impl.ItemApiImpl
 import data.api.impl.MonsterApiImpl
+import data.api.impl.Open5eApiImpl
 import data.api.impl.SpellApiImpl
 import data.database.sqlDelight.SqlDatabase
 import data.local.LocalDatasource
@@ -17,7 +19,6 @@ import data.repository.MagicItemRepositoryImpl
 import data.repository.MonsterRepositoryImpl
 import data.repository.SettingsRepositoryImpl
 import data.repository.SpellRepositoryImpl
-import domain.repository.BackgroundRepository
 import domain.repository.CampaignRepository
 import domain.repository.CharacterRepository
 import domain.repository.EncounterRepository
@@ -25,7 +26,6 @@ import domain.repository.FeatRepository
 import domain.repository.MagicItemRepository
 import domain.repository.MonsterRepository
 import domain.repository.SettingsRepository
-import domain.repository.SpeciesRepository
 import domain.repository.SpellRepository
 import domain.usecase.campaign.DeleteCampaignUseCase
 import domain.usecase.campaign.GetCampaignsUseCase
@@ -115,6 +115,7 @@ val dataModule = module {
     single<SpellApi> { SpellApiImpl(get()) }
     single<FeatApi> { FeatApiImpl(get()) }
     single<ItemApi> { ItemApiImpl(get()) }
+    single<Open5eApi> { Open5eApiImpl(get()) }
     single<ChatGptApi> { ChatGptApiImpl(get()) }
     singleOf(::LocalDatasource)
 
@@ -129,7 +130,6 @@ val repositoryModule = module {
     single<FeatRepository> { FeatRepositoryImpl(get(), get()) }
     single<MagicItemRepository> { MagicItemRepositoryImpl(get(), get()) }
     singleOf(::SpeciesRepository)
-    singleOf(::BackgroundRepository)
     singleOf(::CampaignRepository)
     singleOf(::EncounterRepository)
 }

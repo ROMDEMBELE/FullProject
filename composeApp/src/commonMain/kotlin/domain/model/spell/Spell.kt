@@ -31,6 +31,17 @@ data class Spell(
     val damageType: List<DamageType> = emptyList(),
     val targetCount: Int? = null,
 ) {
+
+    override fun equals(other: Any?): Boolean {
+        return other is Spell && (other.key == key || other.name == name) && other.isFavorite == isFavorite
+    }
+
+    override fun hashCode(): Int {
+        var result = key.hashCode()
+        result = 31 * result + isFavorite.hashCode()
+        return result
+    }
+
     @Serializable
     data class SpellOption(
         val level: Level,

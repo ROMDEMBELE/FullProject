@@ -8,6 +8,7 @@ import domain.model.Alignment
 import domain.model.Condition
 import domain.model.DamageType
 import domain.model.Level
+import domain.model.magicItem.ItemCategory
 import domain.model.magicItem.ItemRarity
 import domain.model.monster.Challenge
 import domain.model.monster.CreatureSize
@@ -30,6 +31,26 @@ import org.dembeyo.shared.resources.any_non_good_alignment
 import org.dembeyo.shared.resources.any_non_lawful_alignment
 import org.dembeyo.shared.resources.artifact
 import org.dembeyo.shared.resources.beast
+import org.dembeyo.shared.resources.category_adventuring_gear
+import org.dembeyo.shared.resources.category_ammunition
+import org.dembeyo.shared.resources.category_armor
+import org.dembeyo.shared.resources.category_art
+import org.dembeyo.shared.resources.category_drawn_vehicle
+import org.dembeyo.shared.resources.category_gem
+import org.dembeyo.shared.resources.category_jewelry
+import org.dembeyo.shared.resources.category_poison
+import org.dembeyo.shared.resources.category_potion
+import org.dembeyo.shared.resources.category_rod
+import org.dembeyo.shared.resources.category_scroll
+import org.dembeyo.shared.resources.category_shield
+import org.dembeyo.shared.resources.category_staff
+import org.dembeyo.shared.resources.category_tools
+import org.dembeyo.shared.resources.category_trade_good
+import org.dembeyo.shared.resources.category_wand
+import org.dembeyo.shared.resources.category_waterborne_vehicle
+import org.dembeyo.shared.resources.category_weapon
+import org.dembeyo.shared.resources.category_wondrous_item
+import org.dembeyo.shared.resources.category_ring
 import org.dembeyo.shared.resources.celestial
 import org.dembeyo.shared.resources.chaotic_evil
 import org.dembeyo.shared.resources.chaotic_good
@@ -67,6 +88,7 @@ import org.dembeyo.shared.resources.damage_slashing
 import org.dembeyo.shared.resources.damage_thunder
 import org.dembeyo.shared.resources.divination
 import org.dembeyo.shared.resources.dragon
+import org.dembeyo.shared.resources.drop_down_option_empty
 import org.dembeyo.shared.resources.elemental
 import org.dembeyo.shared.resources.enchantment
 import org.dembeyo.shared.resources.evocation
@@ -125,7 +147,7 @@ fun MagicSchool.color(): Color = when (this) {
     MagicSchool.TRANSMUTATION -> Color(0xFF90EE90) // Pastel Green
 }
 
-fun ItemRarity.stringRes(): StringResource = when (this) {
+fun ItemRarity?.stringRes(): StringResource = when (this) {
     ItemRarity.NONE -> Res.string.none
     ItemRarity.COMMON -> Res.string.common
     ItemRarity.UNCOMMON -> Res.string.uncommon
@@ -133,6 +155,30 @@ fun ItemRarity.stringRes(): StringResource = when (this) {
     ItemRarity.VERY_RARE -> Res.string.very_rare
     ItemRarity.LEGENDARY -> Res.string.legendary
     ItemRarity.ARTIFACT -> Res.string.artifact
+    null -> Res.string.drop_down_option_empty
+}
+
+fun ItemCategory.stringRes() : StringResource = when (this) {
+    ItemCategory.RING -> Res.string.category_ring
+    ItemCategory.ADVENTURING_GEAR -> Res.string.category_adventuring_gear
+    ItemCategory.AMMUNITION -> Res.string.category_ammunition
+    ItemCategory.ARMOR -> Res.string.category_armor
+    ItemCategory.ART -> Res.string.category_art
+    ItemCategory.DRAWN_VEHICLE -> Res.string.category_drawn_vehicle
+    ItemCategory.GEM -> Res.string.category_gem
+    ItemCategory.JEWELRY -> Res.string.category_jewelry
+    ItemCategory. POISON -> Res.string.category_poison
+    ItemCategory. POTION -> Res.string.category_potion
+    ItemCategory. ROD -> Res.string.category_rod
+    ItemCategory. SCROLL -> Res.string.category_scroll
+    ItemCategory.SHIELD -> Res.string.category_shield
+    ItemCategory.STAFF -> Res.string.category_staff
+    ItemCategory.TOOLS -> Res.string.category_tools
+    ItemCategory.TRADE_GOOD -> Res.string.category_trade_good
+    ItemCategory.WAND -> Res.string.category_wand
+    ItemCategory.WATERBORNE_VEHICLE -> Res.string.category_waterborne_vehicle
+    ItemCategory.WEAPON -> Res.string.category_weapon
+    ItemCategory.WONDROUS_ITEM -> Res.string.category_wondrous_item
 }
 
 fun ItemRarity.getRarityColor(): Color = when (this) {

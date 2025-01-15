@@ -5,7 +5,7 @@ import common.safeGetJsonArray
 import common.safeGetString
 import data.api.FeatApi
 import data.database.sqlDelight.SqlDatabase
-import domain.model.Feat
+import domain.model.feat.Feat
 import domain.repository.FeatRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

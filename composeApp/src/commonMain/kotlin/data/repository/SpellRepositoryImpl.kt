@@ -132,7 +132,7 @@ class SpellRepositoryImpl(
                 emit(spells)
                 // Fetch next page
                 searchResult.next?.let { next ->
-                    searchResult = spellApi.getNextPage(next)
+                    searchResult = spellApi.getPage(next)
                 }
             } while (searchResult.next != null)
         }
@@ -159,9 +159,7 @@ class SpellRepositoryImpl(
     override suspend fun search(
         name: String, min: Level, max: Level
     ): Flow<List<Spell>> {
-        return fetchSpells { spellApi.search(name, min.level, max.level) }.map { list ->
-            list.distinctBy { it.key }.distinctBy { it.name }
-        }
+        return fetchSpells { spellApi.search(name, min.level, max.level) }
     }
 
     override suspend fun addFavorite(spell: Spell) {

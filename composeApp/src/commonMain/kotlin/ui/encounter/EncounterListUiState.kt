@@ -1,6 +1,6 @@
 package ui.encounter
 
-import domain.model.Campaign
+import domain.Campaign
 import domain.model.encounter.Encounter
 
 data class EncounterListUiState(

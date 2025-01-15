@@ -1,4 +1,4 @@
-package ui.spell.details.composable
+package ui.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,10 +17,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
-import ui.composable.darkBlue
-import ui.composable.propertyText
-import ui.composable.propertyTitle
-import ui.composable.secondary
 
 @Composable
 fun PropertyLine(title: StringResource, value: String) {
