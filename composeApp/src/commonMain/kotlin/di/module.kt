@@ -12,8 +12,12 @@ import data.api.impl.ItemApiImpl
 import data.api.impl.MonsterApiImpl
 import data.api.impl.Open5eApiImpl
 import data.api.impl.SpellApiImpl
+import data.database.realm.RealmDatabase
 import data.database.sqlDelight.SqlDatabase
 import data.local.LocalDatasource
+import data.repository.CampaignRepositoryImpl
+import data.repository.CharacterRepositoryImpl
+import data.repository.EncounterRepositoryImpl
 import data.repository.FeatRepositoryImpl
 import data.repository.MagicItemRepositoryImpl
 import data.repository.MonsterRepositoryImpl
@@ -29,10 +33,9 @@ import domain.repository.SettingsRepository
 import domain.repository.SpellRepository
 import domain.usecase.campaign.DeleteCampaignUseCase
 import domain.usecase.campaign.GetCampaignsUseCase
-import domain.usecase.campaign.GetMainCampaignUseCase
 import domain.usecase.campaign.SaveCampaignUseCase
 import domain.usecase.character.DeleteCharacterUseCase
-import domain.usecase.character.GetMainCampaignCharactersUseCase
+import domain.usecase.character.GetCharactersByCampaignIdUseCase
 import domain.usecase.character.SaveCharacterUseCase
 import domain.usecase.encounter.AddCharacterToEncounterUseCase
 import domain.usecase.encounter.AddMonsterToEncounterUseCase
@@ -49,15 +52,15 @@ import domain.usecase.magicItem.GetMagicItemByKeyUseCase
 import domain.usecase.magicItem.RemoveMagicItemFromFavoriteUseCase
 import domain.usecase.magicItem.SearchMagicItemUseCase
 import domain.usecase.monster.AddMonsterToFavoriteUseCase
-import domain.usecase.monster.ChallengeFilterUseCase
 import domain.usecase.monster.GetFavoritesMonsterUseCase
 import domain.usecase.monster.GetMonsterByKeyUseCase
 import domain.usecase.monster.RemoveMonsterFromFavoriteUseCase
 import domain.usecase.monster.SearchMonstersUseCase
+import domain.usecase.settings.GetChallengeFilterUseCase
+import domain.usecase.settings.GetLevelFilterUseCase
 import domain.usecase.spell.AddSpellToFavoritesUseCase
 import domain.usecase.spell.GetFavoritesSpellUseCase
 import domain.usecase.spell.GetSpellByKeyUseCase
-import domain.usecase.spell.LevelFilterUseCase
 import domain.usecase.spell.RemoveSpellFromFavoritesUseCase
 import domain.usecase.spell.SearchSpellUseCase
 import io.github.aakira.napier.DebugAntilog
@@ -120,24 +123,23 @@ val dataModule = module {
     singleOf(::LocalDatasource)
 
     single { SqlDatabase(get()) }
+    singleOf(::RealmDatabase)
 }
 
 val repositoryModule = module {
-    singleOf(::CharacterRepository)
     single<MonsterRepository> { MonsterRepositoryImpl(get(), get()) }
     single<SpellRepository> { SpellRepositoryImpl(get(), get()) }
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
     single<FeatRepository> { FeatRepositoryImpl(get(), get()) }
     single<MagicItemRepository> { MagicItemRepositoryImpl(get(), get()) }
-    singleOf(::SpeciesRepository)
-    singleOf(::CampaignRepository)
-    singleOf(::EncounterRepository)
+    single<CampaignRepository> { CampaignRepositoryImpl(get(), get()) }
+    single<EncounterRepository> { EncounterRepositoryImpl(get(), get()) }
+    single<CharacterRepository> { CharacterRepositoryImpl(get()) }
 }
 
 val useCaseModule: Module = module {
 
-    factoryOf(::GetMainCampaignUseCase)
-    factoryOf(::GetMainCampaignCharactersUseCase)
+    factoryOf(::GetCharactersByCampaignIdUseCase)
     factoryOf(::DeleteCampaignUseCase)
     factoryOf(::SaveCampaignUseCase)
 
@@ -150,13 +152,13 @@ val useCaseModule: Module = module {
     factoryOf(::AddMonsterToFavoriteUseCase)
     factoryOf(::RemoveMonsterFromFavoriteUseCase)
     factoryOf(::GetFavoritesMonsterUseCase)
-    factoryOf(::ChallengeFilterUseCase)
+    factoryOf(::GetChallengeFilterUseCase)
 
     factoryOf(::AddSpellToFavoritesUseCase)
     factoryOf(::GetFavoritesSpellUseCase)
     factoryOf(::GetSpellByKeyUseCase)
     factoryOf(::RemoveSpellFromFavoritesUseCase)
-    factoryOf(::LevelFilterUseCase)
+    factoryOf(::GetLevelFilterUseCase)
     factoryOf(::SearchSpellUseCase)
 
     factoryOf(::SearchFeatUseCase)

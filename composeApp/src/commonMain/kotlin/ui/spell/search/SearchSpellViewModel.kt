@@ -7,7 +7,7 @@ import domain.model.Level
 import domain.model.spell.Spell
 import domain.usecase.spell.AddSpellToFavoritesUseCase
 import domain.usecase.spell.GetFavoritesSpellUseCase
-import domain.usecase.spell.LevelFilterUseCase
+import domain.usecase.settings.GetLevelFilterUseCase
 import domain.usecase.spell.RemoveSpellFromFavoritesUseCase
 import domain.usecase.spell.SearchSpellUseCase
 import kotlinx.coroutines.Job
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class SearchSpellViewModel(
     private val getFavoritesUseCase: GetFavoritesSpellUseCase,
     private val searchSpellUseCase: SearchSpellUseCase,
-    private val levelFilterUseCase: LevelFilterUseCase,
+    private val levelFilterUseCase: GetLevelFilterUseCase,
     private val addSpellToFavoritesUseCase: AddSpellToFavoritesUseCase,
     private val removeSpellFromFavoritesUseCase: RemoveSpellFromFavoritesUseCase,
 ) : ViewModel() {

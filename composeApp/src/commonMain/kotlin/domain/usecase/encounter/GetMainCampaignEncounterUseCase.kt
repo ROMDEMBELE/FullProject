@@ -1,6 +1,6 @@
 package domain.usecase.encounter
 
-import domain.model.encounter.Encounter
+import domain.model.campaign.Encounter
 import domain.repository.EncounterRepository
 import domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow

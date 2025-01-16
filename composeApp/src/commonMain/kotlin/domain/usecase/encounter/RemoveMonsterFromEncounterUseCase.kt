@@ -1,6 +1,6 @@
 package domain.usecase.encounter
 
-import domain.model.encounter.MonsterFighter
+import domain.model.campaign.MonsterFighter
 import domain.repository.EncounterRepository
 import kotlinx.coroutines.flow.firstOrNull
 

@@ -4,8 +4,8 @@ import domain.model.Alignment
 import domain.model.Level
 
 data class Character(
-    val id: Long,
-    val fullName: String,
+    val uuid: String,
+    val name: String,
     val level: Level,
     val alignment: Alignment,
     val characterClass: CharacterClass,

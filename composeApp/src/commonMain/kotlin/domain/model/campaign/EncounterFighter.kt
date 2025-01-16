@@ -1,9 +1,9 @@
-package domain.model.encounter
+package domain.model.campaign
 
 import domain.model.Condition
 
 interface EncounterFighter {
-    val id: Long
+    val uuid: String
     val name: String
     val initiative: Int
     val conditions: List<Condition>

@@ -1,6 +1,6 @@
 package ui.campaign.main
 
-import domain.Campaign
+import domain.model.campaign.Campaign
 
 data class CampaignUiState(
     val listOfCampaign: List<Campaign> = emptyList(),

@@ -15,7 +15,6 @@ kotlinxSerializationJson = "1.7.3"
 ktor = "3.0.1"
 coroutines = "1.9.0"
 kvault = "1.12.0"
-libraryBase = "2.0.0"
 lifecycleViewmodel = "2.8.7"
 logging = "1.4.2"
 napier = "2.7.1"
@@ -23,6 +22,7 @@ navigationCompose = "2.8.0-alpha10"
 sqlDelight = "2.0.2"
 statelyCommon = "2.0.6"
 ksp = "2.0.0-1.0.21"
+realm = "2.0.0"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
@@ -50,7 +50,8 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 
 kvault = { module = "com.liftric:kvault", version.ref = "kvault" }
-library-base = { module = "io.realm.kotlin:library-base", version.ref = "libraryBase" }
+library-base = { module = "io.realm.kotlin:library-base", version.ref = "realm" }
+library-sync = { module = "io.realm.kotlin:library-sync", version.ref = "realm" }
 logging = { module = "org.lighthousegames:logging", version.ref = "logging" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" }
@@ -66,3 +67,5 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+realm = { id = "io.realm.kotlin", version.ref= "realm" }
+

@@ -10,6 +10,7 @@ import common.safeLet
 import data.api.MonsterApi
 import data.api.dto.SearchResultDto
 import data.database.sqlDelight.SqlDatabase
+import data.database.sqlDelight.toMonster
 import domain.model.Alignment
 import domain.model.Condition
 import domain.model.DamageType
@@ -33,7 +34,6 @@ import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import org.dembeyo.data.MonsterDbo
 import org.koin.core.error.MissingPropertyException
 
 class MonsterRepositoryImpl(
@@ -217,57 +217,6 @@ class MonsterRepositoryImpl(
                     else -> null
                 }
             }
-        )
-    }
-
-    private fun MonsterDbo.toMonster(): Monster {
-        return Monster(
-            isFavorite = true,
-            key = key,
-            name = name,
-            challenge = challenge,
-            size = size,
-            type = type,
-            alignment = alignment,
-            armorsClass = armors_class.toInt(),
-            hitPoints = hit_points.toInt(),
-            wisdom = wisdom.toInt(),
-            wisdomSave = wisdom_save?.toInt(),
-            strength = strength.toInt(),
-            strengthSave = strength_save?.toInt(),
-            constitution = constitution.toInt(),
-            constitutionSave = constitution_save?.toInt(),
-            intelligence = intelligence.toInt(),
-            intelligenceSave = intelligence_save?.toInt(),
-            dexterity = dexterity.toInt(),
-            dexteritySave = dexterity_save?.toInt(),
-            charisma = charisma.toInt(),
-            charismaSave = charisma_save?.toInt(),
-            walkSpeed = walk_speed,
-            swimSpeed = swim_speed,
-            flySpeed = fly_speed,
-            climbSpeed = climb_speed,
-            burrowSpeed = burrow_speed,
-            hover = hover,
-            passivePerception = passive_perception.toInt(),
-            sightRange = sight_range,
-            darkVisionRange = dark_vision_range,
-            blindSightRange = blind_sight_range,
-            tremorSenseRange = tremor_sense_range,
-            trueSightRange = true_sight_range,
-            languages = languages,
-            nonMagicalAttackImmunity = non_magical_attack_immunity,
-            nonMagicalAttackResistance = non_magical_attack_resistance,
-            damageImmunities = damage_immunities,
-            damageResistances = damage_resistances,
-            damageVulnerabilities = damage_vulnerabilities,
-            conditionImmunities = condition_immunities,
-            traits = traits,
-            actions = actions,
-            reactions = reactions,
-            bonusActions = bonus_actions,
-            legendaryActions = legendary_actions,
-            environments = environments
         )
     }
 

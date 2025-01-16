@@ -6,6 +6,9 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
+    // Realm Database
+    alias(libs.plugins.realm)
+
     kotlin("plugin.serialization")
 
     // SqlDelight
@@ -81,6 +84,7 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.navigation.compose)
+            implementation(libs.constraintlayout.compose.multiplatform)
 
             // Ktor
             implementation(libs.ktor.client.core)
@@ -100,15 +104,17 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.compose.viewmodel.navigation)
 
-            implementation(libs.library.base)
             implementation(libs.runtime)
 
-            implementation(libs.constraintlayout.compose.multiplatform)
 
             api(libs.logging)
 
             // Logging
             implementation(libs.napier)
+
+            // Realm Database
+            implementation(libs.library.base)
+            implementation(libs.library.sync)
         }
     }
 }

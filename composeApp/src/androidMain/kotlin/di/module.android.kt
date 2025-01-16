@@ -8,8 +8,8 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 import ui.campaign.edit.EditCampaignViewModel
 import ui.campaign.main.CampaignViewModel
-import ui.character.CharacterViewModel
-import ui.character.edit.EditCharacterViewModel
+import ui.character.search.SearchCharacterViewModel
+import ui.character.save.SaveCharacterViewModel
 import ui.encounter.EncounterListViewModel
 import ui.feat.search.SearchFeatViewModel
 import ui.magicItem.details.MagicItemDetailsViewModel
@@ -22,11 +22,11 @@ import ui.spell.search.SearchSpellViewModel
 actual fun platformModule(): Module = module {
     viewModelOf(::SearchSpellViewModel)
     viewModelOf(::SpellDetailsViewModel)
-    viewModelOf(::EditCharacterViewModel)
+    viewModelOf(::SaveCharacterViewModel)
     viewModelOf(::SearchMonsterViewModel)
     viewModelOf(::MonsterDetailsViewModel)
     viewModelOf(::SearchFeatViewModel)
-    viewModelOf(::CharacterViewModel)
+    viewModelOf(::SearchCharacterViewModel)
     viewModelOf(::EditCampaignViewModel)
     viewModelOf(::CampaignViewModel)
 

@@ -5,12 +5,26 @@ import domain.model.monster.Challenge
 
 interface SettingsRepository {
 
-    fun getLevelRange(): Pair<Level, Level>?
+    fun getString(key: String, default: String): String
 
-    fun saveLevelRange(min: Level, max: Level)
+    fun saveString(key: String, value: String)
 
-    fun getChallengeRange(): Pair<Challenge, Challenge>?
+    fun getRange(
+        key: String,
+        default: ClosedFloatingPointRange<Float>
+    ): ClosedFloatingPointRange<Float>
 
-    fun saveChallengeRange(min: Challenge, max: Challenge)
+    fun saveRange(key: String, range: ClosedFloatingPointRange<Float>)
+
+    companion object {
+        const val SEARCH_SPELL_LEVEL_RANGE = "SEARCH_SPELL_LEVEL_RANGE"
+        const val SEARCH_MONSTER_CHALLENGE_RANGE = "SEARCH_MONSTER_CHALLENGE_RANGE"
+
+        val DEFAULT_LEVEL_RANGE: ClosedFloatingPointRange<Float> =
+            Level.LEVEL_0.ordinal.toFloat()..Level.LEVEL_9.ordinal.toFloat()
+
+        val DEFAULT_CHALLENGE_RANGE: ClosedFloatingPointRange<Float> =
+            Challenge.CR_0.ordinal.toFloat()..Challenge.CR_30.ordinal.toFloat()
+    }
 
 }

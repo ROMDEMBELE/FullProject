@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import domain.model.monster.Challenge
 import domain.model.monster.Monster
 import domain.usecase.monster.AddMonsterToFavoriteUseCase
-import domain.usecase.monster.ChallengeFilterUseCase
+import domain.usecase.settings.GetChallengeFilterUseCase
 import domain.usecase.monster.GetFavoritesMonsterUseCase
 import domain.usecase.monster.RemoveMonsterFromFavoriteUseCase
 import domain.usecase.monster.SearchMonstersUseCase
@@ -26,7 +26,7 @@ class SearchMonsterViewModel(
     private val addToFavoriteUseCase: AddMonsterToFavoriteUseCase,
     private val removeFromFavoriteUseCase: RemoveMonsterFromFavoriteUseCase,
     private val getFavoritesMonsterUseCase: GetFavoritesMonsterUseCase,
-    private val challengeFilter: ChallengeFilterUseCase
+    private val challengeFilter: GetChallengeFilterUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SearchMonsterUiState())

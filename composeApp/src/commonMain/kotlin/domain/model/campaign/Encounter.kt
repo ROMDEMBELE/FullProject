@@ -1,9 +1,9 @@
-package domain.model.encounter
+package domain.model.campaign
 
 import domain.model.Environment
 
 data class Encounter(
-    val id: Long,
+    val uuid: String,
     val title: String,
     val description: String,
     val fighters: List<EncounterFighter>,

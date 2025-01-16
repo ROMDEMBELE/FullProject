@@ -1,23 +1,24 @@
 package domain.repository
 
-import domain.Campaign
+import domain.model.campaign.Campaign
 import kotlinx.coroutines.flow.Flow
 import kotlin.coroutines.cancellation.CancellationException
 
 interface CampaignRepository {
 
-    @Throws(NoSuchElementException::class, CancellationException::class)
-    suspend fun getById(id: Long): Campaign
+    @Throws(NoSuchElementException::class, CancellationException::class, IllegalArgumentException::class)
+    suspend fun getById(id: String): Campaign
 
+    @Throws(NoSuchElementException::class, IllegalArgumentException::class, CancellationException::class)
     suspend fun getAll(): Flow<List<Campaign>>
 
-    @Throws(NoSuchElementException::class)
-    fun createOrUpdate(
-        id: Long?,
+    @Throws(NoSuchElementException::class, CancellationException::class)
+    suspend fun createOrUpdate(
+        id: String?,
         name: String,
         description: String,
     )
 
     @Throws(NoSuchElementException::class, CancellationException::class)
-    suspend fun delete(id: Long)
+    suspend fun delete(id: String)
 }

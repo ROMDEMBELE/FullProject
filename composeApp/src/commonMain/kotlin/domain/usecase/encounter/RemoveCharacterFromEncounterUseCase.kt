@@ -1,15 +1,13 @@
 package domain.usecase.encounter
 
-import domain.model.encounter.CharacterFighter
+import domain.model.campaign.CharacterFighter
 import domain.repository.EncounterRepository
-import kotlinx.coroutines.flow.firstOrNull
 
 class RemoveCharacterFromEncounterUseCase(
     private val encounterRepository: EncounterRepository,
 ) {
     suspend fun execute(characterId: Long, encounterId: Long) {
-        val encounter = encounterRepository.getById(encounterId).firstOrNull()
-            ?: error("Encounter id: $encounterId not found")
+        val encounter = encounterRepository.getById(encounterId)
 
         val characterFighter = encounter.fighters
             .filterIsInstance<CharacterFighter>()

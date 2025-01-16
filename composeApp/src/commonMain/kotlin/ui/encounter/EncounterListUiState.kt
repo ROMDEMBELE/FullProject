@@ -1,7 +1,7 @@
 package ui.encounter
 
-import domain.Campaign
-import domain.model.encounter.Encounter
+import domain.model.campaign.Campaign
+import domain.model.campaign.Encounter
 
 data class EncounterListUiState(
     val campaign: Campaign? = null,

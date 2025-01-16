@@ -1,4 +1,4 @@
-package ui.character.edit
+package ui.character.save
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -27,8 +27,6 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.armor_class
-import org.dembeyo.shared.resources.background
-import org.dembeyo.shared.resources.character_class
 import org.dembeyo.shared.resources.character_name
 import org.dembeyo.shared.resources.delete_button
 import org.dembeyo.shared.resources.edit_character_abilities
@@ -36,10 +34,7 @@ import org.dembeyo.shared.resources.edit_character_information
 import org.dembeyo.shared.resources.edit_character_statistics
 import org.dembeyo.shared.resources.hit_points
 import org.dembeyo.shared.resources.level
-import org.dembeyo.shared.resources.player_name
 import org.dembeyo.shared.resources.save_button
-import org.dembeyo.shared.resources.species
-import org.dembeyo.shared.resources.spell_save
 import org.jetbrains.compose.resources.stringResource
 import ui.color
 import ui.composable.CounterSelector
@@ -47,7 +42,6 @@ import ui.composable.CustomAlertDialog
 import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.CustomButton
 import ui.composable.CustomTextField
-import ui.composable.DropDownTextField
 import ui.composable.MediumBoldDarkBlue
 import ui.composable.SliderSelector
 import ui.composable.TaperedRule
@@ -57,9 +51,9 @@ import ui.composable.secondary
 import ui.stringRes
 
 @Composable
-fun EditCharacterScreen(
+fun SaveCharacterScreen(
     navHostController: NavHostController,
-    viewModel: EditCharacterViewModel
+    viewModel: SaveCharacterViewModel
 ) {
 
     val scope = rememberCoroutineScope()
@@ -102,55 +96,11 @@ fun EditCharacterScreen(
                 Spacer(Modifier.height(8.dp))
 
                 CustomTextField(
-                    textFieldValue = uiState.playerName,
-                    onTextChange = { viewModel.updatePlayerName(it) },
-                    placeholder = stringResource(Res.string.player_name),
-                    modifier = Modifier.fillMaxWidth(),
-                )
-
-                Spacer(Modifier.height(8.dp))
-
-                CustomTextField(
                     textFieldValue = uiState.characterName,
                     onTextChange = { viewModel.updateCharacterName(it) },
                     placeholder = stringResource(Res.string.character_name),
                     modifier = Modifier.fillMaxWidth()
                 )
-
-                Spacer(Modifier.height(8.dp))
-
-                CustomTextField(
-                    textFieldValue = uiState.characterClass,
-                    onTextChange = { viewModel.updateCharacterClass(it) },
-                    placeholder = stringResource(Res.string.character_class),
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(Modifier.height(8.dp))
-
-                DropDownTextField(
-                    selectedValue = uiState.characterBackground,
-                    valueToString = { it?.name ?: "" },
-                    label = stringResource(Res.string.background),
-                    values = uiState.backgrounds.values.toList()
-                ) {
-                    if (it != null) {
-                        viewModel.updateCharacterBackground(it)
-                    }
-                }
-
-                Spacer(Modifier.height(8.dp))
-
-                DropDownTextField(
-                    selectedValue = uiState.characterSpecies,
-                    valueToString = { it?.fullName ?: "" },
-                    label = stringResource(Res.string.species),
-                    values = uiState.species.values.toList()
-                ) {
-                    if (it != null) {
-                        viewModel.updateCharacterSpecies(it)
-                    }
-                }
 
                 Spacer(Modifier.height(8.dp))
 
@@ -189,16 +139,6 @@ fun EditCharacterScreen(
                     maximum = 999,
                 ) {
                     viewModel.updateHitPoint(it)
-                }
-
-                Spacer(Modifier.height(8.dp))
-
-                CounterSelector(
-                    stringResource(Res.string.spell_save),
-                    value = uiState.spellSave,
-                    maximum = 30
-                ) {
-                    viewModel.updateSpellSave(it)
                 }
 
                 Spacer(Modifier.height(8.dp))

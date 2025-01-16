@@ -6,7 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 class GetFavoritesSpellUseCase(private val spellRepository: SpellRepository) {
 
-    suspend operator fun invoke(): Flow<List<Spell>> {
-        return spellRepository.getFavorites()
-    }
+    suspend operator fun invoke(): Flow<List<Spell>> = spellRepository.getFavorites()
 }

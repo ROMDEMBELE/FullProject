@@ -2,7 +2,6 @@ package domain.usecase.encounter
 
 import domain.repository.CampaignRepository
 import domain.repository.EncounterRepository
-import kotlinx.coroutines.flow.firstOrNull
 
 class CreateEncounterUseCase(
     private val campaignRepository: CampaignRepository,
@@ -10,13 +9,7 @@ class CreateEncounterUseCase(
 ) {
 
     suspend fun execute(campaignId: Long, title: String, description: String) {
-        campaignRepository.getById(campaignId).firstOrNull()
-            ?: error("Campaign id $campaignId not found")
+        campaignRepository.getById(campaignId)
 
-        encounterRepository.insertEncounter(
-            campaignId = campaignId,
-            title = title,
-            description = description,
-        )
     }
 }

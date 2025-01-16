@@ -1,4 +1,4 @@
-package ui.character
+package ui.character.search
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
-import domain.Campaign
+import domain.model.campaign.Campaign
 import domain.model.character.Character
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.castle_empty
@@ -70,10 +70,10 @@ import ui.composable.secondary
 @Composable
 fun SearchCharacterScreen(
     navHostController: NavHostController,
-    viewModel: CharacterViewModel
+    viewModel: SearchCharacterViewModel
 ) {
 
-    val uiState: CharacterListUiState by viewModel.uiState.collectAsState()
+    val uiState: SearchCharacterUiState by viewModel.uiState.collectAsState()
 
     Box(Modifier.fillMaxSize().background(primaryDark)) {
         AnimatedContent(

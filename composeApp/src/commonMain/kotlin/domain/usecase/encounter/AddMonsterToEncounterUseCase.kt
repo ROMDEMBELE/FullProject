@@ -9,14 +9,6 @@ class AddMonsterToEncounterUseCase(
     private val monsterRepository: MonsterRepository
 ) {
     suspend fun execute(index: String, encounterId: Long) {
-        encounterRepository.getById(encounterId).firstOrNull()
-            ?: error("Encounter id: $encounterId not found")
-
-        val monster = monsterRepository.getByKey(index)
-
-        encounterRepository.insertMonsterFighter(
-            encounterId = encounterId,
-            monster = monster
-        )
+        
     }
 }

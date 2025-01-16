@@ -1,0 +1,55 @@
+package data.database.sqlDelight
+
+import domain.model.monster.Monster
+import org.dembeyo.data.MonsterDbo
+
+fun MonsterDbo.toMonster(): Monster {
+    return Monster(
+        isFavorite = true,
+        key = key,
+        name = name,
+        challenge = challenge,
+        size = size,
+        type = type,
+        alignment = alignment,
+        armorsClass = armors_class.toInt(),
+        hitPoints = hit_points.toInt(),
+        wisdom = wisdom.toInt(),
+        wisdomSave = wisdom_save?.toInt(),
+        strength = strength.toInt(),
+        strengthSave = strength_save?.toInt(),
+        constitution = constitution.toInt(),
+        constitutionSave = constitution_save?.toInt(),
+        intelligence = intelligence.toInt(),
+        intelligenceSave = intelligence_save?.toInt(),
+        dexterity = dexterity.toInt(),
+        dexteritySave = dexterity_save?.toInt(),
+        charisma = charisma.toInt(),
+        charismaSave = charisma_save?.toInt(),
+        walkSpeed = walk_speed,
+        swimSpeed = swim_speed,
+        flySpeed = fly_speed,
+        climbSpeed = climb_speed,
+        burrowSpeed = burrow_speed,
+        hover = hover,
+        passivePerception = passive_perception.toInt(),
+        sightRange = sight_range,
+        darkVisionRange = dark_vision_range,
+        blindSightRange = blind_sight_range,
+        tremorSenseRange = tremor_sense_range,
+        trueSightRange = true_sight_range,
+        languages = languages,
+        nonMagicalAttackImmunity = non_magical_attack_immunity,
+        nonMagicalAttackResistance = non_magical_attack_resistance,
+        damageImmunities = damage_immunities,
+        damageResistances = damage_resistances,
+        damageVulnerabilities = damage_vulnerabilities,
+        conditionImmunities = condition_immunities,
+        traits = traits,
+        actions = actions,
+        reactions = reactions,
+        bonusActions = bonus_actions,
+        legendaryActions = legendary_actions,
+        environments = environments
+    )
+}

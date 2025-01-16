@@ -11,8 +11,8 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 import ui.campaign.edit.EditCampaignViewModel
 import ui.campaign.main.CampaignViewModel
-import ui.character.CharacterViewModel
-import ui.character.edit.EditCharacterViewModel
+import ui.character.search.SearchCharacterViewModel
+import ui.character.save.SaveCharacterViewModel
 import ui.magicItem.details.MagicItemDetailsViewModel
 import ui.magicItem.search.SearchMagicItemViewModel
 import ui.monster.details.MonsterDetailsViewModel
@@ -27,8 +27,8 @@ actual fun platformModule(): Module = module {
     single { DriverFactory() }
     factoryOf(::SearchSpellViewModel)
     factoryOf(::SpellDetailsViewModel)
-    factoryOf(::EditCharacterViewModel)
-    factoryOf(::CharacterViewModel)
+    factoryOf(::SaveCharacterViewModel)
+    factoryOf(::SearchCharacterViewModel)
     factoryOf(::SearchMonsterViewModel)
     factoryOf(::MonsterDetailsViewModel)
     factoryOf(::EditCampaignViewModel)
@@ -43,8 +43,8 @@ object ViewModelProvider : KoinComponent {
     //FIXME complete viewModel injection
     fun getSpellScreenListViewModel() = SearchSpellViewModel(get(), get(), get(), get(), get())
     fun getSpellScreenDetailsViewModel() = SpellDetailsViewModel(get(), get(), get(), get(), get())
-    fun getEditCharacterViewModel() = EditCharacterViewModel(get(), get(), get(), get(), get())
-    fun getCharacterViewModel() = CharacterViewModel(get(), get())
+    fun getEditCharacterViewModel() = SaveCharacterViewModel(get(), get(), get(), get(), get())
+    fun getCharacterViewModel() = SearchCharacterViewModel(get(), get())
     fun getMonsterListViewModel() = SearchMonsterViewModel(get(), get(), get(), get(), get())
     fun getMonsterDetailsViewModel() = MonsterDetailsViewModel(get(), get(), get(), get(), get())
     fun getMagicItemListViewModel() = SearchMagicItemViewModel(get(), get(), get(), get())

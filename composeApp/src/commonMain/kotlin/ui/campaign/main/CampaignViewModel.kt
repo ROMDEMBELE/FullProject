@@ -2,7 +2,7 @@ package ui.campaign.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import domain.Campaign
+import domain.model.campaign.Campaign
 import domain.repository.SettingsRepository
 import domain.usecase.campaign.GetCampaignsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
