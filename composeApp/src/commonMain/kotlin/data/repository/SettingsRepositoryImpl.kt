@@ -5,7 +5,7 @@ import domain.repository.SettingsRepository
 
 class SettingsRepositoryImpl(private val storage: PreferenceStorage) : SettingsRepository {
 
-    override fun getString(key: String, default: String): String {
+    override fun getString(key: String, default: String?): String? {
         return storage.readValue<String>(key) ?: default
     }
 

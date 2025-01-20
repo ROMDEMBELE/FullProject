@@ -5,7 +5,7 @@ import domain.model.monster.Challenge
 
 interface SettingsRepository {
 
-    fun getString(key: String, default: String): String
+    fun getString(key: String, default: String? = null): String?
 
     fun saveString(key: String, value: String)
 
@@ -17,6 +17,7 @@ interface SettingsRepository {
     fun saveRange(key: String, range: ClosedFloatingPointRange<Float>)
 
     companion object {
+        const val CAMPAIGN_ID = "CAMPAIGN_ID"
         const val SEARCH_SPELL_LEVEL_RANGE = "SEARCH_SPELL_LEVEL_RANGE"
         const val SEARCH_MONSTER_CHALLENGE_RANGE = "SEARCH_MONSTER_CHALLENGE_RANGE"
 

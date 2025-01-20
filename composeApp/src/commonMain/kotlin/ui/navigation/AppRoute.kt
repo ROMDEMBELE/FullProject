@@ -5,11 +5,15 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.battle
+import org.dembeyo.shared.resources.castle
 import org.dembeyo.shared.resources.home
 import org.dembeyo.shared.resources.knight
 import org.dembeyo.shared.resources.magic
 import org.dembeyo.shared.resources.magic_item
+import org.dembeyo.shared.resources.magic_trick
 import org.dembeyo.shared.resources.menu_battle
+import org.dembeyo.shared.resources.menu_campaign
+import org.dembeyo.shared.resources.menu_character
 import org.dembeyo.shared.resources.menu_feat
 import org.dembeyo.shared.resources.menu_home
 import org.dembeyo.shared.resources.menu_magic_item
@@ -28,9 +32,15 @@ enum class AppRoute(val route: String, val title: StringResource, val icon: Draw
     MONSTER("monster/{index}", Res.string.menu_monster, Res.drawable.monster),
     SEARCH_MAGIC_ITEM("search_magic_item", Res.string.menu_magic_item, Res.drawable.magic_item),
     MAGIC_ITEM("magic_item/{index}", Res.string.menu_magic_item, Res.drawable.magic_item),
+    SEARCH_CHARACTER("search_character", Res.string.menu_character, Res.drawable.knight),
+    CHARACTER("character/{index}", Res.string.menu_character, Res.drawable.knight),
+    CREATE_CHARACTER("character/create", Res.string.menu_character, Res.drawable.knight),
+    EDIT_CHARACTER("character/{index}/edit", Res.string.menu_character, Res.drawable.knight),
+    SEARCH_FEAT("feats", Res.string.menu_feat, Res.drawable.magic_trick),
 
-    //SEARCH_CHARACTER("search_character", Res.string.menu_character, Res.drawable.knight),
-    SEARCH_FEAT("feats", Res.string.menu_feat, Res.drawable.knight);
+    SEARCH_CAMPAIGN("search_campaign", Res.string.menu_campaign, Res.drawable.castle),
+    CREATE_CAMPAIGN("campaign/create", Res.string.menu_campaign, Res.drawable.castle),
+    EDIT_CAMPAIGN("campaign/{index}/edit", Res.string.menu_campaign, Res.drawable.castle);
     //SEARCH_EQUIPMENT("search_equipment", Res.string.menu_equipment, Res.drawable.sword_tie),
     //EQUIPMENT("equipment/{index}", Res.string.menu_equipment, Res.drawable.sword_tie);
     //SETTINGS("settings", Res.string.menu_settings, Res.drawable.settings),

@@ -21,7 +21,7 @@ class CampaignDbo : RealmObject {
         getMonsterById: (String) -> MonsterDbo?
     ): Campaign {
         return Campaign(
-            id = _id.toHexString(),
+            uuid = _id.toHexString(),
             name = name,
             description = description,
             characters = listOfCharacters.map { it.toCharacter() },

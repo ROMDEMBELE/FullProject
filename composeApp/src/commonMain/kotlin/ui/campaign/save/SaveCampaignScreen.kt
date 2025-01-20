@@ -1,4 +1,4 @@
-package ui.campaign.edit
+package ui.campaign.save
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -24,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import domain.model.campaign.Campaign
 import kotlinx.coroutines.launch
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.delete_button
@@ -34,33 +33,31 @@ import org.dembeyo.shared.resources.edit_campaign_description
 import org.dembeyo.shared.resources.edit_campaign_title
 import org.dembeyo.shared.resources.save_button
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import ui.composable.CustomAlertDialog
 import ui.composable.CustomButton
-import ui.composable.MediumBoldSecondary
 import ui.composable.darkBlue
 import ui.composable.primary
 import ui.composable.primaryDark
 import ui.composable.roundCornerShape
+import ui.composable.screenTitle
 import ui.composable.secondary
 
 @Composable
-fun EditCampaignScreen(
+fun SaveCampaignScreen(
     navHostController: NavHostController,
-    campaign: Campaign? = null
+    viewModel: SaveCampaignViewModel,
+    index: String? = null
 ) {
     val scope = rememberCoroutineScope()
-    val viewModel: EditCampaignViewModel = koinInject()
-    val uiState by viewModel.uiState.collectAsState()
+
+    val uiState by viewModel.state.collectAsState()
     var deleteDialogDisplay by remember { mutableStateOf(false) }
 
-    LaunchedEffect(campaign)
-    {
-        if (campaign != null) {
-            viewModel.setEdit(campaign)
+    LaunchedEffect(index) {
+        if (index != null) {
+            viewModel.fetchCampaign(index)
         }
     }
-
 
     AnimatedVisibility(deleteDialogDisplay)
     {
@@ -72,11 +69,11 @@ fun EditCampaignScreen(
             onConfirm = {
                 deleteDialogDisplay = false
                 scope.launch {
-                    if (viewModel.deleteCampaign(false)) {
-                        navHostController.popBackStack()
-                    }
+                    if (index != null)
+                        viewModel.deleteCampaign(index) {
+                            navHostController.popBackStack()
+                        }
                 }
-
             },
             onDismiss = {
                 deleteDialogDisplay = false
@@ -84,20 +81,18 @@ fun EditCampaignScreen(
         )
     }
 
-
     Column(
         modifier = Modifier.fillMaxSize().background(darkBlue).padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
-    )
-    {
-        Text(stringResource(Res.string.edit_campaign_title), style = MediumBoldSecondary)
+    ) {
+        Text(stringResource(Res.string.edit_campaign_title), style = screenTitle(secondary))
 
         TextField(
             value = uiState.name,
             shape = roundCornerShape,
             singleLine = true,
-            onValueChange = { viewModel.updateName(it) },
+            onValueChange = viewModel::onNameChange,
             placeholder = { Text("ex : Le Murmure de la Forêt") },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
@@ -108,12 +103,12 @@ fun EditCampaignScreen(
             )
         )
 
-        Text(stringResource(Res.string.edit_campaign_description), style = MediumBoldSecondary)
+        Text(stringResource(Res.string.edit_campaign_description), style = screenTitle(secondary))
 
         TextField(
             value = uiState.description,
             shape = roundCornerShape,
-            onValueChange = { viewModel.updateDescription(it) },
+            onValueChange = viewModel::onDescriptionChange,
             placeholder = { Text("Une ancienne forêt s’est éveillée avec des esprits malveillants et des murmures étranges. Les aventuriers doivent découvrir l’histoire sombre qui a réveillé ces esprits et affronter le cœur maléfique de la forêt pour restaurer la paix dans la région.") },
             modifier = Modifier.height(400.dp).fillMaxWidth(),
             singleLine = false,
@@ -130,15 +125,16 @@ fun EditCampaignScreen(
             enabled = uiState.isValid,
             onClick = {
                 scope.launch {
-                    viewModel.save()
-                    navHostController.popBackStack()
+                    viewModel.saveCampaign {
+                        navHostController.popBackStack()
+                    }
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(Res.string.save_button))
         }
-        if (campaign != null) {
+        if (uiState.showDeleteButton) {
             CustomButton(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = primary,

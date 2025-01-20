@@ -28,12 +28,12 @@ fun MenuDrawer(
     ) {
         listOf(
             AppRoute.HOME,
-            AppRoute.BATTLE,
             AppRoute.SEARCH_SPELL,
             AppRoute.SEARCH_MONSTER,
             AppRoute.SEARCH_FEAT,
             AppRoute.SEARCH_MAGIC_ITEM,
-            //AppRoute.SEARCH_CHARACTER,
+            AppRoute.SEARCH_CHARACTER,
+            AppRoute.SEARCH_CAMPAIGN,
             //AppRoute.SEARCH_EQUIPMENT
         ).forEach { menu ->
             NavigationDrawerItem(

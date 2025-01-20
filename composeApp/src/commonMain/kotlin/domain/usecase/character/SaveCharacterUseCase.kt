@@ -24,7 +24,6 @@ class SaveCharacterUseCase(
         spellSave: Int,
         characterClass: TextFieldValue
     ) {
-        characterRepository.saveCharacter(
     }
 
 }

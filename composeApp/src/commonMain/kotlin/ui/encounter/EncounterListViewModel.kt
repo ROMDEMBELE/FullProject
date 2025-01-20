@@ -2,7 +2,6 @@ package ui.encounter
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import domain.usecase.campaign.GetMainCampaignUseCase
 import domain.usecase.encounter.AddCharacterToEncounterUseCase
 import domain.usecase.encounter.AddMonsterToEncounterUseCase
 import domain.usecase.encounter.CreateEncounterUseCase
@@ -23,7 +22,6 @@ class EncounterListViewModel(
     private val removeCharacter: RemoveCharacterFromEncounterUseCase,
     private val removeMonster: RemoveMonsterFromEncounterUseCase,
     private val updateEncounter: UpdateEncounterUseCase,
-    private val getMainCampaign: GetMainCampaignUseCase,
     private val getEncounters: GetMainCampaignEncounterUseCase
 ) : ViewModel() {
 
@@ -32,12 +30,6 @@ class EncounterListViewModel(
 
     init {
         viewModelScope.launch {
-            getMainCampaign().collectLatest { campaign ->
-                _uiState.update {
-                    it.copy(campaign = campaign)
-                }
-            }
-
             getEncounters().collectLatest { encounters ->
                 _uiState.update {
                     it.copy(encounters = encounters, isReady = true)

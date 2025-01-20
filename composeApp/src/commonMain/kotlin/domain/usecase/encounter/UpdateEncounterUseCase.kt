@@ -14,21 +14,7 @@ class UpdateEncounterUseCase(
         isFinished: Boolean,
         turn: Int
     ) {
-        val entity = encounterRepository.getById(id).firstOrNull()
-            ?: error("Encounter id: $id not found")
 
-        // TODO check turn incrementation
-
-        // TODO check is finished
-
-        encounterRepository.updateEncounter(
-            title = title,
-            description = description,
-            isFinished = isFinished,
-            id = id,
-            campaignId = entity.campaignId,
-            turn = turn
-        )
 
     }
 }

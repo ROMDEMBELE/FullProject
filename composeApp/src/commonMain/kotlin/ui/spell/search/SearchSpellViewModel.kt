@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import domain.model.Level
 import domain.model.spell.Spell
+import domain.usecase.settings.GetLevelFilterUseCase
 import domain.usecase.spell.AddSpellToFavoritesUseCase
 import domain.usecase.spell.GetFavoritesSpellUseCase
-import domain.usecase.settings.GetLevelFilterUseCase
 import domain.usecase.spell.RemoveSpellFromFavoritesUseCase
 import domain.usecase.spell.SearchSpellUseCase
 import kotlinx.coroutines.Job
@@ -60,7 +60,7 @@ class SearchSpellViewModel(
 
     private fun fetchSpellFilter() {
         viewModelScope.launch {
-            val filter = levelFilterUseCase.get()
+            val filter = levelFilterUseCase()
             _state.update { it.copy(filterLevelRange = filter) }
         }
     }
@@ -122,9 +122,6 @@ class SearchSpellViewModel(
             _state.update {
                 it.copy(filterLevelRange = range)
             }
-            val min = _state.value.minLevel
-            val max = _state.value.maxLevel
-            levelFilterUseCase.save(min, max)
             delay(500)
             searchSpells()
         }

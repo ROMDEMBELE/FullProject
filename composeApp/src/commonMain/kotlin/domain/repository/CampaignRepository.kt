@@ -6,11 +6,14 @@ import kotlin.coroutines.cancellation.CancellationException
 
 interface CampaignRepository {
 
-    @Throws(NoSuchElementException::class, CancellationException::class, IllegalArgumentException::class)
+    @Throws(
+        NoSuchElementException::class,
+        CancellationException::class,
+        IllegalArgumentException::class
+    )
     suspend fun getById(id: String): Campaign
 
-    @Throws(NoSuchElementException::class, IllegalArgumentException::class, CancellationException::class)
-    suspend fun getAll(): Flow<List<Campaign>>
+    fun getAll(): Flow<List<Campaign>>
 
     @Throws(NoSuchElementException::class, CancellationException::class)
     suspend fun createOrUpdate(

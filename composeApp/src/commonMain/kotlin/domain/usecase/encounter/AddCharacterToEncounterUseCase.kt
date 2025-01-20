@@ -8,7 +8,7 @@ class AddCharacterToEncounterUseCase(
     private val characterRepository: CharacterRepository
 ) {
     suspend operator fun invoke(characterId: Long, encounterId: Long) {
-        val encounter = encounterRepository.getById(encounterId)
+
 
     }
 }

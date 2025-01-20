@@ -32,7 +32,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.feat_prerequisites
-import org.dembeyo.shared.resources.knight
+import org.dembeyo.shared.resources.magic_trick
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ui.composable.TaperedRule
@@ -77,7 +77,7 @@ fun FeatItem(
         ) {
             Box(Modifier.background(brush)) {
                 Image(
-                    painter = painterResource(Res.drawable.knight),
+                    painter = painterResource(Res.drawable.magic_trick),
                     contentDescription = featItem.name,
                     colorFilter = ColorFilter.tint(color),
                     modifier = Modifier.fillMaxHeight()

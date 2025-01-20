@@ -46,7 +46,7 @@ fun <T, V> CustomLazyHeaderList(
                 }
             }
             items(items = listOfValue) { value ->
-                Row(Modifier.animateItemPlacement()) {
+                Row(Modifier.animateItem()) {
                     item(value)
                 }
             }

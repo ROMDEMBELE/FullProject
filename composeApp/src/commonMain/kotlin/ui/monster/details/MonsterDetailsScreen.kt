@@ -36,7 +36,6 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import domain.model.Ability
 import org.dembeyo.shared.resources.Res
 import org.dembeyo.shared.resources.burrow
@@ -77,12 +76,13 @@ import org.jetbrains.compose.resources.stringResource
 import ui.color
 import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.CustomButton
+import ui.composable.PropertyLine
 import ui.composable.TaperedRule
 import ui.composable.darkGray
-import ui.composable.primaryDark
 import ui.composable.lightGray
 import ui.composable.monsterSubTitle
 import ui.composable.monsterTitle
+import ui.composable.primaryDark
 import ui.composable.propertyText
 import ui.composable.propertyTitle
 import ui.composable.roundCornerShape
@@ -92,10 +92,7 @@ import ui.monster.details.composable.ActionItem
 import ui.stringRes
 
 @Composable
-fun MonsterDetailScreen(
-    navController: NavHostController,
-    viewModel: MonsterDetailsViewModel
-) {
+fun MonsterDetailScreen(viewModel: MonsterDetailsViewModel) {
 
     val uiState by viewModel.state.collectAsState()
 

@@ -9,7 +9,6 @@ class CreateEncounterUseCase(
 ) {
 
     suspend fun execute(campaignId: Long, title: String, description: String) {
-        campaignRepository.getById(campaignId)
 
     }
 }

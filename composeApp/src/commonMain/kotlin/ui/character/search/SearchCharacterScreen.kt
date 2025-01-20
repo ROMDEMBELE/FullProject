@@ -1,14 +1,9 @@
 package ui.character.search
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -36,10 +31,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,9 +52,9 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.CustomButton
+import ui.composable.DropDownTextField
 import ui.composable.MediumBoldSecondary
 import ui.composable.RoundIconText
-import ui.composable.SmallBoldSecondary
 import ui.composable.TaperedRule
 import ui.composable.primaryDark
 import ui.composable.roundCornerShape
@@ -75,28 +69,22 @@ fun SearchCharacterScreen(
 
     val uiState: SearchCharacterUiState by viewModel.uiState.collectAsState()
 
-    Box(Modifier.fillMaxSize().background(primaryDark)) {
-        AnimatedContent(
-            targetState = uiState,
-            modifier = Modifier.align(Alignment.Center),
-            transitionSpec = { fadeIn().togetherWith(fadeOut()) }) { state ->
-            when {
-                state.isReady.not() -> {
-                    CustomAnimatedPlaceHolder(
-                        backgroundColor = primaryDark,
-                        contentColor = secondary
-                    )
-                }
-
-                state.isReady && state.campaign == null -> {
-                    NoCampaignScreen()
-                }
-
-                state.isReady && state.campaign != null -> {
-                    CampaignCharacterScreen(navHostController, state.campaign, state.characters)
-                }
-            }
+    if (uiState.isLoading) {
+        CustomAnimatedPlaceHolder(
+            backgroundColor = Color.Transparent,
+            contentColor = primaryDark
+        )
+    } else {
+        Column {
+            DropDownTextField(
+                label = stringResource(Res.string.menu_campaign),
+                selectedValue = uiState.selectedCampaignKey,
+                valueToString = { it?.title ?: "" },
+                values = uiState.campaigns,
+                onSelected = viewModel::onCampaignSelected
+            )
         }
+
     }
 }
 
@@ -226,7 +214,7 @@ fun CharacterItem(character: Character, onEdit: () -> Unit) {
                 )
 
                 Text(
-                    text = character.fullName,
+                    text = character.name,
                     color = secondary,
                     style = MediumBoldSecondary,
                     modifier = Modifier
@@ -235,19 +223,6 @@ fun CharacterItem(character: Character, onEdit: () -> Unit) {
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                             bottom.linkTo(playerName.top)
-                        }
-                )
-                Text(
-                    text = "(${character.player})",
-                    color = secondary,
-                    style = SmallBoldSecondary.copy(fontStyle = FontStyle.Italic),
-                    modifier = Modifier
-                        .alpha(0.5f)
-                        .constrainAs(playerName) {
-                            top.linkTo(characterName.bottom)
-                            start.linkTo(characterName.start)
-                            end.linkTo(characterName.end)
-                            bottom.linkTo(parent.bottom)
                         }
                 )
 

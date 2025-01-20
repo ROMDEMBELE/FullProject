@@ -3,11 +3,11 @@ package di
 import data.database.sqlDelight.DriverFactory
 import data.preference.PreferenceStorage
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
-import ui.campaign.edit.EditCampaignViewModel
-import ui.campaign.main.CampaignViewModel
+import ui.campaign.save.SaveCampaignViewModel
+import ui.campaign.search.AdventurePagerViewModel
 import ui.character.search.SearchCharacterViewModel
 import ui.character.save.SaveCharacterViewModel
 import ui.encounter.EncounterListViewModel
@@ -27,8 +27,8 @@ actual fun platformModule(): Module = module {
     viewModelOf(::MonsterDetailsViewModel)
     viewModelOf(::SearchFeatViewModel)
     viewModelOf(::SearchCharacterViewModel)
-    viewModelOf(::EditCampaignViewModel)
-    viewModelOf(::CampaignViewModel)
+    viewModelOf(::SaveCampaignViewModel)
+    viewModelOf(::AdventurePagerViewModel)
 
     viewModelOf(::SearchMagicItemViewModel)
     viewModelOf(::MagicItemDetailsViewModel)

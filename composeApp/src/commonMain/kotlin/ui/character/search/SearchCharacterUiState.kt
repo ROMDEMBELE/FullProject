@@ -1,20 +1,17 @@
 package ui.character.search
 
-import domain.model.Alignment
-import domain.model.Level
-import domain.model.character.CharacterClass
+import ui.campaign.search.AdventureItem
 
 data class SearchCharacterUiState(
-    val selectedCampaignId: String? = null,
-    val selectedCampaignName: String? = null,
-    val characters: List<SearchCharacterItem> = emptyList(),
-    val isReady: Boolean = false,
-)
+    private val charactersByCampaign: Map<AdventureItem, List<SearchCharacterItem>> = emptyMap(),
+    val selectedCampaignKey: AdventureItem? = null,
+    val isLoading: Boolean = false,
+) {
 
-data class SearchCharacterItem(
-    val id: String,
-    val name: String,
-    val level: Level,
-    val alignment: Alignment,
-    val characterClass: CharacterClass,
-)
+    val campaigns: List<AdventureItem> = charactersByCampaign.keys.toList()
+
+    val selectedCharacters: List<SearchCharacterItem>
+        get() = charactersByCampaign[selectedCampaignKey] ?: emptyList()
+
+}
+

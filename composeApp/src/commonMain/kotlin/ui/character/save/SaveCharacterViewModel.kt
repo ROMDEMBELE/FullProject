@@ -3,10 +3,10 @@ package ui.character.save
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import domain.model.Ability
 import domain.model.Level
-import domain.repository.CharacterRepository
+import domain.model.character.CharacterClass
 import domain.usecase.character.DeleteCharacterUseCase
+import domain.usecase.character.GetCharacterByIdUseCase
 import domain.usecase.character.SaveCharacterUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,93 +14,128 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SaveCharacterViewModel(
-    private val characterRepository: CharacterRepository,
-    private val saveCharacter: SaveCharacterUseCase,
-    private val deleteCharacter: DeleteCharacterUseCase
+    private val index: String? = null,
+    private val getCharacterByIdUseCase: GetCharacterByIdUseCase,
+    private val saveCharacterUseCase: SaveCharacterUseCase,
+    private val deleteCharacterUseCase: DeleteCharacterUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(SaveCharacterUiState())
-    val uiState = _uiState.asStateFlow()
+    private val _state = MutableStateFlow(SaveCharacterUiState())
+    val state = _state.asStateFlow()
 
     init {
         viewModelScope.launch {
-            _uiState.update { it.copy(isReady = true) }
+            if (index != null) {
+                fetchCharacter(index)
+            }
         }
     }
 
-    suspend fun loadCharacterToEdit(id: Long) {
-        characterRepository.getById(id).let { character ->
-            _uiState.update {
-                it.copy(
-                    id = character.id,
-                    level = character.level,
-                    characterName = TextFieldValue(character.fullName),
-                    armorClass = character.armorClass,
-                    hitPoint = character.hitPoint,
-                    abilities = buildMap {
-                        put(Ability.STR, character.strength)
-                        put(Ability.DEX, character.dexterity)
-                        put(Ability.CON, character.constitution)
-                        put(Ability.INT, character.intelligence)
-                        put(Ability.WIS, character.wisdom)
-                        put(Ability.CHA, character.charisma)
-                    },
-                )
-            }
-        } ?: throw NullPointerException("Character id$id not found")
+    private suspend fun fetchCharacter(index: String) {
+        val character = getCharacterByIdUseCase(index)
+        _state.update {
+            it.copy(
+                characterName = TextFieldValue(character.name),
+                characterClass = character.characterClass,
+                level = character.level,
+                armorClass = character.armorClass,
+                passivePerception = character.passivePerception,
+                intelligence = character.intelligence,
+                strength = character.strength,
+                dexterity = character.dexterity,
+                constitution = character.constitution,
+                wisdom = character.wisdom,
+                charisma = character.charisma,
+                hitPoint = character.hitPoint,
+                isReady = true
+            )
+        }
     }
 
-    suspend fun save() {
-        val dexterity = _uiState.value.abilities[Ability.DEX] ?: 10
-        val constitution = _uiState.value.abilities[Ability.CON] ?: 10
-        val intelligence = _uiState.value.abilities[Ability.INT] ?: 10
-        val wisdom = _uiState.value.abilities[Ability.WIS] ?: 10
-        val strength = _uiState.value.abilities[Ability.STR] ?: 10
-    }
-
-    fun updateCharacterName(textFieldValue: TextFieldValue) {
-        _uiState.update {
+    fun onNameChange(textFieldValue: TextFieldValue) {
+        _state.update {
             it.copy(characterName = textFieldValue)
         }
     }
 
-    fun updateArmorClass(armorClass: Int) {
-        _uiState.update {
+    fun onArmorClassChange(armorClass: Int) {
+        _state.update {
             it.copy(armorClass = armorClass)
         }
     }
 
-    fun updateHitPoint(hitPoint: Int) {
-        _uiState.update {
+    fun onHitPointChange(hitPoint: Int) {
+        _state.update {
             it.copy(hitPoint = hitPoint)
         }
     }
 
-    fun updateLevel(level: Int) {
-        _uiState.update {
+    fun onClassChange(characterClass: CharacterClass?) {
+        _state.update {
+            it.copy(characterClass = characterClass)
+        }
+    }
+
+    fun onPassivePerceptionChange(passivePerception: Int) {
+        _state.update {
+            it.copy(passivePerception = passivePerception)
+        }
+    }
+
+    fun onLevelChange(level: Int) {
+        _state.update {
             it.copy(level = Level.fromInt(level))
         }
     }
 
-    fun updateAbilityScores(ability: Ability, score: Int) {
-        _uiState.update {
-            val abilities = it.abilities.toMutableMap().apply { put(ability, score) }
-            it.copy(abilities = abilities)
+    fun onIntelligenceChange(value: Int) {
+        _state.update {
+            it.copy(intelligence = value)
         }
     }
 
-    fun deleteCharacter() {
+    fun onWisdomChange(value: Int) {
+        _state.update {
+            it.copy(wisdom = value)
+        }
+    }
+
+    fun onStrengthChange(value: Int) {
+        _state.update {
+            it.copy(strength = value)
+        }
+    }
+
+    fun onDexterityChange(value: Int) {
+        _state.update {
+            it.copy(dexterity = value)
+        }
+    }
+
+    fun onConstitutionChange(value: Int) {
+        _state.update {
+            it.copy(constitution = value)
+        }
+    }
+
+    fun onCharismaChange(value: Int) {
+        _state.update {
+            it.copy(charisma = value)
+        }
+    }
+
+    fun deleteCharacter(onDeleted: () -> Unit) {
         viewModelScope.launch {
-            try {
-                _uiState.value.id?.let {
-                    deleteCharacter(it)
-                }
-            } catch (e: IllegalArgumentException) {
-                e.printStackTrace()
+            if (index != null) {
+                deleteCharacterUseCase(index)
+                onDeleted()
             }
         }
     }
 
-    fun updateCharacterClass(textFieldValue: TextFieldValue) {
+    fun saveCharacter(onSaved: () -> Unit) {
+        viewModelScope.launch {
+        }
+
     }
 }

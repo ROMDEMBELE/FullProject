@@ -26,12 +26,7 @@ class CampaignRepositoryImpl(
             ?: throw NoSuchElementException("Campaign with id $id not found")
     }
 
-    @Throws(
-        NoSuchElementException::class,
-        IllegalArgumentException::class,
-        CancellationException::class
-    )
-    override suspend fun getAll(): Flow<List<Campaign>> {
+    override fun getAll(): Flow<List<Campaign>> {
         return realm.observeAllCampaigns().map {
             it.list.map { campaignDbo ->
                 campaignDbo.toCampaign(

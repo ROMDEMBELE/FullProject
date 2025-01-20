@@ -10,7 +10,7 @@ class DeleteCampaignUseCase(
     private val encounterRepository: EncounterRepository,
 ) {
 
-    suspend operator fun invoke(id: Long, force: Boolean = false) {
+    suspend operator fun invoke(id: String, force: Boolean = false) {
 
     }
 }

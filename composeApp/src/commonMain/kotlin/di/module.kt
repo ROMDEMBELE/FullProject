@@ -32,10 +32,10 @@ import domain.repository.MonsterRepository
 import domain.repository.SettingsRepository
 import domain.repository.SpellRepository
 import domain.usecase.campaign.DeleteCampaignUseCase
-import domain.usecase.campaign.GetCampaignsUseCase
+import domain.usecase.campaign.GetAllCampaignsUseCase
+import domain.usecase.campaign.GetCampaignByIdUseCase
 import domain.usecase.campaign.SaveCampaignUseCase
 import domain.usecase.character.DeleteCharacterUseCase
-import domain.usecase.character.GetCharactersByCampaignIdUseCase
 import domain.usecase.character.SaveCharacterUseCase
 import domain.usecase.encounter.AddCharacterToEncounterUseCase
 import domain.usecase.encounter.AddMonsterToEncounterUseCase
@@ -139,9 +139,10 @@ val repositoryModule = module {
 
 val useCaseModule: Module = module {
 
-    factoryOf(::GetCharactersByCampaignIdUseCase)
     factoryOf(::DeleteCampaignUseCase)
     factoryOf(::SaveCampaignUseCase)
+    factoryOf(::GetAllCampaignsUseCase)
+    factoryOf(::GetCampaignByIdUseCase)
 
     factoryOf(::SaveCharacterUseCase)
     factoryOf(::DeleteCharacterUseCase)
@@ -177,7 +178,6 @@ val useCaseModule: Module = module {
     factoryOf(::CreateEncounterUseCase)
     factoryOf(::UpdateEncounterUseCase)
     factoryOf(::GetMainCampaignEncounterUseCase)
-    factoryOf(::GetCampaignsUseCase)
     factoryOf(::DeleteEncounterUseCase)
 }
 

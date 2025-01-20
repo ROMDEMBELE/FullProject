@@ -6,10 +6,10 @@ import androidx.lifecycle.viewModelScope
 import domain.model.monster.Challenge
 import domain.model.monster.Monster
 import domain.usecase.monster.AddMonsterToFavoriteUseCase
-import domain.usecase.settings.GetChallengeFilterUseCase
 import domain.usecase.monster.GetFavoritesMonsterUseCase
 import domain.usecase.monster.RemoveMonsterFromFavoriteUseCase
 import domain.usecase.monster.SearchMonstersUseCase
+import domain.usecase.settings.GetChallengeFilterUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,7 +42,7 @@ class SearchMonsterViewModel(
 
     private fun fetchChallengeFilter() {
         viewModelScope.launch {
-            _state.update { it.copy(filterChallengeRange = challengeFilter.get()) }
+            _state.update { it.copy(filterChallengeRange = challengeFilter()) }
         }
     }
 
@@ -106,9 +106,6 @@ class SearchMonsterViewModel(
             _state.update {
                 it.copy(filterChallengeRange = range)
             }
-            val min = _state.value.minChallenge
-            val max = _state.value.maxChallenge
-            challengeFilter.save(min, max)
             delay(500)
             searchMonsters()
         }

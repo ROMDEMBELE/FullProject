@@ -6,6 +6,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import ui.campaign.save.SaveCampaignScreen
+import ui.campaign.save.SaveCampaignViewModel
+import ui.campaign.search.AdventurePagerScreen
+import ui.campaign.search.AdventurePagerViewModel
+import ui.character.details.CharacterDetailsScreen
+import ui.character.details.CharacterDetailsViewModel
+import ui.character.search.SearchCharacterScreen
+import ui.character.search.SearchCharacterViewModel
 import ui.feat.search.SearchFeatScreen
 import ui.feat.search.SearchFeatViewModel
 import ui.home.MenuScreen
@@ -61,7 +69,7 @@ fun AppNavHost(navController: NavHostController) {
                 ?: throw IllegalStateException("Nav argument 'index' is required to display a monster")
             val viewModel: MonsterDetailsViewModel = koinViewModel { parametersOf(index) }
 
-            MonsterDetailScreen(navController, viewModel)
+            MonsterDetailScreen(viewModel)
         }
         composable(
             route = AppRoute.SEARCH_FEAT.route,
@@ -87,5 +95,45 @@ fun AppNavHost(navController: NavHostController) {
             MagicItemDetailsScreen(viewModel)
         }
 
+        composable(
+            route = AppRoute.SEARCH_CHARACTER.route,
+        ) {
+            val viewModel: SearchCharacterViewModel = koinViewModel()
+            SearchCharacterScreen(navController, viewModel)
+        }
+
+        composable(
+            route = AppRoute.CHARACTER.route,
+            arguments = listOf(index)
+        ) {
+            val index = it.arguments?.getString("index")
+                ?: throw IllegalStateException("Nav argument 'index' is required to display a character")
+            val viewModel: CharacterDetailsViewModel = koinViewModel { parametersOf(index) }
+            CharacterDetailsScreen(navController, viewModel)
+        }
+
+        composable(
+            route = AppRoute.SEARCH_CAMPAIGN.route,
+        ) {
+            val viewModel: AdventurePagerViewModel = koinViewModel()
+            AdventurePagerScreen(navController, viewModel)
+        }
+
+        composable(
+            route = AppRoute.CREATE_CAMPAIGN.route,
+        ) {
+            val viewModel: SaveCampaignViewModel = koinViewModel()
+            SaveCampaignScreen(navController, viewModel)
+        }
+
+        composable(
+            route = AppRoute.EDIT_CAMPAIGN.route,
+            arguments = listOf(index)
+        ) {
+            val index = it.arguments?.getString("index")
+                ?: throw IllegalStateException("Nav argument 'index' is required to display a campaign")
+            val viewModel: SaveCampaignViewModel = koinViewModel()
+            SaveCampaignScreen(navController, viewModel, index)
+        }
     }
 }
