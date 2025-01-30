@@ -5,7 +5,6 @@ import data.database.realm.RealmDatabase
 import data.database.sqlDelight.SqlDatabase
 import domain.model.campaign.Campaign
 import domain.repository.CampaignRepository
-import io.realm.kotlin.ext.isManaged
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlin.coroutines.cancellation.CancellationException
@@ -37,29 +36,41 @@ class CampaignRepositoryImpl(
         }
     }
 
+    private fun create(name: String, description: String) {
+        val dbo = CampaignDbo().apply {
+            this.name = name
+            this.description = description
+        }
+        realm.writeBlocking { copyToRealm(dbo) }
+    }
+
+    private fun update(id: String, name: String, description: String) {
+        val dbo: CampaignDbo = realm.queryCampaignWithId(id)
+            ?: throw NoSuchElementException("Campaign with id $id not found")
+
+        realm.writeBlocking {
+            findLatest(dbo)?.apply {
+                this.name = name
+                this.description = description
+            }
+        }
+    }
+
     override suspend fun createOrUpdate(
         id: String?,
         name: String,
         description: String,
     ) {
-        realm.writeBlocking {
-            ((if (id == null) CampaignDbo() else realm.queryCampaignWithId(id)))
-                ?.apply {
-                    this.name = name
-                    this.description = description
-                }
-                ?.also { campaignDbo ->
-                    if (!campaignDbo.isManaged()) copyToRealm(campaignDbo)
-                }
-                ?: throw NoSuchElementException("Campaign with id $id not found")
+        if (id == null) {
+            create(name, description)
+        } else {
+            update(id, name, description)
         }
-
     }
 
     override suspend fun delete(id: String) {
-        realm.writeBlocking {
-            realm.queryCampaignWithId(id)?.let { delete(it) }
-                ?: throw NoSuchElementException("Campaign with id $id not found")
-        }
+        val dbo: CampaignDbo = realm.queryCampaignWithId(id)
+            ?: throw NoSuchElementException("Campaign with id $id not found")
+        realm.writeBlocking { delete(dbo) }
     }
 }

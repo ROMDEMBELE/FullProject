@@ -8,10 +8,11 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import ui.campaign.save.SaveCampaignScreen
 import ui.campaign.save.SaveCampaignViewModel
-import ui.campaign.search.AdventurePagerScreen
-import ui.campaign.search.AdventurePagerViewModel
+import ui.campaign.search.CampaignListScreen
+import ui.campaign.search.CampaignListViewModel
 import ui.character.details.CharacterDetailsScreen
 import ui.character.details.CharacterDetailsViewModel
+import ui.character.save.SaveCharacterViewModel
 import ui.character.search.SearchCharacterScreen
 import ui.character.search.SearchCharacterViewModel
 import ui.feat.search.SearchFeatScreen
@@ -103,6 +104,13 @@ fun AppNavHost(navController: NavHostController) {
         }
 
         composable(
+            route = AppRoute.CREATE_CHARACTER.route
+        ) {
+            val viewModel: SaveCharacterViewModel = koinViewModel()
+            SearchCharacterScreen(navController, viewModel)
+        }
+
+        composable(
             route = AppRoute.CHARACTER.route,
             arguments = listOf(index)
         ) {
@@ -115,8 +123,8 @@ fun AppNavHost(navController: NavHostController) {
         composable(
             route = AppRoute.SEARCH_CAMPAIGN.route,
         ) {
-            val viewModel: AdventurePagerViewModel = koinViewModel()
-            AdventurePagerScreen(navController, viewModel)
+            val viewModel: CampaignListViewModel = koinViewModel()
+            CampaignListScreen(navController, viewModel)
         }
 
         composable(

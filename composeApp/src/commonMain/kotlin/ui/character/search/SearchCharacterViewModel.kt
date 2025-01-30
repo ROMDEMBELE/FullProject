@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ui.campaign.search.AdventureItem
+import ui.campaign.search.CampaignItem
 
 class SearchCharacterViewModel(
     private val getAllCampaignsUseCase: GetAllCampaignsUseCase,
@@ -30,7 +30,7 @@ class SearchCharacterViewModel(
                 it.copy(
                     charactersByCampaign = buildMap {
                         campaigns.forEach { campaign ->
-                            val key = AdventureItem(
+                            val key = CampaignItem(
                                 id = campaign.uuid,
                                 title = campaign.name,
                                 description = campaign.description
@@ -54,7 +54,7 @@ class SearchCharacterViewModel(
         }
     }
 
-    fun onCampaignSelected(key: AdventureItem?) {
+    fun onCampaignSelected(key: CampaignItem?) {
         _uiState.update { it.copy(selectedCampaignKey = key) }
     }
 }

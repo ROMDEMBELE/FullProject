@@ -1,24 +1,19 @@
 package ui.character.search
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
@@ -29,26 +24,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
-import domain.model.campaign.Campaign
-import domain.model.character.Character
 import org.dembeyo.shared.resources.Res
-import org.dembeyo.shared.resources.castle_empty
 import org.dembeyo.shared.resources.create_character_button
-import org.dembeyo.shared.resources.knight
 import org.dembeyo.shared.resources.menu_campaign
-import org.dembeyo.shared.resources.no_campaign
-import org.dembeyo.shared.resources.no_character
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ui.composable.CustomAnimatedPlaceHolder
 import ui.composable.CustomButton
@@ -58,7 +42,6 @@ import ui.composable.RoundIconText
 import ui.composable.TaperedRule
 import ui.composable.primaryDark
 import ui.composable.roundCornerShape
-import ui.composable.screenTitle
 import ui.composable.secondary
 
 @Composable
@@ -68,6 +51,7 @@ fun SearchCharacterScreen(
 ) {
 
     val uiState: SearchCharacterUiState by viewModel.uiState.collectAsState()
+    val lazyListState = rememberLazyListState()
 
     if (uiState.isLoading) {
         CustomAnimatedPlaceHolder(
@@ -75,7 +59,9 @@ fun SearchCharacterScreen(
             contentColor = primaryDark
         )
     } else {
-        Column {
+        Column(
+            Modifier.padding(8.dp),
+        ) {
             DropDownTextField(
                 label = stringResource(Res.string.menu_campaign),
                 selectedValue = uiState.selectedCampaignKey,
@@ -83,112 +69,36 @@ fun SearchCharacterScreen(
                 values = uiState.campaigns,
                 onSelected = viewModel::onCampaignSelected
             )
-        }
 
-    }
-}
+            TaperedRule()
 
-@Composable
-fun CampaignCharacterScreen(
-    navHostController: NavHostController,
-    campaign: Campaign,
-    characters: List<Character>
-) {
-    Column(
-        Modifier.fillMaxSize().background(secondary),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(
-            campaign.name,
-            style = screenTitle(),
-            modifier = Modifier.fillMaxWidth()
-        )
-        TaperedRule()
-
-        if (characters.isEmpty()) {
-            Spacer(Modifier.weight(1f))
-            Text(
-                stringResource(Res.string.no_character),
-                style = MediumBoldSecondary.copy(primaryDark)
-            )
-            Spacer(Modifier.weight(1f))
-        } else {
             LazyColumn(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .padding(8.dp)
+                state = lazyListState,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                items(characters) { item ->
-                    CharacterItem(
-                        character = item,
-                        onEdit = { },
-                    )
+                items(uiState.selectedCharacters) { item ->
+                    CharacterItem(item) {
+                        navHostController.navigate("character/${item.id}")
+                    }
                 }
-            }
-        }
-        TaperedRule()
-        CustomButton(
-            modifier = Modifier.fillMaxWidth()
-                .padding(bottom = 8.dp, start = 8.dp, end = 8.dp),
-            onClick = {
+                item {
+                    CustomButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = {
+                            navHostController.navigate("character/create")
+                        }
+                    ) {
+                        Text(stringResource(Res.string.create_character_button))
+                    }
+                }
 
             }
-        ) {
-            Text(stringResource(Res.string.create_character_button))
         }
     }
 }
 
 @Composable
-fun NoCampaignScreen() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Image(
-            painter = painterResource(Res.drawable.knight),
-            contentDescription = null,
-            colorFilter = ColorFilter.tint(secondary),
-            modifier = Modifier.size(100.dp).aspectRatio(1f)
-        )
-
-        Spacer(Modifier.height(16.dp))
-
-        Text(
-            stringResource(Res.string.no_campaign),
-            color = secondary,
-            fontSize = 18.sp,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(16.dp)
-        )
-
-        Spacer(Modifier.height(16.dp))
-
-        CustomButton(
-            onClick = { },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = secondary,
-                contentColor = primaryDark
-            )
-        ) {
-            Image(
-                painter = painterResource(Res.drawable.castle_empty),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(primaryDark),
-                modifier = Modifier.size(24.dp).aspectRatio(1f)
-            )
-
-            Spacer(Modifier.width(8.dp))
-
-            Text(stringResource(Res.string.menu_campaign))
-        }
-    }
-}
-
-
-@Composable
-fun CharacterItem(character: Character, onEdit: () -> Unit) {
+fun CharacterItem(character: SearchCharacterItem, onClick: () -> Unit) {
     var moreExpanded by rememberSaveable { mutableStateOf(false) }
     Surface(
         shape = roundCornerShape,
@@ -236,7 +146,7 @@ fun CharacterItem(character: Character, onEdit: () -> Unit) {
                             bottom.linkTo(parent.bottom)
                         }
                         .aspectRatio(1f),
-                    onClick = onEdit)
+                    onClick = onClick)
                 {
                     Icon(Icons.Filled.Edit, null, tint = primaryDark)
                 }

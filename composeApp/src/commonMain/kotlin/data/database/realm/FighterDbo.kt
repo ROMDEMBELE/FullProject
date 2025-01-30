@@ -10,10 +10,11 @@ import domain.model.monster.Monster
 import io.realm.kotlin.ext.realmListOf
 import io.realm.kotlin.types.EmbeddedRealmObject
 import io.realm.kotlin.types.RealmList
+import io.realm.kotlin.types.RealmUUID
 import org.dembeyo.data.MonsterDbo
 
 class FighterDbo : EmbeddedRealmObject {
-    var uuid: String? = null
+    var uuid: RealmUUID = RealmUUID.random()
     var characterUuid: String? = null
     var monsterIndex: String? = null
     var initiative: Int = 0

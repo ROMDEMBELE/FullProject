@@ -5,13 +5,13 @@ import domain.model.campaign.Encounter
 import io.realm.kotlin.ext.realmListOf
 import io.realm.kotlin.types.RealmList
 import io.realm.kotlin.types.RealmObject
+import io.realm.kotlin.types.RealmUUID
 import io.realm.kotlin.types.annotations.PrimaryKey
 import org.dembeyo.data.MonsterDbo
-import org.mongodb.kbson.ObjectId
 
 class EncounterDbo : RealmObject {
     @PrimaryKey
-    var _id: ObjectId = ObjectId()
+    var _id: RealmUUID = RealmUUID.random()
     var title: String = ""
     var description: String = ""
     var round: Int = 0
@@ -24,7 +24,7 @@ class EncounterDbo : RealmObject {
         getCharacterById: (String) -> CharacterDbo?,
         getMonsterById: (String) -> MonsterDbo?
     ) = Encounter(
-        uuid = _id.toHexString(),
+        uuid = _id.toString(),
         title = title,
         description = description,
         fighters = fighters.map { it.toFighter(getCharacterById, getMonsterById) },

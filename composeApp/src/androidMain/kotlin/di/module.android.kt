@@ -7,7 +7,7 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import ui.campaign.save.SaveCampaignViewModel
-import ui.campaign.search.AdventurePagerViewModel
+import ui.campaign.search.CampaignListViewModel
 import ui.character.search.SearchCharacterViewModel
 import ui.character.save.SaveCharacterViewModel
 import ui.encounter.EncounterListViewModel
@@ -28,7 +28,7 @@ actual fun platformModule(): Module = module {
     viewModelOf(::SearchFeatViewModel)
     viewModelOf(::SearchCharacterViewModel)
     viewModelOf(::SaveCampaignViewModel)
-    viewModelOf(::AdventurePagerViewModel)
+    viewModelOf(::CampaignListViewModel)
 
     viewModelOf(::SearchMagicItemViewModel)
     viewModelOf(::MagicItemDetailsViewModel)

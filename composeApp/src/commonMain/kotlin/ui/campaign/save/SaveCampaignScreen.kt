@@ -124,11 +124,10 @@ fun SaveCampaignScreen(
         CustomButton(
             enabled = uiState.isValid,
             onClick = {
-                scope.launch {
                     viewModel.saveCampaign {
                         navHostController.popBackStack()
                     }
-                }
+
             },
             modifier = Modifier.fillMaxWidth()
         ) {

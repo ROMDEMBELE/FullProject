@@ -10,6 +10,7 @@ import domain.model.campaign.EncounterFighter
 import domain.model.campaign.MonsterFighter
 import domain.repository.EncounterRepository
 import io.realm.kotlin.ext.isManaged
+import io.realm.kotlin.types.RealmUUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -42,37 +43,42 @@ class EncounterRepositoryImpl(
         fighters: List<EncounterFighter>,
         isFinished: Boolean,
     ) {
+        val campaignDbo = realm.queryCampaignWithId(campaignId)
+            ?: throw NoSuchElementException("Campaign with id $campaignId not found")
+
+        val encounterDbo: EncounterDbo = if (id == null) {
+            EncounterDbo()
+        } else {
+            realm.queryEncounterWithId(id)
+        } ?: throw NoSuchElementException("Encounter with id $id not found")
+
         realm.writeBlocking {
-            val campaignDbo = realm.queryCampaignWithId(campaignId)
-                ?: throw NoSuchElementException("Campaign with id $campaignId not found")
+            encounterDbo.apply {
+                this.title = title
+                this.description = description
+                this.round = turn
+                this.fighters.clear()
+                this.fighters.addAll(fighters.map {
+                    FighterDbo().apply {
+                        this.uuid = RealmUUID.Companion.from(it.uuid)
+                        this.characterUuid = (it as? CharacterFighter)?.character?.uuid
+                        this.monsterIndex = (it as? MonsterFighter)?.monster?.key
+                        this.initiative = it.initiative
+                        this.conditions.clear()
+                        this.conditions.addAll(it.conditions.map { condition -> condition.name })
+                        this.name = it.name
+                        this.armorClass = it.armorClass
+                        this.maxHitPoint = it.maxHitPoint
+                        this.hitPoint = it.currentHitPoint
+                        this.passivePerception = it.passivePerception
+                    }
+                })
+                this.isFinished = isFinished
+            }.also { encounterDbo ->
+                if (!encounterDbo.isManaged()) copyToRealm(encounterDbo)
 
-            ((if (id != null) realm.queryEncounterWithId(id) else EncounterDbo()))
-                ?.apply {
-                    this.title = title
-                    this.description = description
-                    this.round = turn
-                    this.fighters.clear()
-                    this.fighters.addAll(fighters.map {
-                        FighterDbo().apply {
-                            this.uuid = it.uuid
-                            this.characterUuid = (it as? CharacterFighter)?.character?.uuid
-                            this.monsterIndex = (it as? MonsterFighter)?.monster?.key
-                            this.initiative = it.initiative
-                            this.conditions.clear()
-                            this.conditions.addAll(it.conditions.map { condition -> condition.name })
-                            this.name = it.name
-                            this.armorClass = it.armorClass
-                            this.maxHitPoint = it.maxHitPoint
-                            this.hitPoint = it.currentHitPoint
-                            this.passivePerception = it.passivePerception
-                        }
-                    })
-                    this.isFinished = isFinished
-                }?.also { encounterDbo ->
-                    if (!encounterDbo.isManaged()) copyToRealm(encounterDbo)
-
-                    campaignDbo.apply { listOfEncounters.add(encounterDbo) }
-                } ?: throw NoSuchElementException("Encounter with id $id not found")
+                campaignDbo.apply { listOfEncounters.add(encounterDbo) }
+            }
         }
     }
 

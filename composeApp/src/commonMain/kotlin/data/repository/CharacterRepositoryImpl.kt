@@ -51,33 +51,36 @@ class CharacterRepositoryImpl(private val realm: RealmDatabase) : CharacterRepos
         strength: Int,
         wisdom: Int,
     ) {
-        realm.writeBlocking {
-            val campaignDbo = realm.queryCampaignWithId(campaignId)
-                ?: throw NoSuchElementException("Campaign with id $campaignId not found")
+        val campaignDbo = realm.queryCampaignWithId(campaignId)
+            ?: throw NoSuchElementException("Campaign with id $campaignId not found")
 
-            ((if (uuid != null) realm.queryCharacterWithId(uuid) else CharacterDbo()))
-                ?.apply {
-                    this.name = name
-                    this.level = level.level
-                    this.alignment = alignment.name
-                    this.characterClass = characterClass.name
-                    this.armorClass = armorClass
-                    this.passivePerception = passivePerception
-                    this.hitPoint = hitPoint
-                    this.charisma = charisma
-                    this.dexterity = dexterity
-                    this.constitution = constitution
-                    this.intelligence = intelligence
-                    this.strength = strength
-                    this.wisdom = wisdom
+        val characterDbo: CharacterDbo = if (uuid == null) {
+            CharacterDbo()
+        } else {
+            realm.queryCharacterWithId(uuid)
+        } ?: throw NoSuchElementException("Character with uuid $uuid not found")
+
+        realm.writeBlocking {
+            characterDbo.apply {
+                this.name = name
+                this.level = level.level
+                this.alignment = alignment.name
+                this.characterClass = characterClass.name
+                this.armorClass = armorClass
+                this.passivePerception = passivePerception
+                this.hitPoint = hitPoint
+                this.charisma = charisma
+                this.dexterity = dexterity
+                this.constitution = constitution
+                this.intelligence = intelligence
+                this.strength = strength
+                this.wisdom = wisdom
+            }.also { characterDbo ->
+                if (!characterDbo.isManaged()) copyToRealm(characterDbo)
+                campaignDbo.apply {
+                    listOfCharacters.add(characterDbo)
                 }
-                ?.also { characterDbo ->
-                    if (!characterDbo.isManaged()) copyToRealm(characterDbo)
-                    campaignDbo.apply {
-                        listOfCharacters.add(characterDbo)
-                    }
-                }
-                ?: throw NoSuchElementException("Character with uuid $uuid not found")
+            }
         }
 
     }

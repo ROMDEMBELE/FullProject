@@ -8,11 +8,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class AdventurePagerViewModel(
+class CampaignListViewModel(
     private val getAllCampaignsUseCase: GetAllCampaignsUseCase,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(AdventurePagerUiState())
+    private val _uiState = MutableStateFlow(CampaignListUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -27,7 +27,7 @@ class AdventurePagerViewModel(
             _uiState.update {
                 it.copy(
                     listOfCampaign = campaigns.map { campaign ->
-                        AdventureItem(campaign.uuid, campaign.name, campaign.description)
+                        CampaignItem(campaign.uuid, campaign.name, campaign.description)
                     },
                     isLoading = false
                 )

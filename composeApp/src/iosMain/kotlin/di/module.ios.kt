@@ -10,7 +10,7 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 import ui.campaign.save.SaveCampaignViewModel
-import ui.campaign.search.AdventurePagerViewModel
+import ui.campaign.search.CampaignListViewModel
 import ui.character.save.SaveCharacterViewModel
 import ui.character.search.SearchCharacterViewModel
 import ui.magicItem.details.MagicItemDetailsViewModel
@@ -32,7 +32,7 @@ actual fun platformModule(): Module = module {
     factoryOf(::SearchMonsterViewModel)
     factoryOf(::MonsterDetailsViewModel)
     factoryOf(::SaveCampaignViewModel)
-    factoryOf(::AdventurePagerViewModel)
+    factoryOf(::CampaignListViewModel)
     factoryOf(::SearchMagicItemViewModel)
     factoryOf(::MagicItemDetailsViewModel)
 

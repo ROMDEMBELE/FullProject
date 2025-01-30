@@ -5,12 +5,12 @@ import domain.model.Level
 import domain.model.character.Character
 import domain.model.character.CharacterClass
 import io.realm.kotlin.types.RealmObject
+import io.realm.kotlin.types.RealmUUID
 import io.realm.kotlin.types.annotations.PrimaryKey
-import org.mongodb.kbson.ObjectId
 
 class CharacterDbo : RealmObject {
     @PrimaryKey
-    var _id: ObjectId = ObjectId()
+    var _id: RealmUUID = RealmUUID.random()
     var name: String = ""
     var level: Int = 0
     var alignment: String = ""
@@ -26,7 +26,7 @@ class CharacterDbo : RealmObject {
     var wisdom: Int = 0
 
     fun toCharacter() = Character(
-        uuid = _id.toHexString(),
+        uuid = _id.toString(),
         name = name,
         level = Level.fromInt(level),
         alignment = Alignment.valueOf(alignment),
